@@ -1,0 +1,273 @@
+# Curated manual hardware profiles.
+#
+# These are vendor-published peak memory bandwidths, not measurements. The API
+# labels manual profiles MEDIUM confidence and never treats them as verified.
+# Memory sizes are GiB (2^30 bytes); bandwidth is decimal GB/s (10^9 bytes/s),
+# matching how vendors publish it.
+#
+# v1 is single-device: pick one GPU/chip. Multi-GPU is out of scope.
+version: 1
+updated: "2026-10-29"
+devices:
+  # ---------------------------------------------------------------- Apple
+  - id: apple-m1
+    name: Apple M1
+    vendor: apple
+    kind: unified
+    bandwidth_gbps: 68.25
+    ram_options_gib: [8, 16]
+    default_ram_gib: 16
+    source: "Apple published peak memory bandwidth"
+  - id: apple-m1-pro
+    name: Apple M1 Pro
+    vendor: apple
+    kind: unified
+    bandwidth_gbps: 200
+    ram_options_gib: [16, 32]
+    default_ram_gib: 32
+    source: "Apple published peak memory bandwidth"
+  - id: apple-m1-max
+    name: Apple M1 Max
+    vendor: apple
+    kind: unified
+    bandwidth_gbps: 400
+    ram_options_gib: [32, 64]
+    default_ram_gib: 64
+    source: "Apple published peak memory bandwidth"
+  - id: apple-m1-ultra
+    name: Apple M1 Ultra
+    vendor: apple
+    kind: unified
+    bandwidth_gbps: 800
+    ram_options_gib: [64, 128]
+    default_ram_gib: 128
+    source: "Apple published peak memory bandwidth"
+  - id: apple-m2
+    name: Apple M2
+    vendor: apple
+    kind: unified
+    bandwidth_gbps: 100
+    ram_options_gib: [8, 16, 24]
+    default_ram_gib: 16
+    source: "Apple published peak memory bandwidth"
+  - id: apple-m2-pro
+    name: Apple M2 Pro
+    vendor: apple
+    kind: unified
+    bandwidth_gbps: 200
+    ram_options_gib: [16, 32]
+    default_ram_gib: 32
+    source: "Apple published peak memory bandwidth"
+  - id: apple-m2-max
+    name: Apple M2 Max
+    vendor: apple
+    kind: unified
+    bandwidth_gbps: 400
+    ram_options_gib: [32, 64, 96]
+    default_ram_gib: 64
+    source: "Apple published peak memory bandwidth"
+  - id: apple-m2-ultra
+    name: Apple M2 Ultra
+    vendor: apple
+    kind: unified
+    bandwidth_gbps: 800
+    ram_options_gib: [64, 128, 192]
+    default_ram_gib: 128
+    source: "Apple published peak memory bandwidth"
+  - id: apple-m3
+    name: Apple M3
+    vendor: apple
+    kind: unified
+    bandwidth_gbps: 100
+    ram_options_gib: [8, 16, 24]
+    default_ram_gib: 16
+    source: "Apple published peak memory bandwidth"
+  - id: apple-m3-pro
+    name: Apple M3 Pro
+    vendor: apple
+    kind: unified
+    bandwidth_gbps: 150
+    ram_options_gib: [18, 36]
+    default_ram_gib: 36
+    source: "Apple published peak memory bandwidth (M3 Pro)"
+  - id: apple-m3-max
+    name: Apple M3 Max
+    vendor: apple
+    kind: unified
+    bandwidth_gbps: 400
+    ram_options_gib: [36, 48, 64, 96, 128]
+    default_ram_gib: 64
+    source: "Apple published peak memory bandwidth; 14-core M3 Max is 300 GB/s"
+    notes: "This entry uses the 16-core M3 Max bandwidth (400 GB/s). A 14-core M3 Max is ~300 GB/s."
+  - id: apple-m3-ultra
+    name: Apple M3 Ultra
+    vendor: apple
+    kind: unified
+    bandwidth_gbps: 800
+    ram_options_gib: [96, 128, 192, 256, 512]
+    default_ram_gib: 128
+    source: "Apple published peak memory bandwidth"
+  - id: apple-m4
+    name: Apple M4
+    vendor: apple
+    kind: unified
+    bandwidth_gbps: 120
+    ram_options_gib: [16, 24, 32]
+    default_ram_gib: 16
+    source: "Apple published peak memory bandwidth"
+  - id: apple-m4-pro
+    name: Apple M4 Pro
+    vendor: apple
+    kind: unified
+    bandwidth_gbps: 273
+    ram_options_gib: [24, 48, 64]
+    default_ram_gib: 48
+    source: "Apple published peak memory bandwidth"
+  - id: apple-m4-max
+    name: Apple M4 Max
+    vendor: apple
+    kind: unified
+    bandwidth_gbps: 546
+    ram_options_gib: [36, 48, 64, 128]
+    default_ram_gib: 64
+    source: "Apple published peak memory bandwidth; 14-core M4 Max is 410 GB/s"
+    notes: "This entry uses the 16-core M4 Max bandwidth (546 GB/s). A 14-core M4 Max is ~410 GB/s."
+
+  # --------------------------------------------------------------- NVIDIA
+  - id: nvidia-rtx-3060-12gb
+    name: NVIDIA GeForce RTX 3060 12GB
+    vendor: nvidia
+    kind: discrete
+    vram_gib: 12
+    bandwidth_gbps: 360
+    source: "NVIDIA published peak memory bandwidth"
+  - id: nvidia-rtx-3060-ti
+    name: NVIDIA GeForce RTX 3060 Ti
+    vendor: nvidia
+    kind: discrete
+    vram_gib: 8
+    bandwidth_gbps: 448
+    source: "NVIDIA published peak memory bandwidth"
+  - id: nvidia-rtx-3070
+    name: NVIDIA GeForce RTX 3070
+    vendor: nvidia
+    kind: discrete
+    vram_gib: 8
+    bandwidth_gbps: 448
+    source: "NVIDIA published peak memory bandwidth"
+  - id: nvidia-rtx-3080
+    name: NVIDIA GeForce RTX 3080
+    vendor: nvidia
+    kind: discrete
+    vram_gib: 10
+    bandwidth_gbps: 760
+    source: "NVIDIA published peak memory bandwidth"
+  - id: nvidia-rtx-3090
+    name: NVIDIA GeForce RTX 3090
+    vendor: nvidia
+    kind: discrete
+    vram_gib: 24
+    bandwidth_gbps: 936
+    source: "NVIDIA published peak memory bandwidth"
+  - id: nvidia-rtx-4060-ti-16gb
+    name: NVIDIA GeForce RTX 4060 Ti 16GB
+    vendor: nvidia
+    kind: discrete
+    vram_gib: 16
+    bandwidth_gbps: 288
+    source: "NVIDIA published peak memory bandwidth"
+  - id: nvidia-rtx-4070
+    name: NVIDIA GeForce RTX 4070
+    vendor: nvidia
+    kind: discrete
+    vram_gib: 12
+    bandwidth_gbps: 504
+    source: "NVIDIA published peak memory bandwidth"
+  - id: nvidia-rtx-4070-ti-super
+    name: NVIDIA GeForce RTX 4070 Ti SUPER
+    vendor: nvidia
+    kind: discrete
+    vram_gib: 16
+    bandwidth_gbps: 672
+    source: "NVIDIA published peak memory bandwidth"
+  - id: nvidia-rtx-4080-super
+    name: NVIDIA GeForce RTX 4080 SUPER
+    vendor: nvidia
+    kind: discrete
+    vram_gib: 16
+    bandwidth_gbps: 736
+    source: "NVIDIA published peak memory bandwidth"
+  - id: nvidia-rtx-4090
+    name: NVIDIA GeForce RTX 4090
+    vendor: nvidia
+    kind: discrete
+    vram_gib: 24
+    bandwidth_gbps: 1008
+    source: "NVIDIA published peak memory bandwidth"
+  - id: nvidia-a10g
+    name: NVIDIA A10G
+    vendor: nvidia
+    kind: discrete
+    vram_gib: 24
+    bandwidth_gbps: 600
+    source: "NVIDIA published peak memory bandwidth"
+  - id: nvidia-a100-40gb
+    name: NVIDIA A100 40GB
+    vendor: nvidia
+    kind: discrete
+    vram_gib: 40
+    bandwidth_gbps: 1555
+    source: "NVIDIA published peak memory bandwidth"
+  - id: nvidia-a100-80gb
+    name: NVIDIA A100 80GB
+    vendor: nvidia
+    kind: discrete
+    vram_gib: 80
+    bandwidth_gbps: 2039
+    source: "NVIDIA published peak memory bandwidth"
+  - id: nvidia-h100-sxm
+    name: NVIDIA H100 SXM
+    vendor: nvidia
+    kind: discrete
+    vram_gib: 80
+    bandwidth_gbps: 3350
+    source: "NVIDIA published peak memory bandwidth"
+  - id: nvidia-l40s
+    name: NVIDIA L40S
+    vendor: nvidia
+    kind: discrete
+    vram_gib: 48
+    bandwidth_gbps: 864
+    source: "NVIDIA published peak memory bandwidth"
+  - id: nvidia-l4
+    name: NVIDIA L4
+    vendor: nvidia
+    kind: discrete
+    vram_gib: 24
+    bandwidth_gbps: 300
+    source: "NVIDIA published peak memory bandwidth"
+
+  # ------------------------------------------------------------------ AMD
+  - id: amd-rx-7900-xtx
+    name: AMD Radeon RX 7900 XTX
+    vendor: amd
+    kind: discrete
+    vram_gib: 24
+    bandwidth_gbps: 960
+    source: "AMD published peak memory bandwidth"
+  - id: amd-rx-7800-xt
+    name: AMD Radeon RX 7800 XT
+    vendor: amd
+    kind: discrete
+    vram_gib: 16
+    bandwidth_gbps: 624
+    source: "AMD published peak memory bandwidth"
+
+  # ------------------------------------------------------------------ CPU
+  - id: cpu-generic
+    name: Generic CPU-only system
+    vendor: generic
+    kind: cpu
+    bandwidth_gbps: 25
+    source: "Conservative default, not a measurement"
+    notes: "CPU-only/unknown profiles use the lowest confidence. Prefer the helper for a measured bandwidth."
