@@ -25,6 +25,9 @@ interface ResultViewProps {
 export function ResultView({ result, shareUrl, onEdit }: ResultViewProps) {
   return (
     <div className="space-y-5">
+      <p className="sr-only" role="status" aria-live="polite">
+        Preflight result ready. Verdict {result.verdict.value}.
+      </p>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
