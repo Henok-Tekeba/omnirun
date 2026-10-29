@@ -26,11 +26,25 @@ Run the API:
 uv run uvicorn api.main:app --reload
 ```
 
-Generate a hardware profile code:
+The contract is served at `GET /schema` and in the OpenAPI docs at `/docs`.
+Example:
 
 ```bash
-uv run --with numpy python helper/omnirun_helper.py
+CODE=$(uv run --with numpy python helper/omnirun_helper.py --code-only)
+
+curl -s http://127.0.0.1:8000/check \
+  -H 'content-type: application/json' \
+  -d "{
+    \"model\": \"HuggingFaceTB/SmolLM2-135M-Instruct\",
+    \"hardware\": {\"source\": \"helper\", \"code\": \"$CODE\"},
+    \"context\": 4096,
+    \"batch\": 1
+  }" | python -m json.tool
 ```
+
+The response always reports FITS, SUPPORTED, and VERIFIED as separate claims.
+GO means FITS + a directly usable SUPPORTED runtime; it does not mean VERIFIED.
+VERIFIED is empty in v1.
 
 ## Honesty rules
 

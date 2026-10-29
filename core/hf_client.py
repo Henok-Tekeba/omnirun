@@ -292,7 +292,12 @@ class HFClient:
 
     # ------------------------------------------------------------------ URLs
 
-    def _api_url(self, repo_id: str) -> str:
+    def _api_url(self, repo_id: str, revision: str | None = None) -> str:
+        if revision:
+            return (
+                f"{self.endpoint}/api/models/{_quote_repo(repo_id)}/revision/"
+                f"{_quote_segment(revision)}?blobs=true"
+            )
         return f"{self.endpoint}/api/models/{_quote_repo(repo_id)}?blobs=true"
 
     def _file_url(self, repo_id: str, revision: str, path: str) -> str:
@@ -301,8 +306,11 @@ class HFClient:
             f"{_quote_segment(revision)}/{_quote_path(path)}"
         )
 
-    def _model_key(self, repo_id: str, scope: str) -> str:
-        return f"v1:{self._endpoint_scope}:model:{repo_id.lower()}:{scope}"
+    def _model_key(self, repo_id: str, revision: str | None, scope: str) -> str:
+        return (
+            f"v1:{self._endpoint_scope}:model:{repo_id.lower()}@"
+            f"{revision or 'default'}:{scope}"
+        )
 
     def _file_key(self, repo_id: str, revision: str, path: str, scope: str) -> str:
         return (
@@ -449,7 +457,7 @@ class HFClient:
         parsed = parse_model_input(model)
         token = _validate_token(token)
         scope = _token_scope(token)
-        key = self._model_key(parsed.repo_id, scope)
+        key = self._model_key(parsed.repo_id, parsed.revision, scope)
 
         cached = self.cache.get(key)
         if cached is not None:
@@ -459,7 +467,7 @@ class HFClient:
 
         try:
             response = await self._request(
-                self._api_url(parsed.repo_id),
+                self._api_url(parsed.repo_id, parsed.revision),
                 token=token,
                 max_bytes=MAX_MODEL_INFO_BYTES,
                 accept="application/json",

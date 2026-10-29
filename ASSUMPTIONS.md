@@ -44,17 +44,24 @@ every API result repeats the ones that affect its numbers.
 10. **Requested context above the model maximum is clamped** to the maximum,
     echoed in the response, and warned about. It is not silently accepted as an
     impossible configuration.
-11. **Top-level verdict mapping** (documented until reviewed):
-    - `GO`: FITS yes with medium/high confidence and SUPPORTED yes.
-    - `OPTIMIZE`: FITS yes but tight/low-confidence, or does not fit as requested
-      while a documented smaller memory configuration (quantization, lower
-      context, batch 1) would fit **and** is supported.
+11. **Top-level verdict mapping** (implemented in `core/verdict.py`):
+    - FITS is strict: `yes` only when the **worst-case** peak is within budget;
+      `no` only when the **best-case** peak exceeds it; anything straddling is
+      `unknown`.
+    - `GO`: FITS yes, SUPPORTED yes with a directly usable runtime, and at least
+      5% worst-case headroom.
+    - `OPTIMIZE`: FITS yes but tight headroom or conversion-only runtime, or the
+      requested setup does not fit while a documented smaller memory
+      configuration (quantization, batch 1, or context 4096) fits and is
+      supported.
     - `NO`: best-case memory cannot fit, or the support matrix says the
       architecture/runtime path is unsupported.
-    - `UNKNOWN`: inspection failed, architecture/format unsupported, runtime
-      support unconfirmed, or input data is insufficient (e.g. no RAM).
+    - `UNKNOWN`: inspection incomplete, architecture not in the matrix, runtime
+      support unconfirmed, memory range straddles the budget, or input data is
+      insufficient (e.g. no RAM).
     The three claim levels are always separate. VERIFIED=unknown prevents the
-    word "verified" but does not block GO.
+    word "verified" but does not block GO. A GO names FITS and SUPPORTED in its
+    basis; it never implies VERIFIED.
 
 ## Hardware
 

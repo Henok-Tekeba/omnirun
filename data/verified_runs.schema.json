@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omnirun.local/schema/verified_runs-1.0.json",
+  "title": "OmniRun verified runs",
+  "description": "A recorded real run on similar hardware. Empty in v1. VERIFIED is a separate claim from FITS and SUPPORTED.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "runs"],
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "runs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "run_id",
+          "repo_id",
+          "revision",
+          "architecture",
+          "hardware_device_id",
+          "hardware_device_name",
+          "runtime",
+          "runtime_version",
+          "artifact_format",
+          "context_tokens",
+          "batch",
+          "peak_memory_bytes",
+          "decode_tokens_per_second",
+          "recorded_at",
+          "source_url"
+        ],
+        "properties": {
+          "run_id": { "type": "string", "minLength": 1, "maxLength": 120 },
+          "repo_id": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+          "architecture": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "hardware_device_id": { "type": ["string", "null"], "maxLength": 100 },
+          "hardware_device_name": { "type": "string", "minLength": 1, "maxLength": 200 },
+          "runtime": {
+            "type": "string",
+            "enum": ["transformers", "llama.cpp", "whisper.cpp", "ctranslate2"]
+          },
+          "runtime_version": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "artifact_format": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "quantization": { "type": ["string", "null"], "maxLength": 80 },
+          "context_tokens": { "type": "integer", "minimum": 1 },
+          "batch": { "type": "integer", "minimum": 1 },
+          "peak_memory_bytes": { "type": "integer", "minimum": 1 },
+          "decode_tokens_per_second": { "type": "number", "exclusiveMinimum": 0 },
+          "recorded_at": { "type": "string", "format": "date-time" },
+          "source_url": { "type": "string", "format": "uri" },
+          "notes": { "type": ["string", "null"], "maxLength": 1000 }
+        }
+      }
+    }
+  }
+}

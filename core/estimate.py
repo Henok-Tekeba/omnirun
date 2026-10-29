@@ -490,6 +490,21 @@ def estimate_weights(inspection: ModelInspection) -> WeightEstimate:
     )
 
 
+def peak_for_weight_bytes(weight_bytes: int, kv: KVEstimate) -> RangeEstimate | None:
+    """Peak memory if weights had a different (hypothetical) byte size."""
+    if kv.bytes_range is None:
+        return None
+    base = OVERHEAD_BASE_GIB * GIB
+    overhead_min = base + OVERHEAD_FRACTION_MIN * weight_bytes
+    overhead_likely = base + OVERHEAD_FRACTION_LIKELY * weight_bytes
+    overhead_max = base + OVERHEAD_FRACTION_MAX * weight_bytes
+    return RangeEstimate(
+        weight_bytes + kv.bytes_range.min + overhead_min,
+        weight_bytes + kv.bytes_range.likely + overhead_likely,
+        weight_bytes + kv.bytes_range.max + overhead_max,
+    )
+
+
 def estimate_memory(
     inspection: ModelInspection,
     *,

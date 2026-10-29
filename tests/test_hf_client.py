@@ -90,6 +90,20 @@ async def test_resolve_repo_and_cache(tmp_path: Path) -> None:
     assert len(calls) == 1
 
 
+async def test_revision_url_is_honored(tmp_path: Path) -> None:
+    calls: list[str] = []
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(request.url.path)
+        assert request.url.path == "/api/models/org/model/revision/v1"
+        return httpx.Response(200, json=repo_payload())
+
+    async with client_for(tmp_path, handler) as client:
+        repo = await client.resolve_repo("https://huggingface.co/org/model/tree/v1")
+        assert repo.sha == SHA
+        assert calls == ["/api/models/org/model/revision/v1"]
+
+
 async def test_token_cache_isolation_and_auth_errors(tmp_path: Path) -> None:
     calls: list[str | None] = []
 

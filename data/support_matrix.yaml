@@ -1,0 +1,135 @@
+# Architecture -> runtime support floors.
+#
+# This is a SUPPORTED claim, not VERIFIED. A floor is the minimum version for
+# which the architecture/runtime pair is documented to work; it is not a
+# recorded run on the user's hardware. VERIFIED lives in verified_runs.json.
+#
+# artifact is the format the runtime consumes:
+#   hf_checkpoint  - transformers safetensors/pickle checkpoint
+#   gguf           - llama.cpp GGUF
+#   ggml           - whisper.cpp GGML model
+#   ctranslate2    - CTranslate2 converted model
+# conversion_supported means a documented conversion path exists; OmniRun v1
+# never performs conversions.
+version: 1
+updated: "2026-10-29"
+note: >-
+  Floors are conservative documented minimums, not exhaustive compatibility
+  testing. llama.cpp uses build labels (b####), not semver. Always pin a
+  runtime version and run a real smoke test before production.
+architectures:
+  LlamaForCausalLM:
+    display_name: Llama
+    model_types: [llama]
+    runtimes:
+      - name: transformers
+        min_version: "4.28.0"
+        version_scheme: semver
+        artifact: hf_checkpoint
+        conversion_supported: false
+        source: "transformers Llama support"
+        notes: "Direct loading of an HF checkpoint."
+      - name: llama.cpp
+        min_version: "b1500"
+        version_scheme: build
+        artifact: gguf
+        conversion_supported: true
+        source: "llama.cpp GGUF support"
+        notes: "Requires a GGUF artifact. OmniRun v1 does not convert."
+  MistralForCausalLM:
+    display_name: Mistral
+    model_types: [mistral]
+    runtimes:
+      - name: transformers
+        min_version: "4.34.0"
+        version_scheme: semver
+        artifact: hf_checkpoint
+        conversion_supported: false
+        source: "transformers Mistral support"
+        notes: "Direct loading of an HF checkpoint."
+      - name: llama.cpp
+        min_version: "b1500"
+        version_scheme: build
+        artifact: gguf
+        conversion_supported: true
+        source: "llama.cpp GGUF support"
+        notes: "Requires a GGUF artifact. OmniRun v1 does not convert."
+  Qwen2ForCausalLM:
+    display_name: Qwen2 / Qwen2.5
+    model_types: [qwen2]
+    runtimes:
+      - name: transformers
+        min_version: "4.37.0"
+        version_scheme: semver
+        artifact: hf_checkpoint
+        conversion_supported: false
+        source: "transformers Qwen2 support"
+        notes: "Direct loading of an HF checkpoint."
+      - name: llama.cpp
+        min_version: "b3000"
+        version_scheme: build
+        artifact: gguf
+        conversion_supported: true
+        source: "llama.cpp Qwen2 support"
+        notes: "Requires a GGUF artifact. OmniRun v1 does not convert."
+  OPTForCausalLM:
+    display_name: OPT
+    model_types: [opt]
+    runtimes:
+      - name: transformers
+        min_version: "4.20.0"
+        version_scheme: semver
+        artifact: hf_checkpoint
+        conversion_supported: false
+        source: "transformers OPT support"
+        notes: "Direct loading of an HF checkpoint."
+      - name: llama.cpp
+        min_version: "b1500"
+        version_scheme: build
+        artifact: gguf
+        conversion_supported: true
+        source: "llama.cpp OPT support"
+        notes: "Requires a GGUF artifact. OmniRun v1 does not convert."
+  WhisperForConditionalGeneration:
+    display_name: Whisper
+    model_types: [whisper]
+    runtimes:
+      - name: transformers
+        min_version: "4.23.0"
+        version_scheme: semver
+        artifact: hf_checkpoint
+        conversion_supported: false
+        source: "transformers Whisper support"
+        notes: "Direct loading of an HF checkpoint."
+      - name: whisper.cpp
+        min_version: "v1.5.0"
+        version_scheme: semver
+        artifact: ggml
+        conversion_supported: true
+        source: "whisper.cpp model support"
+        notes: "Requires a whisper.cpp GGML artifact; conversion is not performed."
+      - name: ctranslate2
+        min_version: "3.24.0"
+        version_scheme: semver
+        artifact: ctranslate2
+        conversion_supported: true
+        source: "CTranslate2 Whisper support"
+        notes: "Requires a CTranslate2 converted model."
+  T5ForConditionalGeneration:
+    display_name: T5
+    model_types: [t5]
+    runtimes:
+      - name: transformers
+        min_version: "4.0.0"
+        version_scheme: semver
+        artifact: hf_checkpoint
+        conversion_supported: false
+        source: "transformers T5 support"
+        notes: "Direct loading of an HF checkpoint."
+      - name: ctranslate2
+        min_version: "3.0.0"
+        version_scheme: semver
+        artifact: ctranslate2
+        conversion_supported: true
+        source: "CTranslate2 T5 support"
+        notes: "Requires a CTranslate2 converted model."
