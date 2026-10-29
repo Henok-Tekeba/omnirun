@@ -1,0 +1,14 @@
+{
+  "name": "omnirun-dev",
+  "private": true,
+  "version": "0.1.0",
+  "description": "One-command development runner for the OmniRun API and web app",
+  "scripts": {
+    "setup": "npm --prefix web install && npm --prefix web run install:browsers",
+    "dev": "node scripts/dev.mjs",
+    "build": "npm --prefix web run build",
+    "gen:types": "node scripts/gen-types.mjs",
+    "test:e2e": "npm --prefix web run test:e2e",
+    "test:e2e:ui": "npm --prefix web run test:e2e:ui"
+  }
+}
