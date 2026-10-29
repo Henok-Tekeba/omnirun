@@ -1,0 +1,11 @@
+{
+  "files": {
+    "config.json": {
+      "size": 644
+    }
+  },
+  "recorded_at": "2026-10-29T09:58:26.080103+00:00",
+  "repo": "facebook/opt-350m",
+  "sha": "08ab08cc4b72ff5593870b5d527cf4230323703c",
+  "source": "https://huggingface.co/facebook/opt-350m"
+}

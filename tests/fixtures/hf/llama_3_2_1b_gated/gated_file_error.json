@@ -1,0 +1,5 @@
+{
+  "status": 401,
+  "content_type": "text/plain; charset=utf-8",
+  "body": "Access to model meta-llama/Llama-3.2-1B is restricted. You must have access to it and be authenticated to access it. Please log in."
+}

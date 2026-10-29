@@ -1,0 +1,11 @@
+{
+  "files": {
+    "config.json": {
+      "size": 1983
+    }
+  },
+  "recorded_at": "2026-10-29T09:58:29.507208+00:00",
+  "repo": "openai/whisper-tiny",
+  "sha": "169d4a4341b33bc18d8881c4b69c2e104e1cc0af",
+  "source": "https://huggingface.co/openai/whisper-tiny"
+}

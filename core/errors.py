@@ -50,6 +50,27 @@ class InputError(OmniRunError):
         )
 
 
+class InspectionError(OmniRunError):
+    """A metadata file was present but could not be safely inspected."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        code: str = "inspection_failed",
+        status_code: int = 502,
+        hint: str | None = None,
+        details: dict[str, Any] | None = None,
+    ) -> None:
+        super().__init__(
+            code,
+            message,
+            hint=hint,
+            status_code=status_code,
+            details=details,
+        )
+
+
 class HFError(OmniRunError):
     """An error talking to the Hugging Face Hub.
 

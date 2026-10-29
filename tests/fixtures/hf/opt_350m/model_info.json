@@ -1,0 +1,280 @@
+{
+  "_id": "627b73032a9ac271ba208904",
+  "id": "facebook/opt-350m",
+  "private": false,
+  "pipeline_tag": "text-generation",
+  "library_name": "transformers",
+  "tags": [
+    "transformers",
+    "pytorch",
+    "tf",
+    "jax",
+    "opt",
+    "text-generation",
+    "en",
+    "arxiv:2205.01068",
+    "arxiv:2005.14165",
+    "license:other",
+    "text-generation-inference",
+    "deploy:azure",
+    "region:us"
+  ],
+  "downloads": 173948,
+  "likes": 157,
+  "modelId": "facebook/opt-350m",
+  "author": "facebook",
+  "sha": "08ab08cc4b72ff5593870b5d527cf4230323703c",
+  "lastModified": "2023-09-15T13:09:50.000Z",
+  "gated": false,
+  "disabled": false,
+  "widgetData": [
+    {
+      "text": "Hi, what can you help me with?"
+    },
+    {
+      "text": "What is 84 * 3 / 2?"
+    },
+    {
+      "text": "Tell me an interesting fact about the universe!"
+    },
+    {
+      "text": "Explain quantum computing in simple terms."
+    }
+  ],
+  "model-index": null,
+  "config": {
+    "architectures": [
+      "OPTForCausalLM"
+    ],
+    "model_type": "opt",
+    "tokenizer_config": {
+      "unk_token": {
+        "content": "</s>",
+        "single_word": false,
+        "lstrip": false,
+        "rstrip": false,
+        "normalized": true,
+        "__type": "AddedToken"
+      },
+      "bos_token": {
+        "content": "</s>",
+        "single_word": false,
+        "lstrip": false,
+        "rstrip": false,
+        "normalized": true,
+        "__type": "AddedToken"
+      },
+      "eos_token": {
+        "content": "</s>",
+        "single_word": false,
+        "lstrip": false,
+        "rstrip": false,
+        "normalized": true,
+        "__type": "AddedToken"
+      },
+      "pad_token": {
+        "content": "<pad>",
+        "single_word": false,
+        "lstrip": false,
+        "rstrip": false,
+        "normalized": true,
+        "__type": "AddedToken"
+      }
+    }
+  },
+  "cardData": {
+    "language": "en",
+    "inference": false,
+    "tags": [
+      "text-generation"
+    ],
+    "license": "other",
+    "commercial": false
+  },
+  "transformersInfo": {
+    "auto_model": "AutoModelForCausalLM",
+    "pipeline_tag": "text-generation",
+    "processor": "AutoTokenizer"
+  },
+  "siblings": [
+    {
+      "rfilename": ".gitattributes",
+      "blobId": "ac481c8eb05e4d2496fbe076a38a7b4835dd733d",
+      "size": 1173
+    },
+    {
+      "rfilename": "LICENSE.md",
+      "blobId": "a591333512516f58bf2002045dece909a0ccdb8b",
+      "size": 11117
+    },
+    {
+      "rfilename": "README.md",
+      "blobId": "35be9a6d25847a03b300fe8431c45649e314a972",
+      "size": 8778
+    },
+    {
+      "rfilename": "config.json",
+      "blobId": "562d268bddb298d43b74a55c3197d1a011c473c4",
+      "size": 644
+    },
+    {
+      "rfilename": "flax_model.msgpack",
+      "blobId": "19cc638eb4fedf4712453ec8b6ed776617033111",
+      "size": 662406360,
+      "lfs": {
+        "sha256": "e70fc2225b84a806461f18321e9fc0761f1cb649801abe42a5e894b0e11ad891",
+        "size": 662406360,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "generation_config.json",
+      "blobId": "cf739e3ba86db7791ebab2828cc34b8a5acd3a86",
+      "size": 137
+    },
+    {
+      "rfilename": "merges.txt",
+      "blobId": "226b0752cac7789c48f0cb3ec53eda48b7be36cc",
+      "size": 456318
+    },
+    {
+      "rfilename": "pytorch_model.bin",
+      "blobId": "db94592c1edbb20f3742fda2a0ad80d6f85066e0",
+      "size": 662513657,
+      "lfs": {
+        "sha256": "a5223ae6f3c26c6d90003f96a6bcd9a4aaaef0d36fca6469112efeeb985f2842",
+        "size": 662513657,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "special_tokens_map.json",
+      "blobId": "5dfa36546b8eddce0e04df3133c30df43fcc3828",
+      "size": 441
+    },
+    {
+      "rfilename": "tf_model.h5",
+      "blobId": "bc961097835c85a04f5df2bd0eb4808a6180821c",
+      "size": 662802840,
+      "lfs": {
+        "sha256": "e60d18125f5e144c71c779460315c0333ab7dd32ffbe02b6774b09645276c947",
+        "size": 662802840,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "tokenizer_config.json",
+      "blobId": "27c24ca9d908d0b678b20c698aeb9e950c44d865",
+      "size": 685
+    },
+    {
+      "rfilename": "vocab.json",
+      "blobId": "0a39732b2d8be8e493cab3da68b68cc3e28221de",
+      "size": 898822
+    }
+  ],
+  "spaces": [
+    "OpenGVLab/InternVL",
+    "lixin4ever/VideoLLaMA2",
+    "Ntdeseb/ntia",
+    "badayvedat/LLaVA",
+    "LanguageBind/Video-LLaVA",
+    "Yiwen-ntu/MeshAnything",
+    "LanguageBind/MoE-LLaVA",
+    "shi-labs/CuMo-7b-zero",
+    "Yiwen-ntu/MeshAnythingV2",
+    "wcy1122/MGM",
+    "shi-labs/VCoder",
+    "JackAILab/ConsistentID",
+    "lmms-lab/LLaVA-NeXT-Interleave-Demo",
+    "vumichien/Img_to_prompt",
+    "jiuhai/Florence-VL-8B",
+    "jadechoghari/ferret-demo",
+    "MBZUAI/LLaMA-3-V",
+    "MAGAer13/mPLUG-Owl2",
+    "q-future/Co-Instruct",
+    "alvanlii/FROMAGe",
+    "MBZUAI/Phi-3-V",
+    "neulab/Pangea",
+    "mPLUG/TinyChart-3B",
+    "lixin4ever/VideoLLaMA2-AV",
+    "orby-osu/UGround",
+    "Pippoz/Hugging_Space",
+    "THUdyh/Ola",
+    "SeViLA/SeViLA",
+    "ysharma/LLaVA_v1",
+    "Senqiao/VisionZip",
+    "gordonhu/MQT-LLaVA",
+    "JackAILab/ConsistentID-SDXL",
+    "posterllava/PosterLLaVA",
+    "LiuZichen/MagicQuillHelper",
+    "stanley-00/slm-testing",
+    "paralym/PULSE-7B",
+    "acceptee/DiT4SR",
+    "HuanjinYao/DenseConnector-v1.5-8B",
+    "shi-labs/VisPer-LM",
+    "MartsoBodziu1994/SUPIR",
+    "RaviNaik/MultiModal-Phi2",
+    "ThomasSimonini/MeshAnythingV2ForRoblox",
+    "jirvin16/TEOChat",
+    "yerang/LivePortrait2",
+    "Pippoz/All_in_one",
+    "daydayup1225/Chat-web",
+    "NohTow/LLM_watermarking",
+    "Baron-GG/LLAUS",
+    "yanranxiaoxi/booxel",
+    "dubiousx/SUPIR",
+    "aidhlab/PULSE-7B",
+    "Yiqin/ChatVID",
+    "b1sheng/kg_llm_leaderboard_test",
+    "tsi-org/LLaVA",
+    "yrshi/ReactXT",
+    "dawood/MeshAnything",
+    "alaa-lab/Dr-LLaVA",
+    "jon-pascal/Marees-Magical-Photo-Tool-Free",
+    "cpu4dream/llava-small-open-elm-aimv2",
+    "Jarvis-coder/Ultron-Experiment-pt2",
+    "sr5434/QuoteGeneration",
+    "Sapiensia/LLaVA",
+    "dawood/mesh-test",
+    "PeepDaSlan9/HYDRAS_InternVL",
+    "prof-l/InternVL-demo",
+    "jiuhai/Florence-VL-3B",
+    "Yiyuan/VSA",
+    "jchwenger/pix2pix-zero-demo-CPU",
+    "paralym/MAmmoTH-VL-8B",
+    "Tongbo/flashsloth",
+    "CrisRaz/SUPIR",
+    "qwmqza/VLC",
+    "mol-wise/MOLx-Powered_by_MedRAX",
+    "AethronPhantom/Nexa_Data_Studio",
+    "mehuldev/NPChef",
+    "neulab/CulturalPangea",
+    "ZENLLC/opensourcegym",
+    "Vishwas896/vish-ai-space",
+    "eliezerreis/tacogpt",
+    "CiLprototype/CurvOpt-SmarterModels",
+    "matt-le-kat/Gpt2",
+    "claylyons/inspirational-quotes",
+    "sr5434/sr5434-InstructCodegen-350M-mono",
+    "chendl/multimodal",
+    "msy127/opt-350m-test2",
+    "msy127/opt350m-test",
+    "teachyourselfcoding/chatlawv1",
+    "wissamantoun/LLM_Detection_Attribution",
+    "msy127/TheBloke-Llama-2-7b-Chat-GPTQ",
+    "TeamTonic/LlavaAPI",
+    "asdf2fwt283f7z/LLaVA",
+    "ysharma/dummy_m4",
+    "pngwn/open_llm_leaderboard_two",
+    "Satyam-Singh/LLaVA_",
+    "pngwn/open_llm_leaderboard",
+    "jaekwon/intel_cpu_chat",
+    "lianglv/NeuralChat-ICX-INT4",
+    "choimirai/llava",
+    "Rooni/EducationAi-1",
+    "globc/LLaVA"
+  ],
+  "createdAt": "2022-05-11T08:25:39.000Z",
+  "usedStorage": 17639993502
+}
