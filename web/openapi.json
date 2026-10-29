@@ -1,0 +1,2373 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OmniRun API",
+    "description": "Hugging Face model preflight without weight downloads. FITS, SUPPORTED, and VERIFIED are reported separately.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/healthz": {
+      "get": {
+        "summary": "Healthz",
+        "operationId": "healthz_healthz_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Healthz Healthz Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/schema": {
+      "get": {
+        "summary": "Schema",
+        "operationId": "schema_schema_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/devices": {
+      "get": {
+        "summary": "Devices",
+        "description": "The curated manual hardware profiles, for the frontend picker.\n\nThis is a read-only view of data/devices.yaml. It is not a measurement:\nevery entry is labelled with its source and used at MEDIUM confidence.",
+        "operationId": "devices_devices_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DevicesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/check": {
+      "post": {
+        "summary": "Check",
+        "operationId": "check_check_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AssumptionItem": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "text"
+        ],
+        "title": "AssumptionItem"
+      },
+      "CacheInfo": {
+        "properties": {
+          "model_info_cached": {
+            "type": "boolean",
+            "title": "Model Info Cached"
+          },
+          "model_info_stale": {
+            "type": "boolean",
+            "title": "Model Info Stale"
+          },
+          "result_cache_hit": {
+            "type": "boolean",
+            "title": "Result Cache Hit"
+          },
+          "result_age_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result Age Seconds"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "model_info_cached",
+          "model_info_stale",
+          "result_cache_hit"
+        ],
+        "title": "CacheInfo"
+      },
+      "CheckRequest": {
+        "properties": {
+          "model": {
+            "type": "string",
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Model",
+            "description": "Hugging Face URL or repo id"
+          },
+          "hardware": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/HelperHardwareInput"
+              },
+              {
+                "$ref": "#/components/schemas/ManualHardwareInput"
+              },
+              {
+                "$ref": "#/components/schemas/UnknownHardwareInput"
+              }
+            ],
+            "title": "Hardware",
+            "discriminator": {
+              "propertyName": "source",
+              "mapping": {
+                "helper": "#/components/schemas/HelperHardwareInput",
+                "manual": "#/components/schemas/ManualHardwareInput",
+                "unknown": "#/components/schemas/UnknownHardwareInput"
+              }
+            }
+          },
+          "context": {
+            "type": "integer",
+            "maximum": 1048576.0,
+            "minimum": 1.0,
+            "title": "Context",
+            "default": 4096
+          },
+          "batch": {
+            "type": "integer",
+            "maximum": 1024.0,
+            "minimum": 1.0,
+            "title": "Batch",
+            "default": 1
+          },
+          "hf_token": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "password",
+                "writeOnly": true
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hf Token",
+            "description": "Optional HF token for gated/private repos. Never echoed or logged."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "model",
+          "hardware"
+        ],
+        "title": "CheckRequest"
+      },
+      "CheckResponse": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1.0",
+            "title": "Schema Version"
+          },
+          "request_id": {
+            "type": "string",
+            "title": "Request Id"
+          },
+          "checked_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Checked At"
+          },
+          "model": {
+            "$ref": "#/components/schemas/ModelSummary"
+          },
+          "inputs": {
+            "$ref": "#/components/schemas/InputsSummary"
+          },
+          "hardware": {
+            "$ref": "#/components/schemas/HardwareSummary"
+          },
+          "verdict": {
+            "$ref": "#/components/schemas/VerdictReport"
+          },
+          "claims": {
+            "$ref": "#/components/schemas/ClaimsReport"
+          },
+          "memory": {
+            "$ref": "#/components/schemas/MemoryReport"
+          },
+          "speed": {
+            "$ref": "#/components/schemas/SpeedReport"
+          },
+          "recommendations": {
+            "items": {
+              "$ref": "#/components/schemas/Recommendation"
+            },
+            "type": "array",
+            "title": "Recommendations"
+          },
+          "environment_hint": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EnvironmentHint"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "assumptions": {
+            "items": {
+              "$ref": "#/components/schemas/AssumptionItem"
+            },
+            "type": "array",
+            "title": "Assumptions"
+          },
+          "warnings": {
+            "items": {
+              "$ref": "#/components/schemas/WarningItem"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          },
+          "cache": {
+            "$ref": "#/components/schemas/CacheInfo"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "schema_version",
+          "request_id",
+          "checked_at",
+          "model",
+          "inputs",
+          "hardware",
+          "verdict",
+          "claims",
+          "memory",
+          "speed",
+          "recommendations",
+          "environment_hint",
+          "assumptions",
+          "warnings",
+          "links",
+          "cache"
+        ],
+        "title": "CheckResponse"
+      },
+      "ClaimsReport": {
+        "properties": {
+          "fits": {
+            "$ref": "#/components/schemas/FitClaimReport"
+          },
+          "supported": {
+            "$ref": "#/components/schemas/SupportClaimReport"
+          },
+          "verified": {
+            "$ref": "#/components/schemas/VerifiedClaimReport"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "fits",
+          "supported",
+          "verified"
+        ],
+        "title": "ClaimsReport"
+      },
+      "DeviceEntry": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "vendor": {
+            "type": "string",
+            "title": "Vendor"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "unified",
+              "discrete",
+              "cpu"
+            ],
+            "title": "Kind"
+          },
+          "bandwidth_gbps": {
+            "type": "number",
+            "title": "Bandwidth Gbps"
+          },
+          "vram_gib": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vram Gib"
+          },
+          "ram_options_gib": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Ram Options Gib"
+          },
+          "default_ram_gib": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Default Ram Gib"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "vendor",
+          "kind",
+          "bandwidth_gbps",
+          "vram_gib",
+          "ram_options_gib",
+          "default_ram_gib",
+          "source",
+          "notes"
+        ],
+        "title": "DeviceEntry"
+      },
+      "DevicesResponse": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1.0",
+            "title": "Schema Version"
+          },
+          "devices": {
+            "items": {
+              "$ref": "#/components/schemas/DeviceEntry"
+            },
+            "type": "array",
+            "title": "Devices"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "schema_version",
+          "devices"
+        ],
+        "title": "DevicesResponse"
+      },
+      "EnvironmentHint": {
+        "properties": {
+          "available": {
+            "type": "boolean",
+            "title": "Available"
+          },
+          "command": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Command"
+          },
+          "reference_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference Date"
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Notes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "available",
+          "command",
+          "reference_date",
+          "notes"
+        ],
+        "title": "EnvironmentHint"
+      },
+      "ErrorDetail": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "hint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hint"
+          },
+          "status": {
+            "type": "integer",
+            "title": "Status"
+          },
+          "retryable": {
+            "type": "boolean",
+            "title": "Retryable"
+          },
+          "retry_after_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retry After Seconds"
+          },
+          "details": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Details"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "hint",
+          "status",
+          "retryable"
+        ],
+        "title": "ErrorDetail"
+      },
+      "ErrorResponse": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1.0",
+            "title": "Schema Version"
+          },
+          "request_id": {
+            "type": "string",
+            "title": "Request Id"
+          },
+          "error": {
+            "$ref": "#/components/schemas/ErrorDetail"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "schema_version",
+          "request_id",
+          "error"
+        ],
+        "title": "ErrorResponse"
+      },
+      "FitClaimReport": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no",
+              "unknown"
+            ],
+            "title": "Status"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "reasons": {
+            "items": {
+              "$ref": "#/components/schemas/Reason"
+            },
+            "type": "array",
+            "title": "Reasons"
+          },
+          "budget_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Budget Bytes"
+          },
+          "peak": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RangeBytes"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "headroom_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Headroom Bytes"
+          },
+          "headroom_ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Headroom Ratio"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "confidence",
+          "summary",
+          "reasons",
+          "budget_bytes",
+          "peak",
+          "headroom_bytes",
+          "headroom_ratio"
+        ],
+        "title": "FitClaimReport"
+      },
+      "HardwareSummary": {
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": [
+              "helper",
+              "manual",
+              "unknown"
+            ],
+            "title": "Source"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "unified",
+              "discrete",
+              "cpu"
+            ],
+            "title": "Kind"
+          },
+          "device_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device Id"
+          },
+          "device_name": {
+            "type": "string",
+            "title": "Device Name"
+          },
+          "vendor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Vendor"
+          },
+          "system_ram_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "System Ram Bytes"
+          },
+          "device_memory_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Device Memory Bytes"
+          },
+          "memory_budget_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Memory Budget Bytes"
+          },
+          "bandwidth_gbps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bandwidth Gbps"
+          },
+          "bandwidth_source": {
+            "type": "string",
+            "title": "Bandwidth Source"
+          },
+          "memory_source": {
+            "type": "string",
+            "title": "Memory Source"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence"
+          },
+          "memory_confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Memory Confidence"
+          },
+          "bandwidth_confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Bandwidth Confidence"
+          },
+          "apple_fraction": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Apple Fraction"
+          },
+          "measured_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Measured At"
+          },
+          "cpu": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cpu"
+          },
+          "cores": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cores"
+          },
+          "helper_tool": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Helper Tool"
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Notes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "source",
+          "kind",
+          "device_id",
+          "device_name",
+          "vendor",
+          "system_ram_bytes",
+          "device_memory_bytes",
+          "memory_budget_bytes",
+          "bandwidth_gbps",
+          "bandwidth_source",
+          "memory_source",
+          "confidence",
+          "memory_confidence",
+          "bandwidth_confidence",
+          "apple_fraction",
+          "measured_at",
+          "cpu",
+          "cores",
+          "helper_tool",
+          "notes"
+        ],
+        "title": "HardwareSummary"
+      },
+      "HelperHardwareInput": {
+        "properties": {
+          "source": {
+            "type": "string",
+            "const": "helper",
+            "title": "Source"
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 4096,
+            "minLength": 1,
+            "title": "Code",
+            "description": "OR1... code from helper"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "source",
+          "code"
+        ],
+        "title": "HelperHardwareInput"
+      },
+      "InputsSummary": {
+        "properties": {
+          "model_input": {
+            "type": "string",
+            "title": "Model Input"
+          },
+          "context_requested": {
+            "type": "integer",
+            "title": "Context Requested"
+          },
+          "context_effective": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Context Effective"
+          },
+          "context_clamped": {
+            "type": "boolean",
+            "title": "Context Clamped"
+          },
+          "batch": {
+            "type": "integer",
+            "title": "Batch"
+          },
+          "hardware_source": {
+            "type": "string",
+            "enum": [
+              "helper",
+              "manual",
+              "unknown"
+            ],
+            "title": "Hardware Source"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "model_input",
+          "context_requested",
+          "context_effective",
+          "context_clamped",
+          "batch",
+          "hardware_source"
+        ],
+        "title": "InputsSummary"
+      },
+      "KVReport": {
+        "properties": {
+          "available": {
+            "type": "boolean",
+            "title": "Available"
+          },
+          "bytes_range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RangeBytes"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "bytes_likely": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bytes Likely"
+          },
+          "per_sequence_likely": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Per Sequence Likely"
+          },
+          "attention": {
+            "type": "string",
+            "title": "Attention"
+          },
+          "layers_full": {
+            "type": "integer",
+            "title": "Layers Full"
+          },
+          "layers_windowed": {
+            "type": "integer",
+            "title": "Layers Windowed"
+          },
+          "dtype_bytes": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dtype Bytes"
+          },
+          "context_requested": {
+            "type": "integer",
+            "title": "Context Requested"
+          },
+          "context_effective": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Context Effective"
+          },
+          "batch": {
+            "type": "integer",
+            "title": "Batch"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence"
+          },
+          "formula": {
+            "type": "string",
+            "title": "Formula"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "available",
+          "bytes_range",
+          "bytes_likely",
+          "per_sequence_likely",
+          "attention",
+          "layers_full",
+          "layers_windowed",
+          "dtype_bytes",
+          "context_requested",
+          "context_effective",
+          "batch",
+          "confidence",
+          "formula"
+        ],
+        "title": "KVReport"
+      },
+      "Links": {
+        "properties": {
+          "hf_model": {
+            "type": "string",
+            "title": "Hf Model"
+          },
+          "hf_tree": {
+            "type": "string",
+            "title": "Hf Tree"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "hf_model",
+          "hf_tree"
+        ],
+        "title": "Links"
+      },
+      "ManualHardwareInput": {
+        "properties": {
+          "source": {
+            "type": "string",
+            "const": "manual",
+            "title": "Source"
+          },
+          "device_id": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Device Id",
+            "description": "id from data/devices.yaml"
+          },
+          "ram_gib": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 4096.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ram Gib"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "source",
+          "device_id"
+        ],
+        "title": "ManualHardwareInput"
+      },
+      "MemoryReport": {
+        "properties": {
+          "budget_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Budget Bytes"
+          },
+          "context_requested": {
+            "type": "integer",
+            "title": "Context Requested"
+          },
+          "context_effective": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Context Effective"
+          },
+          "batch": {
+            "type": "integer",
+            "title": "Batch"
+          },
+          "weights": {
+            "$ref": "#/components/schemas/WeightReport"
+          },
+          "kv_cache": {
+            "$ref": "#/components/schemas/KVReport"
+          },
+          "overhead": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RangeBytes"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "peak": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RangeBytes"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "budget_bytes",
+          "context_requested",
+          "context_effective",
+          "batch",
+          "weights",
+          "kv_cache",
+          "overhead",
+          "peak",
+          "confidence"
+        ],
+        "title": "MemoryReport"
+      },
+      "ModelSummary": {
+        "properties": {
+          "repo_id": {
+            "type": "string",
+            "title": "Repo Id"
+          },
+          "requested_repo_id": {
+            "type": "string",
+            "title": "Requested Repo Id"
+          },
+          "revision": {
+            "type": "string",
+            "title": "Revision"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "model_class": {
+            "type": "string",
+            "enum": [
+              "llm",
+              "asr",
+              "tts",
+              "unsupported"
+            ],
+            "title": "Model Class"
+          },
+          "architecture": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Architecture"
+          },
+          "model_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Type"
+          },
+          "pipeline_tag": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pipeline Tag"
+          },
+          "library_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Library Name"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "safetensors",
+              "pytorch_pickle",
+              "gguf",
+              "adapter",
+              "unknown"
+            ],
+            "title": "Format"
+          },
+          "gated": {
+            "type": "boolean",
+            "title": "Gated"
+          },
+          "private": {
+            "type": "boolean",
+            "title": "Private"
+          },
+          "trust_remote_code_required": {
+            "type": "boolean",
+            "title": "Trust Remote Code Required"
+          },
+          "config_available": {
+            "type": "boolean",
+            "title": "Config Available"
+          },
+          "last_modified": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Modified"
+          },
+          "weight_files_count": {
+            "type": "integer",
+            "title": "Weight Files Count"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "repo_id",
+          "requested_repo_id",
+          "revision",
+          "source_url",
+          "model_class",
+          "architecture",
+          "model_type",
+          "pipeline_tag",
+          "library_name",
+          "format",
+          "gated",
+          "private",
+          "trust_remote_code_required",
+          "config_available",
+          "last_modified",
+          "weight_files_count"
+        ],
+        "title": "ModelSummary"
+      },
+      "QuantAlternativeReport": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "bits_per_param": {
+            "type": "number",
+            "title": "Bits Per Param"
+          },
+          "weight_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weight Bytes"
+          },
+          "peak": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RangeBytes"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fits": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no",
+              "unknown"
+            ],
+            "title": "Fits"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "bits_per_param",
+          "weight_bytes",
+          "peak",
+          "fits",
+          "confidence",
+          "note"
+        ],
+        "title": "QuantAlternativeReport"
+      },
+      "RangeBytes": {
+        "properties": {
+          "min": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Min"
+          },
+          "likely": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Likely"
+          },
+          "max": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Max"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "min",
+          "likely",
+          "max"
+        ],
+        "title": "RangeBytes"
+      },
+      "RangeFloat": {
+        "properties": {
+          "min": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Min"
+          },
+          "likely": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Likely"
+          },
+          "max": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Max"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "min",
+          "likely",
+          "max"
+        ],
+        "title": "RangeFloat"
+      },
+      "Reason": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "info",
+              "warning",
+              "risk"
+            ],
+            "title": "Severity"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "severity"
+        ],
+        "title": "Reason"
+      },
+      "Recommendation": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "quantization",
+              "runtime",
+              "smaller_model",
+              "context",
+              "batch",
+              "environment",
+              "note"
+            ],
+            "title": "Kind"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "detail": {
+            "type": "string",
+            "title": "Detail"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence"
+          },
+          "runtime": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Runtime"
+          },
+          "min_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Version"
+          },
+          "requires_conversion": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Requires Conversion"
+          },
+          "estimated_peak_bytes": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RangeBytes"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "title",
+          "detail",
+          "confidence"
+        ],
+        "title": "Recommendation"
+      },
+      "RuntimePathReport": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "min_version": {
+            "type": "string",
+            "title": "Min Version"
+          },
+          "version_scheme": {
+            "type": "string",
+            "title": "Version Scheme"
+          },
+          "artifact": {
+            "type": "string",
+            "title": "Artifact"
+          },
+          "available": {
+            "type": "boolean",
+            "title": "Available"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "requires_conversion",
+              "artifact_missing"
+            ],
+            "title": "Status"
+          },
+          "direct": {
+            "type": "boolean",
+            "title": "Direct"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "min_version",
+          "version_scheme",
+          "artifact",
+          "available",
+          "status",
+          "direct",
+          "notes",
+          "source"
+        ],
+        "title": "RuntimePathReport"
+      },
+      "SchemaResponse": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1.0",
+            "title": "Schema Version"
+          },
+          "request": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Request"
+          },
+          "response": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Response"
+          },
+          "error": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Error"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "schema_version",
+          "request",
+          "response",
+          "error"
+        ],
+        "title": "SchemaResponse"
+      },
+      "SpeedReport": {
+        "properties": {
+          "available": {
+            "type": "boolean",
+            "title": "Available"
+          },
+          "metric": {
+            "type": "string",
+            "const": "decode_tokens_per_second",
+            "title": "Metric"
+          },
+          "aggregate": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RangeFloat"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "per_sequence": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RangeFloat"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "speed_class": {
+            "type": "string",
+            "enum": [
+              "interactive",
+              "usable",
+              "slow",
+              "unknown"
+            ],
+            "title": "Speed Class"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence"
+          },
+          "bandwidth_gbps": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bandwidth Gbps"
+          },
+          "active_weight_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Active Weight Bytes"
+          },
+          "active_weight_source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Active Weight Source"
+          },
+          "kv_bytes_per_sequence": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kv Bytes Per Sequence"
+          },
+          "efficiency": {
+            "$ref": "#/components/schemas/RangeFloat"
+          },
+          "prefill_estimated": {
+            "type": "boolean",
+            "title": "Prefill Estimated"
+          },
+          "batch": {
+            "type": "integer",
+            "title": "Batch"
+          },
+          "notes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Notes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "available",
+          "metric",
+          "aggregate",
+          "per_sequence",
+          "speed_class",
+          "confidence",
+          "bandwidth_gbps",
+          "active_weight_bytes",
+          "active_weight_source",
+          "kv_bytes_per_sequence",
+          "efficiency",
+          "prefill_estimated",
+          "batch",
+          "notes"
+        ],
+        "title": "SpeedReport"
+      },
+      "SupportClaimReport": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no",
+              "unknown"
+            ],
+            "title": "Status"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "reasons": {
+            "items": {
+              "$ref": "#/components/schemas/Reason"
+            },
+            "type": "array",
+            "title": "Reasons"
+          },
+          "architecture": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Architecture"
+          },
+          "matched_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Matched By"
+          },
+          "matrix_entry_found": {
+            "type": "boolean",
+            "title": "Matrix Entry Found"
+          },
+          "direct_runtime_available": {
+            "type": "boolean",
+            "title": "Direct Runtime Available"
+          },
+          "custom_code_risk": {
+            "type": "boolean",
+            "title": "Custom Code Risk"
+          },
+          "runtimes": {
+            "items": {
+              "$ref": "#/components/schemas/RuntimePathReport"
+            },
+            "type": "array",
+            "title": "Runtimes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "confidence",
+          "summary",
+          "reasons",
+          "architecture",
+          "matched_by",
+          "matrix_entry_found",
+          "direct_runtime_available",
+          "custom_code_risk",
+          "runtimes"
+        ],
+        "title": "SupportClaimReport"
+      },
+      "UnknownHardwareInput": {
+        "properties": {
+          "source": {
+            "type": "string",
+            "const": "unknown",
+            "title": "Source"
+          },
+          "ram_gib": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 4096.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ram Gib"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "source"
+        ],
+        "title": "UnknownHardwareInput"
+      },
+      "VerdictReport": {
+        "properties": {
+          "value": {
+            "type": "string",
+            "enum": [
+              "GO",
+              "OPTIMIZE",
+              "NO",
+              "UNKNOWN"
+            ],
+            "title": "Value"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "basis_claims": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "fits",
+                "supported",
+                "verified"
+              ]
+            },
+            "type": "array",
+            "title": "Basis Claims"
+          },
+          "reasons": {
+            "items": {
+              "$ref": "#/components/schemas/Reason"
+            },
+            "type": "array",
+            "title": "Reasons"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "value",
+          "summary",
+          "basis_claims",
+          "reasons",
+          "confidence"
+        ],
+        "title": "VerdictReport"
+      },
+      "VerifiedClaimReport": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no",
+              "unknown"
+            ],
+            "title": "Status"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "reasons": {
+            "items": {
+              "$ref": "#/components/schemas/Reason"
+            },
+            "type": "array",
+            "title": "Reasons"
+          },
+          "runs": {
+            "items": {
+              "$ref": "#/components/schemas/VerifiedRunReport"
+            },
+            "type": "array",
+            "title": "Runs"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "confidence",
+          "summary",
+          "reasons",
+          "runs"
+        ],
+        "title": "VerifiedClaimReport"
+      },
+      "VerifiedRunReport": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          },
+          "repo_id": {
+            "type": "string",
+            "title": "Repo Id"
+          },
+          "revision": {
+            "type": "string",
+            "title": "Revision"
+          },
+          "architecture": {
+            "type": "string",
+            "title": "Architecture"
+          },
+          "hardware_device_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hardware Device Id"
+          },
+          "hardware_device_name": {
+            "type": "string",
+            "title": "Hardware Device Name"
+          },
+          "runtime": {
+            "type": "string",
+            "title": "Runtime"
+          },
+          "runtime_version": {
+            "type": "string",
+            "title": "Runtime Version"
+          },
+          "artifact_format": {
+            "type": "string",
+            "title": "Artifact Format"
+          },
+          "quantization": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quantization"
+          },
+          "context_tokens": {
+            "type": "integer",
+            "title": "Context Tokens"
+          },
+          "batch": {
+            "type": "integer",
+            "title": "Batch"
+          },
+          "peak_memory_bytes": {
+            "type": "integer",
+            "title": "Peak Memory Bytes"
+          },
+          "decode_tokens_per_second": {
+            "type": "number",
+            "title": "Decode Tokens Per Second"
+          },
+          "recorded_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Recorded At"
+          },
+          "source_url": {
+            "type": "string",
+            "title": "Source Url"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id",
+          "repo_id",
+          "revision",
+          "architecture",
+          "hardware_device_id",
+          "hardware_device_name",
+          "runtime",
+          "runtime_version",
+          "artifact_format",
+          "quantization",
+          "context_tokens",
+          "batch",
+          "peak_memory_bytes",
+          "decode_tokens_per_second",
+          "recorded_at",
+          "source_url",
+          "notes"
+        ],
+        "title": "VerifiedRunReport"
+      },
+      "WarningItem": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "info",
+              "warning",
+              "risk"
+            ],
+            "title": "Severity"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "severity"
+        ],
+        "title": "WarningItem"
+      },
+      "WeightReport": {
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "exact",
+              "upper_bound",
+              "unknown"
+            ],
+            "title": "Kind"
+          },
+          "actual_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actual Bytes"
+          },
+          "range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RangeBytes"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "params": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Params"
+          },
+          "param_source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Param Source"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence"
+          },
+          "alternatives": {
+            "items": {
+              "$ref": "#/components/schemas/QuantAlternativeReport"
+            },
+            "type": "array",
+            "title": "Alternatives"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "kind",
+          "actual_bytes",
+          "range",
+          "params",
+          "param_source",
+          "confidence",
+          "alternatives"
+        ],
+        "title": "WeightReport"
+      }
+    }
+  }
+}
+

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="OmniRun preflights a Hugging Face model against your hardware without downloading weights. FITS, SUPPORTED, and VERIFIED are reported separately."
+    />
+    <meta name="theme-color" content="#15120f" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>OmniRun — model preflight</title>
+    <script>
+      (() => {
+        try {
+          const saved = localStorage.getItem("omnirun.theme");
+          if (saved === "light" || saved === "dark") {
+            document.documentElement.dataset.theme = saved;
+          }
+        } catch {
+          /* localStorage can be unavailable; dark remains the default. */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
