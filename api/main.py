@@ -19,6 +19,8 @@ from api.schemas import (
     CacheInfo,
     CheckRequest,
     CheckResponse,
+    DeviceEntry,
+    DevicesResponse,
     ErrorResponse,
     SchemaResponse,
 )
@@ -193,6 +195,32 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             request=CheckRequest.model_json_schema(),
             response=CheckResponse.model_json_schema(),
             error=ErrorResponse.model_json_schema(),
+        )
+
+    @app.get("/devices", response_model=DevicesResponse)
+    async def devices() -> DevicesResponse:
+        """The curated manual hardware profiles, for the frontend picker.
+
+        This is a read-only view of data/devices.yaml. It is not a measurement:
+        every entry is labelled with its source and used at MEDIUM confidence.
+        """
+        return DevicesResponse(
+            schema_version=SCHEMA_VERSION,
+            devices=[
+                DeviceEntry(
+                    id=spec.id,
+                    name=spec.name,
+                    vendor=spec.vendor,
+                    kind=spec.kind.value,  # type: ignore[arg-type]
+                    bandwidth_gbps=spec.bandwidth_gbps,
+                    vram_gib=spec.vram_gib,
+                    ram_options_gib=list(spec.ram_options_gib),
+                    default_ram_gib=spec.default_ram_gib,
+                    source=spec.source,
+                    notes=spec.notes,
+                )
+                for spec in device_table.devices.values()
+            ],
         )
 
     @app.post(

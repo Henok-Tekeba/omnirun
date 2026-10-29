@@ -413,3 +413,24 @@ class SchemaResponse(StrictModel):
     request: dict[str, Any]
     response: dict[str, Any]
     error: dict[str, Any]
+
+
+# --------------------------------------------------------------------- devices
+
+
+class DeviceEntry(StrictModel):
+    id: str
+    name: str
+    vendor: str
+    kind: HardwareKindValue
+    bandwidth_gbps: float
+    vram_gib: float | None
+    ram_options_gib: list[float]
+    default_ram_gib: float | None
+    source: str
+    notes: str | None
+
+
+class DevicesResponse(StrictModel):
+    schema_version: Literal["1.0"]
+    devices: list[DeviceEntry]

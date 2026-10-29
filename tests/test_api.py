@@ -270,6 +270,39 @@ async def test_rate_limit(tmp_path: Path) -> None:
             assert int(second.headers["retry-after"]) >= 1
 
 
+async def test_devices_endpoint_matches_device_table(tmp_path: Path) -> None:
+    app = create_app(make_settings(tmp_path))
+    async with await api_client(app) as client:
+        response = await client.get("/devices")
+        assert response.status_code == 200, response.text
+        data = response.json()
+        assert data["schema_version"] == "1.0"
+        devices = {device["id"]: device for device in data["devices"]}
+        assert len(devices) >= 30
+        assert "apple-m2-pro" in devices
+        assert "nvidia-rtx-4090" in devices
+        assert "cpu-generic" in devices
+
+        apple = devices["apple-m2-pro"]
+        assert apple["kind"] == "unified"
+        assert apple["vram_gib"] is None
+        assert apple["ram_options_gib"] == [16, 32]
+        assert apple["default_ram_gib"] == 32
+        assert apple["bandwidth_gbps"] == 200
+        assert apple["source"]
+
+        gpu = devices["nvidia-rtx-4090"]
+        assert gpu["kind"] == "discrete"
+        assert gpu["vram_gib"] == 24
+        assert gpu["ram_options_gib"] == []
+        assert gpu["default_ram_gib"] is None
+
+        cpu = devices["cpu-generic"]
+        assert cpu["kind"] == "cpu"
+        assert cpu["vram_gib"] is None
+        assert cpu["notes"]
+
+
 async def test_health_and_schema(tmp_path: Path) -> None:
     app = create_app(make_settings(tmp_path))
     async with await api_client(app) as client:
