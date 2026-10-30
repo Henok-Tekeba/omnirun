@@ -24,6 +24,16 @@ The repository includes [`render.yaml`](../render.yaml) and a production [`Docke
 
 7. Re-run **Deploy web to GitHub Pages** (or push to `main`).
 
+   With the GitHub CLI:
+
+   ```bash
+   gh variable set VITE_API_BASE_URL \
+     --repo Henok-Tekeba/omnirun \
+     --body "https://your-service.onrender.com"
+
+   gh workflow run deploy-pages.yml --repo Henok-Tekeba/omnirun
+   ```
+
 The Pages build will now call the hosted API. The static-preview banner disappears and live preflights, device discovery, and model search work.
 
 ### Render configuration
