@@ -22,20 +22,24 @@ export function ReasonsPanel({ result }: { result: CheckResponse }) {
   };
 
   return (
-    <section className="panel p-5 md:p-6" aria-labelledby="reasons-title">
+    <section className="console" aria-labelledby="reasons-title">
+      <div className="console-label">
+        <span>
+          <strong>Diagnostics</strong> / reasons and warnings
+        </span>
+        <span>
+          {counts.risk} risk / {counts.warning} warning / {counts.info} info
+        </span>
+      </div>
+      <div className="p-4 md:p-6">
       <SectionHeading
         id="reasons-title"
-        eyebrow="Evidence"
-        title="Reasons, warnings, confidence"
-        aside={
-          <span className="font-mono text-[9.5px] text-[var(--faint)]">
-            {counts.risk} risk · {counts.warning} warning · {counts.info} info
-          </span>
-        }
+        eyebrow="Evidence / confidence inputs"
+        title="Why this result"
       />
 
       {result.model.trust_remote_code_required ? (
-        <div className="mb-4 flex items-start gap-2.5 rounded border border-[color-mix(in_srgb,var(--optimize)_35%,var(--line))] bg-[var(--optimize-soft)] p-3">
+        <div className="mb-4 flex items-start gap-2.5 border border-[color-mix(in_srgb,var(--optimize)_35%,var(--line))] bg-[var(--optimize-soft)] p-3">
           <FileCode size={15} className="mt-0.5 flex-none text-[var(--optimize)]" />
           <div>
             <p className="text-[12px] font-medium">Custom code is required</p>
@@ -49,7 +53,7 @@ export function ReasonsPanel({ result }: { result: CheckResponse }) {
       ) : null}
 
       {result.model.gated || result.model.private ? (
-        <div className="mb-4 flex items-start gap-2.5 rounded border border-[var(--line)] bg-[var(--bg-elevated)] p-3">
+        <div className="mb-4 flex items-start gap-2.5 border border-[var(--line)] bg-[var(--bg-elevated)] p-3">
           <Lock size={14} className="mt-0.5 flex-none text-[var(--muted)]" />
           <p className="text-[11px] leading-relaxed text-[var(--muted)]">
             {result.model.private ? "Private repo" : "Gated repo"} access was confirmed for
@@ -99,7 +103,7 @@ export function ReasonsPanel({ result }: { result: CheckResponse }) {
           <span>bandwidth: {confidenceShort(result.hardware.bandwidth_confidence)}</span>
           <span>memory: {confidenceShort(result.hardware.memory_confidence)}</span>
           <span className="col-span-2">
-            source: {result.hardware.source} · {bandwidthSourceLabel(result.hardware.bandwidth_source)}
+            source: {result.hardware.source} / {bandwidthSourceLabel(result.hardware.bandwidth_source)}
           </span>
         </div>
 
@@ -124,6 +128,7 @@ export function ReasonsPanel({ result }: { result: CheckResponse }) {
         </span>
         <span>source {result.hardware.source}</span>
         <span>schema {result.schema_version}</span>
+      </div>
       </div>
     </section>
   );

@@ -9,28 +9,36 @@ interface HeaderProps {
 
 export function Header({ theme, onToggleTheme, isResult }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[color-mix(in_srgb,var(--bg)_94%,transparent)] backdrop-blur-sm">
-      <div className="container-wide flex h-[62px] items-center justify-between gap-4">
+    <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--bg)]">
+      <div className="container-wide flex h-[54px] items-center justify-between gap-4">
         <a
           href="/"
           className="flex items-center gap-2.5 text-[var(--text)] no-underline"
           aria-label="OmniRun home"
         >
-          <LogoMark size={25} className="text-[var(--accent)]" />
-          <span className="text-[17px] font-semibold tracking-[-0.01em]">OmniRun</span>
-          <span className="badge hidden sm:inline-flex">v1</span>
+          <LogoMark size={22} className="text-[var(--accent)]" />
+          <span className="font-display text-[17px] font-bold uppercase tracking-[0.02em]">
+            OmniRun
+          </span>
+          <span className="hidden font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--faint)] sm:inline">
+            Model preflight
+          </span>
         </a>
 
-        <nav className="flex items-center gap-1.5" aria-label="Main">
+        <nav className="flex items-center gap-2" aria-label="Main">
+          <span className="hidden items-center gap-1.5 border border-[var(--line)] px-2 py-1 font-mono text-[8.5px] uppercase tracking-[0.1em] text-[var(--faint)] md:flex">
+            <span className="led" />
+            local console
+          </span>
           <a
             href={isResult ? "/#how-it-works" : "#how-it-works"}
-            className="btn btn-ghost hidden min-h-9 px-2.5 text-[12px] sm:inline-flex"
+            className="hidden font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--muted)] underline-offset-4 hover:text-[var(--text)] hover:underline sm:inline"
           >
-            How it works
+            Method
           </a>
           {isResult ? (
             <a href="/" className="btn btn-secondary btn-sm hidden sm:inline-flex">
-              New preflight
+              New check
             </a>
           ) : null}
           <button
@@ -40,7 +48,7 @@ export function Header({ theme, onToggleTheme, isResult }: HeaderProps) {
             aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
             title={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
           >
-            {theme === "dark" ? <Sun size={17} /> : <Moon size={17} />}
+            {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
           </button>
         </nav>
       </div>

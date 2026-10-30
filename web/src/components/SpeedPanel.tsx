@@ -3,8 +3,8 @@ import type { CheckResponse, RangeFloat } from "../api/types";
 import {
   bandwidthSourceKind,
   bandwidthSourceLabel,
+  formatFloat,
   formatGB,
-  formatInteger,
   formatRangeFloat,
   speedClassLabel,
 } from "../lib/format";
@@ -22,7 +22,7 @@ function SpeedBar({ range, label }: { range: RangeFloat; label: string }) {
     <div>
       <div className="flex items-baseline justify-between gap-2">
         <span className="micro">{label}</span>
-        <span className="font-mono text-[11px] text-[var(--text-2)]">
+        <span className="font-mono text-[10px] text-[var(--text-2)]">
           {formatRangeFloat(range, "tok/s")}
         </span>
       </div>
@@ -64,7 +64,7 @@ function activeWeightSource(value: string | null): string {
     case "expert_tensor_names":
       return "MoE expert tensor names";
     case "file_sizes":
-      return "file sizes (upper bound)";
+      return "file sizes / upper bound";
     default:
       return value ? value.replaceAll("_", " ") : "unknown";
   }
@@ -84,145 +84,158 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
           : "No bandwidth value was available, so speed cannot be estimated.";
 
   return (
-    <section className="panel p-5 md:p-6" aria-labelledby="speed-title">
-      <SectionHeading
-        id="speed-title"
-        eyebrow="Speed"
-        title="Decode throughput range"
-        aside={
-          <>
-            <span className="badge">estimate</span>
-            <ConfidenceMeter value={speed.confidence} />
-          </>
-        }
-      />
-
-      {speed.available && speed.aggregate ? (
-        <>
-          <div className="border-y border-[var(--line)] py-3">
-            <p className="micro">Aggregate decode</p>
-            <p className="mt-1 font-mono text-[28px] leading-none text-[var(--text)]">
-              {formatRangeFloat(speed.aggregate, "tok/s")}
-            </p>
-            <p className="mt-1 text-[10.5px] text-[var(--faint)]">
-              likely {speed.aggregate.likely.toFixed(1)} tok/s ·{" "}
-              <span className="text-[var(--text-2)]">{speedClassLabel(speed.speed_class)}</span>
-            </p>
-          </div>
-
-          <div className="mt-4 space-y-4">
-            <SpeedBar range={speed.aggregate} label="Aggregate tokens/s" />
-            {speed.batch > 1 && speed.per_sequence ? (
-              <SpeedBar range={speed.per_sequence} label="Per sequence" />
-            ) : null}
-          </div>
-
-          <div className="mt-4 border-t border-[var(--line)] pt-3">
-            <div className="flex items-center justify-between gap-2">
-              <p className="micro">Bandwidth source</p>
-              <span
-                className={`badge ${
-                  kind === "measured"
-                    ? "badge-accent"
-                    : kind === "table"
-                      ? "badge"
-                      : "badge-unknown"
-                }`}
-              >
-                <SourceIcon size={10} />
-                {kind === "measured" ? "measured" : kind === "table" ? "table" : kind === "assumed" ? "assumed" : "unknown"}
-              </span>
-            </div>
-            <p className="mt-1 font-mono text-[14px] text-[var(--text-2)]">
-              {speed.bandwidth_gbps === null ? "—" : `${speed.bandwidth_gbps.toFixed(1)} GB/s`}
-              <span className="ml-2 font-sans text-[10.5px] text-[var(--faint)]">
-                {bandwidthSourceLabel(result.hardware.bandwidth_source)}
-              </span>
-            </p>
-            <p className="mt-1 text-[10.5px] leading-relaxed text-[var(--faint)]">
-              {sourceDetail}
-            </p>
-          </div>
-
-          <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 border-t border-[var(--line)] pt-3">
-            <div>
-              <dt className="micro">Efficiency</dt>
-              <dd className="mt-0.5 font-mono text-[11px] text-[var(--text-2)]">
-                {speed.efficiency.min.toFixed(2)}–{speed.efficiency.max.toFixed(2)}
-              </dd>
-              <dd className="text-[9.5px] text-[var(--faint)]">documented range</dd>
-            </div>
-            <div>
-              <dt className="micro">Active weights</dt>
-              <dd className="mt-0.5 font-mono text-[11px] text-[var(--text-2)]">
-                {formatGB(speed.active_weight_bytes)}
-              </dd>
-              <dd className="text-[9.5px] text-[var(--faint)]">
-                {activeWeightSource(speed.active_weight_source)}
-              </dd>
-            </div>
-          </dl>
-
-          <details className="mt-3 border-t border-[var(--line)] pt-2">
-            <summary className="cursor-pointer list-none py-1 font-mono text-[9.5px] uppercase tracking-[0.08em] text-[var(--faint)] hover:text-[var(--text-2)] [&::-webkit-details-marker]:hidden">
-              Method notes ({speed.notes.length})
-            </summary>
-            <ul className="mt-1 space-y-1.5">
-              {speed.notes.map((note) => (
-                <li key={note} className="text-[10.5px] leading-relaxed text-[var(--muted)]">
-                  {note}
-                </li>
-              ))}
-            </ul>
-          </details>
-        </>
-      ) : (
-        <div>
-          <div className="rounded border border-dashed border-[var(--line-strong)] bg-[var(--bg-elevated)] p-4">
-            <div className="flex items-start gap-2.5">
-              <HelpCircle size={16} className="mt-0.5 flex-none text-[var(--unknown)]" />
-              <div>
-                <p className="text-[13px] font-medium">Speed estimate not available</p>
-                <p className="mt-1 text-[11.5px] leading-relaxed text-[var(--muted)]">
-                  {result.model.model_class === "asr" || result.model.model_class === "tts"
-                    ? "OmniRun can inspect this model but cannot judge its speed yet. v1’s decode-speed formula covers causal LLMs only; no RTF is invented."
-                    : "OmniRun will not turn an unknown bandwidth or KV layout into a speed number."}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="mt-3">
-            {speed.notes.map((note) => (
-              <p key={note} className="mt-1 text-[10.5px] leading-relaxed text-[var(--muted)]">
-                {note}
-              </p>
-            ))}
-          </div>
-          {speed.bandwidth_gbps !== null ? (
-            <p className="mt-3 font-mono text-[10px] text-[var(--faint)]">
-              bandwidth {formatInteger(speed.bandwidth_gbps)} GB/s ·{" "}
-              {bandwidthSourceLabel(result.hardware.bandwidth_source)}
-            </p>
-          ) : null}
-        </div>
-      )}
-
-      <div className="mt-3 flex items-start gap-2 border-t border-[var(--line)] pt-2 text-[10.5px] leading-relaxed text-[var(--faint)]">
-        <Gauge size={13} className="mt-0.5 flex-none text-[var(--accent)]" />
+    <section className="console" aria-labelledby="speed-title">
+      <div className="console-label">
         <span>
-          Decode only. Prefill and time-to-first-token are not estimated. Efficiency is a
-          documented engineering range, not a measured constant.
+          <strong>Speed</strong> / decode throughput
         </span>
+        <span className="flex items-center gap-1.5">
+          <span
+            className={`led ${
+              kind === "measured" ? "led-go" : kind === "table" ? "led-optimize" : "led-unknown"
+            }`}
+          />
+          {kind === "measured" ? "measured" : kind === "table" ? "table" : "assumed"}
+        </span>
+        <ConfidenceMeter value={speed.confidence} />
       </div>
 
-      {speed.available && speed.aggregate && speed.batch > 1 ? (
-        <div className="mt-2">
-          <EmptyLine>
-            Aggregate throughput assumes perfect continuous batching; small-batch real
-            runtimes can be lower.
-          </EmptyLine>
+      <div className="p-4 md:p-6">
+        <SectionHeading
+          id="speed-title"
+          eyebrow="Decode only / tok/s range"
+          title="Throughput"
+          aside={<span className="badge">estimate</span>}
+        />
+
+        {speed.available && speed.aggregate ? (
+          <>
+            <div className="border border-[var(--line)] bg-[var(--bg-elevated)]">
+              <div className="border-b border-[var(--line)] p-3">
+                <p className="micro">Aggregate decode</p>
+                <p className="mt-1 font-mono text-[28px] leading-none text-[var(--text)]">
+                  {formatRangeFloat(speed.aggregate, "tok/s")}
+                </p>
+              </div>
+              <div className="grid grid-cols-2">
+                <div className="border-r border-[var(--line)] p-3">
+                  <p className="micro">Likely</p>
+                  <p className="mt-1 font-mono text-[12px] text-[var(--text-2)]">
+                    {speed.aggregate.likely.toFixed(1)} tok/s
+                  </p>
+                </div>
+                <div className="p-3">
+                  <p className="micro">Class</p>
+                  <p className="mt-1 font-mono text-[12px] text-[var(--text-2)]">
+                    {speedClassLabel(speed.speed_class)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 space-y-4">
+              <SpeedBar range={speed.aggregate} label="Aggregate" />
+              {speed.batch > 1 && speed.per_sequence ? (
+                <SpeedBar range={speed.per_sequence} label="Per sequence" />
+              ) : null}
+            </div>
+
+            <div className="mt-4 border border-[var(--line)] bg-[var(--bg-elevated)] p-3">
+              <div className="flex items-center justify-between gap-2">
+                <p className="micro">Bandwidth source</p>
+                <span className="flex items-center gap-1.5 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--text-2)]">
+                  <SourceIcon size={10} />
+                  {kind === "measured" ? "measured" : kind === "table" ? "table" : "assumed"}
+                </span>
+              </div>
+              <p className="mt-1 font-mono text-[16px] text-[var(--text-2)]">
+                {speed.bandwidth_gbps === null ? "—" : `${formatFloat(speed.bandwidth_gbps, 1)} GB/s`}
+              </p>
+              <p className="mt-1 text-[10px] leading-relaxed text-[var(--faint)]">
+                {sourceDetail}
+              </p>
+            </div>
+
+            <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 border-t border-[var(--line)] pt-3">
+              <div>
+                <dt className="micro">Efficiency</dt>
+                <dd className="mt-0.5 font-mono text-[10px] text-[var(--text-2)]">
+                  {speed.efficiency.min.toFixed(2)}–{speed.efficiency.max.toFixed(2)}
+                </dd>
+                <dd className="text-[9px] text-[var(--faint)]">documented range</dd>
+              </div>
+              <div>
+                <dt className="micro">Active weights</dt>
+                <dd className="mt-0.5 font-mono text-[10px] text-[var(--text-2)]">
+                  {formatGB(speed.active_weight_bytes)}
+                </dd>
+                <dd className="text-[9px] text-[var(--faint)]">
+                  {activeWeightSource(speed.active_weight_source)}
+                </dd>
+              </div>
+            </dl>
+
+            <details className="mt-3 border-t border-[var(--line)] pt-2">
+              <summary className="cursor-pointer list-none py-1 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)] hover:text-[var(--text-2)] [&::-webkit-details-marker]:hidden">
+                Method notes ({speed.notes.length})
+              </summary>
+              <ul className="mt-1 space-y-1.5">
+                {speed.notes.map((note) => (
+                  <li key={note} className="text-[10px] leading-relaxed text-[var(--muted)]">
+                    {note}
+                  </li>
+                ))}
+              </ul>
+            </details>
+          </>
+        ) : (
+          <div>
+            <div className="border border-dashed border-[var(--line-strong)] bg-[var(--bg-elevated)] p-4">
+              <div className="flex items-start gap-2.5">
+                <HelpCircle size={15} className="mt-0.5 flex-none text-[var(--unknown)]" />
+                <div>
+                  <p className="text-[12px] font-medium">Speed estimate not available</p>
+                  <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
+                    {result.model.model_class === "asr" || result.model.model_class === "tts"
+                      ? "OmniRun can inspect this model but cannot judge its speed yet. v1’s decode-speed formula covers causal LLMs only; no RTF is invented."
+                      : "OmniRun will not turn an unknown bandwidth or KV layout into a speed number."}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="mt-3">
+              {speed.notes.map((note) => (
+                <p key={note} className="mt-1 text-[10px] leading-relaxed text-[var(--muted)]">
+                  {note}
+                </p>
+              ))}
+            </div>
+            {speed.bandwidth_gbps !== null ? (
+              <p className="mt-3 font-mono text-[9px] text-[var(--faint)]">
+                bandwidth {formatFloat(speed.bandwidth_gbps, 1)} GB/s /{" "}
+                {bandwidthSourceLabel(result.hardware.bandwidth_source)}
+              </p>
+            ) : null}
+          </div>
+        )}
+
+        <div className="mt-3 flex items-start gap-2 border-t border-[var(--line)] pt-2 text-[10px] leading-relaxed text-[var(--faint)]">
+          <Gauge size={12} className="mt-0.5 flex-none text-[var(--accent)]" />
+          <span>
+            Decode only. Prefill and time-to-first-token are not estimated. Efficiency is a
+            documented engineering range, not a measured constant.
+          </span>
         </div>
-      ) : null}
+
+        {speed.available && speed.aggregate && speed.batch > 1 ? (
+          <div className="mt-2">
+            <EmptyLine>
+              Aggregate throughput assumes perfect continuous batching; small-batch real
+              runtimes can be lower.
+            </EmptyLine>
+          </div>
+        ) : null}
+      </div>
     </section>
   );
 }

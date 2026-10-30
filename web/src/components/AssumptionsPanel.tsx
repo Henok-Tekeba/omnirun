@@ -5,16 +5,27 @@ import { ChevronDown, FileCode, RotateCcw } from "./Icons";
 export function AssumptionsPanel({ result }: { result: CheckResponse }) {
   const cache = result.cache;
   return (
-    <section className="panel p-5 md:p-6" aria-labelledby="assumptions-title">
+    <section className="console" aria-labelledby="assumptions-title">
+      <div className="console-label">
+        <span>
+          <strong>Appendix</strong> / assumptions
+        </span>
+        <a href="/#how-it-works" className="text-[var(--muted)] underline underline-offset-2 hover:text-[var(--text)]">
+          how it works / limitations
+        </a>
+      </div>
+      <div className="p-4 md:p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="micro micro-accent">Appendix</p>
-          <h2 id="assumptions-title" className="mt-1 text-[16px] font-semibold">
+          <h2 id="assumptions-title" className="module-title">
             Assumptions from this result
           </h2>
+          <p className="mt-1 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)]">
+            Estimates are not guarantees
+          </p>
         </div>
         <a href="/#how-it-works" className="btn btn-ghost btn-sm">
-          <FileCode size={12} /> How it works / limitations
+          <FileCode size={12} /> Method
         </a>
       </div>
 
@@ -65,6 +76,7 @@ export function AssumptionsPanel({ result }: { result: CheckResponse }) {
             <RotateCcw size={12} /> Top
           </button>
         </div>
+      </div>
       </div>
     </section>
   );

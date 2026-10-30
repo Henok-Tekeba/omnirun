@@ -5,7 +5,7 @@ import { hardwareDescription } from "../lib/form";
 import { AdvancedPanel } from "./AdvancedPanel";
 import { ErrorPanel } from "./ErrorPanel";
 import { HardwarePanel } from "./HardwarePanel";
-import { ArrowRight, LinkIcon, Lock } from "./Icons";
+import { ArrowRight, Lock } from "./Icons";
 
 const EXAMPLES = [
   {
@@ -63,18 +63,16 @@ export function CheckForm({
   }
 
   return (
-    <section className="panel" id="check" aria-labelledby="check-title">
-      <div className="p-5 md:p-8">
-        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="micro micro-accent">01 / Model</p>
-            <h2 id="check-title" className="mt-1 text-[17px] font-semibold">
-              What are you trying to run?
-            </h2>
-          </div>
-          <span className="badge">estimate, not a benchmark</span>
-        </div>
+    <section className="console" id="check" aria-labelledby="check-title">
+      <div className="console-label">
+        <span>
+          <strong>Input bay</strong> / model + hardware
+        </span>
+        <span>Estimate only</span>
+        <span className="hidden sm:inline">POST /check</span>
+      </div>
 
+      <div className="p-4 md:p-7">
         {error ? (
           <div className="mb-5">
             <ErrorPanel
@@ -93,72 +91,76 @@ export function CheckForm({
           }}
           noValidate
         >
-          <label htmlFor="model" className="micro">
-            Hugging Face model URL or repo id
+          <div className="section-heading">
+            <h2 id="check-title" className="module-title">
+              Model
+            </h2>
+            <span className="rule-tag">repo id / huggingface.co URL</span>
+          </div>
+
+          <label htmlFor="model" className="micro mt-4 block">
+            HF reference
           </label>
-          <div className="mt-2 flex flex-col gap-2 sm:flex-row">
-            <div className="relative min-w-0 flex-1">
-              <LinkIcon
-                size={17}
-                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[var(--faint)]"
-              />
-              <input
-                id="model"
-                name="model"
-                className="field field-lg pl-11"
-                type="text"
-                placeholder="HuggingFaceTB/SmolLM2-135M-Instruct"
-                value={form.model}
-                onChange={(event) => onChange({ model: event.target.value })}
-                autoComplete="off"
-                autoCapitalize="off"
-                autoCorrect="off"
-                spellCheck={false}
-                aria-invalid={Boolean(errors.model)}
-                aria-describedby={errors.model ? "model-error" : "model-help"}
-              />
-            </div>
-            <button type="submit" className="btn btn-primary h-[52px] px-5 sm:h-[62px] sm:px-6">
+          <div className="input-bay mt-2">
+            <span className="prompt" aria-hidden="true">
+              ›
+            </span>
+            <input
+              id="model"
+              name="model"
+              type="text"
+              placeholder="HuggingFaceTB/SmolLM2-135M-Instruct"
+              value={form.model}
+              onChange={(event) => onChange({ model: event.target.value })}
+              autoComplete="off"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
+              aria-invalid={Boolean(errors.model)}
+              aria-describedby={errors.model ? "model-error" : "model-help"}
+            />
+            <button type="submit" className="btn btn-primary">
               Run preflight
-              <ArrowRight size={16} />
+              <ArrowRight size={13} />
             </button>
           </div>
+
           <div className="mt-2 flex flex-wrap items-start justify-between gap-2">
-            <p id="model-help" className="text-[11.5px] leading-relaxed text-[var(--muted)]">
-              A repo id like <span className="font-mono text-[10.5px]">org/model</span> or a
-              huggingface.co model page URL. Datasets and Spaces are not supported.
+            <p id="model-help" className="text-[11px] leading-relaxed text-[var(--muted)]">
+              Datasets and Spaces are not supported. A repo id like{" "}
+              <span className="font-mono text-[10px]">org/model</span> is enough.
             </p>
-            <span className="flex items-center gap-1.5 font-mono text-[9.5px] uppercase tracking-[0.07em] text-[var(--faint)]">
-              <Lock size={11} /> no weight downloads
+            <span className="flex items-center gap-1.5 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)]">
+              <Lock size={10} /> no weight downloads
             </span>
           </div>
           {errors.model ? (
-            <p id="model-error" className="mt-1 text-[11.5px] text-[var(--no)]">
+            <p id="model-error" className="mt-1 text-[11px] text-[var(--no)]">
               {errors.model}
             </p>
           ) : null}
 
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            <span className="micro">Try</span>
+          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            <span className="micro">Examples</span>
             {EXAMPLES.map((example) => (
               <button
                 key={example.model}
                 type="button"
-                className="group flex items-center gap-2 rounded border border-[var(--line)] bg-[var(--bg-elevated)] px-2.5 py-1.5 text-left transition-colors hover:border-[var(--line-strong)]"
+                className="group inline-flex items-baseline gap-1.5 text-left"
                 onClick={() => onExample(example.model)}
                 title={example.model}
               >
-                <span className="text-[11.5px] font-medium text-[var(--text-2)] group-hover:text-[var(--text)]">
+                <span className="font-mono text-[10px] text-[var(--text-2)] underline decoration-[var(--line-strong)] underline-offset-3 group-hover:text-[var(--accent)] group-hover:decoration-[var(--accent)]">
                   {example.label}
                 </span>
-                <span className="font-mono text-[9px] uppercase tracking-[0.06em] text-[var(--faint)]">
+                <span className="font-mono text-[8px] uppercase tracking-[0.06em] text-[var(--faint)]">
                   {example.note}
                 </span>
               </button>
             ))}
           </div>
 
-          <div className="mt-8 border-t border-[var(--line)] pt-6">
+          <div className="mt-7">
             <HardwarePanel
               mode={form.mode}
               onModeChange={(mode) => onChange({ mode })}
@@ -193,18 +195,18 @@ export function CheckForm({
             errors={errors}
           />
 
-          <div className="mt-6 flex flex-col gap-3 border-t border-[var(--line)] pt-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-6 flex flex-col gap-3 border-t border-[var(--line)] pt-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="micro">Current setup</p>
-              <p className="mt-1 text-[12.5px] text-[var(--text-2)]">{summary}</p>
-              <p className="mt-0.5 font-mono text-[10px] text-[var(--faint)]">
-                context {form.context || "—"} · batch {form.batch || "—"} · hardware{" "}
+              <p className="micro">Selected setup</p>
+              <p className="mt-1 text-[12px] text-[var(--text-2)]">{summary}</p>
+              <p className="mt-0.5 font-mono text-[9px] text-[var(--faint)]">
+                context {form.context || "—"} / batch {form.batch || "—"} / hardware{" "}
                 {form.mode === "cpu" && form.cpuMode === "unsure" ? "unknown" : form.mode}
               </p>
             </div>
-            <button type="submit" className="btn btn-primary sm:min-w-[160px]">
+            <button type="submit" className="btn btn-primary sm:min-w-[170px]">
               Run preflight
-              <ArrowRight size={15} />
+              <ArrowRight size={13} />
             </button>
           </div>
         </form>

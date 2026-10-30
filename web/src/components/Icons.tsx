@@ -20,6 +20,22 @@ function base({ size = 18, strokeWidth = 1.6, ...props }: IconProps) {
   };
 }
 
+export function Spark({ size = 18, className }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      focusable="false"
+      className={className}
+    >
+      <path d="M12 0c.45 6.6 4.95 11.1 11.55 11.55C16.95 12 12.45 16.5 12 23.1 11.55 16.5 7.05 12 .45 11.55 7.05 11.1 11.55 6.6 12 0Z" />
+    </svg>
+  );
+}
+
 export function LogoMark({ size = 26, className }: IconProps) {
   return (
     <svg

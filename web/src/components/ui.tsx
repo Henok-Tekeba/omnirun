@@ -20,7 +20,7 @@ export function ConfidenceMeter({
         <span />
         <span />
       </span>
-      <span className="font-mono text-[10px] uppercase tracking-[0.08em]">
+      <span className="font-mono text-[9px] uppercase tracking-[0.08em]">
         {compact ? value : confidenceLabel(value)}
       </span>
     </span>
@@ -31,7 +31,7 @@ export function StatusPill({ status }: { status: ClaimStatus }) {
   const Icon = status === "yes" ? Check : status === "no" ? X : HelpCircle;
   return (
     <span className={`status-pill status-${status}`}>
-      <Icon size={11} />
+      <Icon size={10} />
       {claimStatusLabel(status)}
     </span>
   );
@@ -51,10 +51,14 @@ export function SectionHeading({
   return (
     <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
       <div>
-        {eyebrow ? <p className="micro micro-accent">{eyebrow}</p> : null}
-        <h2 id={id} className="mt-1 text-[18px] font-semibold tracking-[-0.01em]">
+        <h2 id={id} className="module-title">
           {title}
         </h2>
+        {eyebrow ? (
+          <p className="mt-1 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)]">
+            {eyebrow}
+          </p>
+        ) : null}
       </div>
       {aside ? <div className="flex flex-wrap items-center gap-2">{aside}</div> : null}
     </div>
@@ -63,8 +67,8 @@ export function SectionHeading({
 
 export function EmptyLine({ children }: { children: ReactNode }) {
   return (
-    <div className="flex items-start gap-2.5 py-2 text-[13px] text-[var(--muted)]">
-      <Minus size={14} className="mt-0.5 flex-none text-[var(--faint)]" />
+    <div className="flex items-start gap-2.5 py-2 text-[11px] text-[var(--muted)]">
+      <Minus size={13} className="mt-0.5 flex-none text-[var(--faint)]" />
       <span>{children}</span>
     </div>
   );
@@ -80,7 +84,7 @@ export function KeyValue({
   return (
     <div>
       <dt className="micro">{label}</dt>
-      <dd className="mt-1 text-[13px] text-[var(--text-2)]">{children}</dd>
+      <dd className="mt-1 text-[12px] text-[var(--text-2)]">{children}</dd>
     </div>
   );
 }

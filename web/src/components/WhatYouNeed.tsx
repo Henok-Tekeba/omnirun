@@ -71,16 +71,23 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
     Boolean(hint?.available && (hint.command || hint.notes.length));
 
   return (
-    <section className="panel p-5 md:p-6" aria-labelledby="need-title">
+    <section className="console" aria-labelledby="need-title">
+      <div className="console-label">
+        <span>
+          <strong>Options</strong> / what you’d need
+        </span>
+        <span>only what the API returned</span>
+      </div>
+      <div className="p-4 md:p-6">
       <SectionHeading
         id="need-title"
-        eyebrow="Options"
-        title="What you’d need"
-        aside={<span className="badge">only what the API returned</span>}
+        eyebrow="Remediation / no promises"
+        title="Options"
+        aside={<span className="badge">API-supplied</span>}
       />
 
       {!hasAnything ? (
-        <div className="rounded border border-dashed border-[var(--line-strong)] bg-[var(--bg-elevated)] p-4">
+        <div className="border border-dashed border-[var(--line-strong)] bg-[var(--bg-elevated)] p-4">
           <div className="flex items-start gap-2.5">
             <Box size={16} className="mt-0.5 flex-none text-[var(--faint)]" />
             <div>
@@ -115,7 +122,7 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
             {alternatives.map((alternative) => (
               <article
                 key={alternative.name}
-                className="rounded border border-[var(--line)] bg-[var(--bg-elevated)] p-3"
+                className="border border-[var(--line)] bg-[var(--bg-elevated)] p-3"
               >
                 <div className="flex items-center justify-between gap-2">
                   <div>
@@ -201,6 +208,7 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
           <EmptyLine>No quantization alternatives were returned for this model.</EmptyLine>
         </div>
       ) : null}
+      </div>
     </section>
   );
 }

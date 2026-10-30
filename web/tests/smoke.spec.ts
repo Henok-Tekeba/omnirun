@@ -6,10 +6,11 @@ test.describe("OmniRun preflight", () => {
   }) => {
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { name: "Will it run?", exact: true }),
+      page.getByRole("heading", { name: /The preflight layer/i }),
     ).toBeVisible();
 
-    await page.getByRole("button", { name: /SmolLM2 135M/i }).click();
+    await page.getByRole("button", { name: /Run a preflight/i }).first().click();
+    await page.locator("#model").fill("HuggingFaceTB/SmolLM2-135M-Instruct");
     await page.getByRole("tab", { name: /Pick my hardware/i }).click();
     await page.getByLabel("Search GPU or chip").fill("M2 Pro");
     await page.getByRole("button", { name: /Apple M2 Pro/i }).click();
@@ -30,8 +31,8 @@ test.describe("OmniRun preflight", () => {
       page.getByRole("heading", { name: "VERIFIED", exact: true }),
     ).toBeVisible();
     await expect(page.getByText("No recorded runs yet")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Budget versus peak range" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Decode throughput range" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Budget vs peak" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Throughput" })).toBeVisible();
     await expect(page.getByText(/estimated|estimate/i).first()).toBeVisible();
 
     expect(page.url()).toContain("model=HuggingFaceTB%2FSmolLM2-135M-Instruct");
@@ -41,6 +42,7 @@ test.describe("OmniRun preflight", () => {
 
   test("ASR returns UNKNOWN with an honest message", async ({ page }) => {
     await page.goto("/");
+    await page.getByRole("button", { name: /Run a preflight/i }).first().click();
     await page.locator("#model").fill("openai/whisper-tiny");
     await page.getByRole("tab", { name: /CPU only/i }).click();
     await page.getByLabel("Total RAM", { exact: false }).last().fill("32");
@@ -54,6 +56,7 @@ test.describe("OmniRun preflight", () => {
 
   test("invalid input is explained without a result", async ({ page }) => {
     await page.goto("/");
+    await page.getByRole("button", { name: /Run a preflight/i }).first().click();
     await page.locator("#model").fill("https://huggingface.co/datasets/foo/bar");
     await page.getByRole("tab", { name: /CPU only/i }).click();
     await page.getByLabel("Total RAM", { exact: false }).last().fill("32");

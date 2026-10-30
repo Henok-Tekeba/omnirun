@@ -13,12 +13,12 @@ import { useTheme } from "./hooks/useTheme";
 import { CheckForm } from "./components/CheckForm";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
-import { HowItWorks } from "./components/HowItWorks";
-import { LandingHero } from "./components/LandingHero";
 import { LoadingView } from "./components/LoadingView";
+import { MarketingLanding } from "./components/MarketingLanding";
 import { ResultView } from "./components/ResultView";
+import { ArrowLeft } from "./components/Icons";
 
-type Phase = "form" | "loading" | "result";
+type Phase = "landing" | "form" | "loading" | "result";
 
 function prefersReducedMotion(): boolean {
   return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
@@ -59,7 +59,9 @@ export default function App() {
       : { ...DEFAULT_FORM, ...storedHardware },
   );
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [phase, setPhase] = useState<Phase>("form");
+  const [phase, setPhase] = useState<Phase>(() =>
+    initialQuery.form.model ? "form" : "landing",
+  );
   const [shareUrl, setShareUrl] = useState("");
   const devicesState = useDevices();
   const check = useCheck();
@@ -176,9 +178,25 @@ export default function App() {
     scrollToTop();
   }, [resetCheck]);
 
+  const handleStart = useCallback(() => {
+    setPhase("form");
+    scrollToTop();
+  }, []);
+
+  const handleBackToLanding = useCallback(() => {
+    resetCheck();
+    setPhase("landing");
+    window.history.replaceState(null, "", window.location.pathname);
+    scrollToTop();
+  }, [resetCheck]);
+
   const result = phase === "result" ? check.result : null;
   const showResult = result !== null;
   const error = phase === "form" ? check.error : null;
+
+  if (phase === "landing") {
+    return <MarketingLanding onStart={handleStart} />;
+  }
 
   return (
     <div className="site-shell" id="top">
@@ -201,26 +219,37 @@ export default function App() {
             <ResultView result={result} shareUrl={shareUrl} onEdit={handleEdit} />
           </div>
         ) : (
-          <>
-            <LandingHero />
-            <div className="container-wide py-6 md:py-9">
-              <CheckForm
-                form={form}
-                onChange={handleChange}
-                devices={devicesState.devices}
-                devicesStatus={devicesState.status}
-                devicesError={devicesState.error}
-                onReloadDevices={() => void devicesState.reload()}
-                errors={fieldErrors}
-                error={error}
-                onSubmit={handleSubmit}
-                onRetry={handleSubmit}
-                onDismissError={clearError}
-                onExample={handleExample}
-              />
+          <div className="container-wide py-6 md:py-9">
+            <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="micro micro-accent">Preflight console</p>
+                <h1 className="bench-title mt-1 text-[clamp(2.6rem,5vw,4.2rem)]">
+                  Run a model.
+                </h1>
+              </div>
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm"
+                onClick={handleBackToLanding}
+              >
+                <ArrowLeft size={12} /> Landing
+              </button>
             </div>
-            <HowItWorks />
-          </>
+            <CheckForm
+              form={form}
+              onChange={handleChange}
+              devices={devicesState.devices}
+              devicesStatus={devicesState.status}
+              devicesError={devicesState.error}
+              onReloadDevices={() => void devicesState.reload()}
+              errors={fieldErrors}
+              error={error}
+              onSubmit={handleSubmit}
+              onRetry={handleSubmit}
+              onDismissError={clearError}
+              onExample={handleExample}
+            />
+          </div>
         )}
       </main>
 

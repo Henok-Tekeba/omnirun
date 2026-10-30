@@ -132,49 +132,53 @@ export function MemoryPanel({ result }: { result: CheckResponse }) {
   const peakColor =
     fit.status === "yes" ? "var(--go)" : fit.status === "no" ? "var(--no)" : "var(--unknown)";
   const kvDetail = kv.available
-    ? `${kv.attention} attention · ${formatInteger(kv.layers_full)} full + ${formatInteger(
+    ? `${kv.attention} attention / ${formatInteger(kv.layers_full)} full + ${formatInteger(
         kv.layers_windowed,
-      )} windowed layers · ${kv.dtype_bytes ?? "?"} bytes/element · ${formatInteger(
+      )} windowed layers / ${kv.dtype_bytes ?? "?"} bytes per element / ${formatInteger(
         kv.context_effective,
-      )} tokens · batch ${kv.batch}`
+      )} tokens / batch ${kv.batch}`
     : "KV cache is not available for this model/config; the peak cannot be completed.";
   const weightsDetail =
     weights.kind === "exact"
-      ? `Exact safetensors header math${weights.params ? ` · ${formatInteger(weights.params)} params` : ""}.`
+      ? `Exact safetensors header math${weights.params ? ` / ${formatInteger(weights.params)} params` : ""}.`
       : weights.kind === "upper_bound"
-        ? `Upper bound from file sizes, not tensor shapes${weights.params ? ` · ${formatInteger(weights.params)} params` : ""}. The lower bound is unknown.`
+        ? `Upper bound from file sizes, not tensor shapes${weights.params ? ` / ${formatInteger(weights.params)} params` : ""}. The lower bound is unknown.`
         : "Weight bytes are unknown; the peak cannot be completed.";
 
   return (
-    <section className="panel p-5 md:p-6" aria-labelledby="memory-title">
+    <section className="console" aria-labelledby="memory-title">
+      <div className="console-label">
+        <span>
+          <strong>Memory</strong> / budget versus peak
+        </span>
+        <span>bytes → GB</span>
+        <ConfidenceMeter value={memory.confidence} />
+      </div>
+
+      <div className="p-4 md:p-6">
       <SectionHeading
         id="memory-title"
-        eyebrow="Memory"
-        title="Budget versus peak range"
-        aside={
-          <>
-            <span className="badge">estimate</span>
-            <ConfidenceMeter value={memory.confidence} />
-          </>
-        }
+        eyebrow="Estimate / not a guarantee"
+        title="Budget vs peak"
+        aside={<span className="badge">estimate</span>}
       />
 
-      <div className="grid grid-cols-2 gap-3 border-y border-[var(--line)] py-3">
-        <div>
+      <div className="grid grid-cols-2 border border-[var(--line)] bg-[var(--bg-elevated)]">
+        <div className="border-r border-[var(--line)] p-3">
           <p className="micro">Budget</p>
           <p className="mt-1 font-mono text-[22px] leading-none text-[var(--text)]">
             {formatGB(budget)}
           </p>
-          <p className="mt-1 text-[10.5px] text-[var(--faint)]">
+          <p className="mt-1 text-[10px] text-[var(--faint)]">
             {result.hardware.memory_source.replaceAll("_", " ")}
           </p>
         </div>
-        <div>
+        <div className="p-3">
           <p className="micro">Peak range</p>
           <p className="mt-1 font-mono text-[22px] leading-none" style={{ color: peakColor }}>
             {formatBytesRange(peak)}
           </p>
-          <p className="mt-1 text-[10.5px] text-[var(--faint)]">
+          <p className="mt-1 text-[10px] text-[var(--faint)]">
             {fit.headroom_bytes === null
               ? "headroom unknown"
               : fit.headroom_bytes < 0
@@ -232,21 +236,20 @@ export function MemoryPanel({ result }: { result: CheckResponse }) {
         />
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-[var(--line)] pt-2 font-mono text-[9.5px] text-[var(--faint)]">
-        <span>0 GB</span>
-        <span className="flex items-center gap-1.5">
-          <span className="inline-block h-2 w-px bg-[var(--text)]" /> vertical rule = budget{" "}
-          {formatGB(budget)}
-        </span>
+      <div className="mt-1 flex justify-between border-t border-[var(--line)] pt-1.5 font-mono text-[8px] text-[var(--faint)]">
+        <span>0</span>
+        <span>25</span>
+        <span>50</span>
+        <span>75</span>
         <span>{formatGB(scaleMax)}</span>
       </div>
 
-      <div className="mt-3 flex items-start gap-2 text-[10.5px] leading-relaxed text-[var(--faint)]">
-        <Gauge size={13} className="mt-0.5 flex-none text-[var(--accent)]" />
+      <div className="mt-3 flex items-start gap-2 text-[10px] leading-relaxed text-[var(--faint)]">
+        <Gauge size={12} className="mt-0.5 flex-none text-[var(--accent)]" />
         <span>
-          Bars show min–max; the bright tick is the likely value. A 2px band means the math
-          is exact, not a fake range. The budget line is not a safety guarantee. API reason
-          strings quote decimal GB (10⁹ bytes); the bars use the app’s GB (2³⁰ bytes).
+          Min–max band / bright tick = likely value / vertical rule = budget. A 2px band means
+          exact math, not a fake range. API reason strings use decimal GB (10⁹ bytes); bars use
+          the app’s GB (2³⁰ bytes).
         </span>
       </div>
 
@@ -261,17 +264,18 @@ export function MemoryPanel({ result }: { result: CheckResponse }) {
         </div>
       ) : null}
       {kv.per_sequence_likely !== null ? (
-        <p className="mt-2 flex items-center gap-1.5 font-mono text-[9.5px] text-[var(--faint)]">
+        <p className="mt-2 flex items-center gap-1.5 font-mono text-[9px] text-[var(--faint)]">
           <Layers size={11} /> KV likely per sequence:{" "}
-          {formatGB(kv.per_sequence_likely)} · context{" "}
+          {formatGB(kv.per_sequence_likely)} / context{" "}
           {formatInteger(kv.context_effective ?? kv.context_requested)}
         </p>
       ) : null}
-      <p className="mt-1 flex items-center gap-1.5 font-mono text-[9.5px] text-[var(--faint)]">
+      <p className="mt-1 flex items-center gap-1.5 font-mono text-[9px] text-[var(--faint)]">
         <Box size={11} /> weights:{" "}
-        {weights.actual_bytes !== null ? formatGB(weights.actual_bytes) : "unknown"} ·{" "}
+        {weights.actual_bytes !== null ? formatGB(weights.actual_bytes) : "unknown"} /{" "}
         {weights.param_source ?? "param source unknown"}
       </p>
+      </div>
     </section>
   );
 }

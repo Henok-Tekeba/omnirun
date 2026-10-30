@@ -24,23 +24,28 @@ export function AdvancedPanel({
   const [showToken, setShowToken] = useState(false);
 
   return (
-    <details id="advanced" className="group mt-6 border-t border-[var(--line)] pt-1">
-      <summary className="flex min-h-[44px] cursor-pointer list-none items-center justify-between gap-3 py-2 text-[13px] text-[var(--text-2)] [&::-webkit-details-marker]:hidden">
-        <span className="flex items-center gap-2">
-          <span className="micro">Advanced</span>
-          <span className="text-[var(--faint)]">·</span>
-          <span>context, batch, HF token</span>
+    <details id="advanced" className="group mt-6 border-t border-[var(--line)]">
+      <summary className="flex min-h-[42px] cursor-pointer list-none items-center justify-between gap-3 py-2 [&::-webkit-details-marker]:hidden">
+        <span className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+          <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--muted)]">
+            Advanced inputs
+          </span>
+          <span className="font-mono text-[9px] text-[var(--faint)]">
+            context / batch / HF token
+          </span>
         </span>
         <span className="flex items-center gap-2">
-          <span className="badge hidden sm:inline-flex">token not stored</span>
+          <span className="hidden items-center gap-1.5 font-mono text-[8px] uppercase tracking-[0.08em] text-[var(--faint)] sm:flex">
+            <Lock size={10} /> token not stored
+          </span>
           <ChevronDown
-            size={15}
+            size={14}
             className="text-[var(--faint)] transition-transform duration-150 group-open:rotate-180"
           />
         </span>
       </summary>
 
-      <div className="grid gap-5 pb-2 pt-3 md:grid-cols-2">
+      <div className="grid gap-5 border-t border-[var(--line)] pb-2 pt-4 md:grid-cols-2">
         <div>
           <label htmlFor="context" className="micro">
             Context length
@@ -56,16 +61,16 @@ export function AdvancedPanel({
               aria-invalid={Boolean(errors.context)}
               aria-describedby="context-help"
             />
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[10px] text-[var(--faint)]">
+            <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 font-mono text-[9px] text-[var(--faint)]">
               tokens
             </span>
           </div>
-          <p id="context-help" className="mt-1.5 text-[11.5px] leading-relaxed text-[var(--muted)]">
-            KV-cache allocation context, not prompt length. Above the model maximum, the
-            API clamps it and flags the result.
+          <p id="context-help" className="mt-1.5 text-[10.5px] leading-relaxed text-[var(--muted)]">
+            KV-cache allocation context, not prompt length. Above the model maximum, the API
+            clamps it and flags the result.
           </p>
           {errors.context ? (
-            <p className="mt-1 text-[11.5px] text-[var(--no)]">{errors.context}</p>
+            <p className="mt-1 text-[10.5px] text-[var(--no)]">{errors.context}</p>
           ) : null}
         </div>
 
@@ -84,16 +89,16 @@ export function AdvancedPanel({
               aria-invalid={Boolean(errors.batch)}
               aria-describedby="batch-help"
             />
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[10px] text-[var(--faint)]">
+            <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 font-mono text-[9px] text-[var(--faint)]">
               sequences
             </span>
           </div>
-          <p id="batch-help" className="mt-1.5 text-[11.5px] leading-relaxed text-[var(--muted)]">
+          <p id="batch-help" className="mt-1.5 text-[10.5px] leading-relaxed text-[var(--muted)]">
             Concurrent sequences, not gradient batch. Aggregate speed assumes perfect
             continuous batching.
           </p>
           {errors.batch ? (
-            <p className="mt-1 text-[11.5px] text-[var(--no)]">{errors.batch}</p>
+            <p className="mt-1 text-[10.5px] text-[var(--no)]">{errors.batch}</p>
           ) : null}
         </div>
 
@@ -103,31 +108,31 @@ export function AdvancedPanel({
           </label>
           <div className="relative mt-2">
             <Lock
-              size={14}
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--faint)]"
+              size={13}
+              className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--faint)]"
             />
             <input
               id="hf-token"
-              className="field field-mono px-9 pr-12"
+              className="field field-mono px-8 pr-11"
               type={showToken ? "text" : "password"}
               autoComplete="off"
               spellCheck={false}
-              placeholder="hf_… (only if the repo is gated or private)"
+              placeholder="hf_… only if the repo is gated or private"
               value={hfToken}
               onChange={(event) => onChange({ hfToken: event.target.value })}
             />
             <button
               type="button"
-              className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded text-[var(--muted)] hover:bg-[var(--panel-2)] hover:text-[var(--text)]"
+              className="absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center text-[var(--muted)] hover:bg-[var(--panel-2)] hover:text-[var(--text)]"
               onClick={() => setShowToken((value) => !value)}
               aria-label={showToken ? "Hide token" : "Show token"}
               title={showToken ? "Hide token" : "Show token"}
             >
-              {showToken ? <EyeOff size={15} /> : <Eye size={15} />}
+              {showToken ? <EyeOff size={14} /> : <Eye size={14} />}
             </button>
           </div>
-          <p className="mt-1.5 flex items-start gap-2 text-[11.5px] leading-relaxed text-[var(--muted)]">
-            <Lock size={12} className="mt-0.5 flex-none text-[var(--accent)]" />
+          <p className="mt-1.5 flex items-start gap-2 text-[10.5px] leading-relaxed text-[var(--muted)]">
+            <Lock size={11} className="mt-0.5 flex-none text-[var(--accent)]" />
             <span>
               Sent only with this request. Never stored in the URL, localStorage, or the
               result. The API does not log request bodies. Not needed for public repos.
