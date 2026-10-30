@@ -98,6 +98,12 @@ GO means FITS + a directly usable SUPPORTED runtime; it does not mean VERIFIED.
 VERIFIED is empty in v1. `artifacts` lists actual files found in the repo
 (GGUF/safetensors/ONNX/etc.) with sizes and fit estimates; the UI uses it for
 the real artifact shelf instead of inventing quantization alternatives.
+`sweep` reports the max fitting context/batch, the context-vs-memory frontier,
+best fitting smaller weights, and free-memory/smaller-context scenarios.
+
+`POST /find` is a hardware-first candidate search. It inspects a bounded pool
+of Hugging Face models and ranks them by fit, runtime support, artifact
+availability, and size — not by downloads, likes, or model quality.
 
 ## Honesty rules
 

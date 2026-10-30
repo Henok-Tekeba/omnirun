@@ -24,7 +24,7 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
 from typing import Any
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 
 import httpx
 
@@ -86,6 +86,7 @@ class HFRepo:
     gated_mode: str | None = None
     pipeline_tag: str | None = None
     library_name: str | None = None
+    license: str | None = None
     tags: tuple[str, ...] = ()
     last_modified: datetime | None = None
     files: Mapping[str, RepoFile] = field(default_factory=dict)
@@ -113,6 +114,7 @@ class HFRepo:
             "gated_mode": self.gated_mode,
             "pipeline_tag": self.pipeline_tag,
             "library_name": self.library_name,
+            "license": self.license,
             "tags": list(self.tags),
             "last_modified": self.last_modified.isoformat() if self.last_modified else None,
             "files": {path: f.to_dict() for path, f in self.files.items()},
@@ -148,6 +150,7 @@ class HFRepo:
             gated_mode=str(data["gated_mode"]) if data.get("gated_mode") else None,
             pipeline_tag=str(data["pipeline_tag"]) if data.get("pipeline_tag") else None,
             library_name=str(data["library_name"]) if data.get("library_name") else None,
+            license=str(data["license"]) if data.get("license") else None,
             tags=tuple(str(t) for t in tags) if isinstance(tags, list) else (),
             last_modified=last_modified,
             files=files,
@@ -504,6 +507,69 @@ class HFClient:
         repo = _repo_from_payload(payload, parsed.repo_id, fetched_at=_utcnow())
         self.cache.set(key, repo.to_cache_dict(), ttl_seconds=MODEL_INFO_TTL_SECONDS)
         return repo
+
+    async def search_models(
+        self,
+        query: str = "",
+        *,
+        pipeline_tag: str | None = None,
+        limit: int = 20,
+        token: str | None = None,
+    ) -> tuple[str, ...]:
+        """Return candidate repo ids from the Hub search endpoint.
+
+        This is a candidate discovery call, not a quality ranking. The finder
+        re-ranks the candidates by fit/support/artifacts/size after inspecting
+        them. Downloads are used only as the search seed order when no query is
+        supplied.
+        """
+        token = _validate_token(token)
+        params = {
+            "limit": str(max(1, min(limit, 50))),
+            "sort": "downloads",
+            "direction": "-1",
+        }
+        if query.strip():
+            params["search"] = query.strip()
+        if pipeline_tag:
+            params["pipeline_tag"] = pipeline_tag
+        url = f"{self.endpoint}/api/models?{urlencode(params)}"
+        response = await self._request(
+            url,
+            token=token,
+            max_bytes=MAX_MODEL_INFO_BYTES,
+            accept="application/json",
+        )
+        if response.status != 200:
+            raise self._status_error(
+                response.status,
+                response.content,
+                _parse_retry_after(response.headers.get("retry-after")),
+            )
+        try:
+            payload = json.loads(response.content)
+        except ValueError as exc:
+            raise HFError(
+                "invalid_json",
+                "Hugging Face returned an invalid model search response.",
+                status_code=502,
+                upstream_status=response.status,
+            ) from exc
+        if not isinstance(payload, list):
+            raise HFError(
+                "invalid_hf_response",
+                "Hugging Face returned an unexpected model search response.",
+                status_code=502,
+                upstream_status=response.status,
+            )
+        ids: list[str] = []
+        for item in payload:
+            if not isinstance(item, dict):
+                continue
+            repo_id = item.get("id")
+            if isinstance(repo_id, str) and repo_id and repo_id not in ids:
+                ids.append(repo_id)
+        return tuple(ids)
 
     def _repo_from_cache(self, entry: CacheEntry, *, stale: bool) -> HFRepo | None:
         if not isinstance(entry.value, dict):
@@ -987,6 +1053,15 @@ def _repo_from_payload(
     tags = payload.get("tags")
     pipeline_tag = payload.get("pipeline_tag")
     library_name = payload.get("library_name")
+    license_name = None
+    card_data = payload.get("cardData")
+    if isinstance(card_data, dict) and isinstance(card_data.get("license"), str):
+        license_name = card_data["license"]
+    if license_name is None and isinstance(tags, list):
+        for tag in tags:
+            if isinstance(tag, str) and tag.startswith("license:"):
+                license_name = tag.split(":", 1)[1]
+                break
     return HFRepo(
         repo_id=repo_id,
         requested_repo_id=requested_repo_id,
@@ -996,6 +1071,7 @@ def _repo_from_payload(
         gated_mode=gated_mode,
         pipeline_tag=pipeline_tag if isinstance(pipeline_tag, str) else None,
         library_name=library_name if isinstance(library_name, str) else None,
+        license=license_name if isinstance(license_name, str) else None,
         tags=tuple(str(tag) for tag in tags) if isinstance(tags, list) else (),
         last_modified=last_modified,
         files=files,

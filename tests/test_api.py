@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from pathlib import Path
+from unittest.mock import AsyncMock
 
 import httpx
 
@@ -104,6 +105,16 @@ async def test_go_response_and_result_cache(tmp_path: Path) -> None:
             assert artifacts["model.safetensors"]["files"] == ["model.safetensors"]
             assert any(item["format"] == "onnx" for item in data["artifacts"])
 
+            sweep = data["sweep"]
+            assert sweep["max_context_that_fits"] is not None
+            assert sweep["max_context_that_fits"] <= 8192
+            assert sweep["max_batch_that_fits"] is not None
+            assert sweep["context_points"]
+            assert any(point["fits"] == "yes" for point in sweep["context_points"])
+            assert sweep["best_quantization"] is not None
+            assert sweep["best_quantization"]["name"] == "int8"
+            assert sweep["scenarios"]
+
             again = await client.post("/check", json=payload)
             assert again.status_code == 200
             cached = again.json()
@@ -165,6 +176,71 @@ async def test_optimize_verdict_for_small_gpu(tmp_path: Path) -> None:
             }
             assert alternatives["int8"]["fits"] == "yes"
             assert alternatives["4bit"]["fits"] == "yes"
+
+
+async def test_find_returns_a_ranked_candidate(tmp_path: Path) -> None:
+    app = create_app(make_settings(tmp_path))
+    async with fixture_client("smollm2_135m", tmp_path) as hf:
+        hf.search_models = AsyncMock(  # type: ignore[method-assign]
+            return_value=("HuggingFaceTB/SmolLM2-135M-Instruct",)
+        )
+        app.state.hf_client = hf
+        async with await api_client(app) as client:
+            response = await client.post(
+                "/find",
+                json={
+                    "query": "smol",
+                    "task": "text-generation",
+                    "hardware": {
+                        "source": "manual",
+                        "device_id": "apple-m2-pro",
+                        "ram_gib": 32,
+                    },
+                    "context": 4096,
+                    "batch": 1,
+                    "limit": 3,
+                },
+            )
+            assert response.status_code == 200, response.text
+            data = response.json()
+            assert data["searched"] == 1
+            assert data["errors"] == []
+            assert len(data["candidates"]) == 1
+            candidate = data["candidates"][0]
+            assert candidate["repo_id"] == "HuggingFaceTB/SmolLM2-135M-Instruct"
+            assert candidate["verdict"] == "GO"
+            assert candidate["fits"] == "yes"
+            assert candidate["supported"] == "yes"
+            assert candidate["verified"] == "unknown"
+            assert candidate["artifacts_count"] >= 1
+            assert candidate["best_artifact"] == "model.safetensors"
+            assert candidate["license"] is not None
+
+
+async def test_sweep_includes_smaller_context_and_batch_scenarios(tmp_path: Path) -> None:
+    app = create_app(make_settings(tmp_path))
+    async with fixture_client("mistral_7b", tmp_path) as hf:
+        app.state.hf_client = hf
+        async with await api_client(app) as client:
+            response = await client.post(
+                "/check",
+                json={
+                    "model": "mistralai/Mistral-7B-v0.1",
+                    "hardware": {
+                        "source": "manual",
+                        "device_id": "nvidia-rtx-3060-12gb",
+                    },
+                    "context": 8192,
+                    "batch": 2,
+                },
+            )
+            assert response.status_code == 200, response.text
+            sweep = response.json()["sweep"]
+            scenario_ids = {scenario["id"] for scenario in sweep["scenarios"]}
+            assert "free_4gb" in scenario_ids
+            assert "smaller_context" in scenario_ids
+            assert "batch_1" in scenario_ids
+            assert sweep["context_points"]
 
 
 async def test_no_verdict_for_tiny_memory(tmp_path: Path) -> None:

@@ -65,6 +65,94 @@
         }
       }
     },
+    "/find": {
+      "post": {
+        "summary": "Find",
+        "operationId": "find_find_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FindRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/check": {
       "post": {
         "summary": "Check",
@@ -493,6 +581,9 @@
             "type": "array",
             "title": "Artifacts"
           },
+          "sweep": {
+            "$ref": "#/components/schemas/SweepReport"
+          },
           "assumptions": {
             "items": {
               "$ref": "#/components/schemas/AssumptionItem"
@@ -530,6 +621,7 @@
           "recommendations",
           "environment_hint",
           "artifacts",
+          "sweep",
           "assumptions",
           "warnings",
           "links",
@@ -796,6 +888,366 @@
           "error"
         ],
         "title": "ErrorResponse"
+      },
+      "FindCandidate": {
+        "properties": {
+          "repo_id": {
+            "type": "string",
+            "title": "Repo Id"
+          },
+          "license": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "License"
+          },
+          "pipeline_tag": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pipeline Tag"
+          },
+          "library_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Library Name"
+          },
+          "model_class": {
+            "type": "string",
+            "enum": [
+              "llm",
+              "asr",
+              "tts",
+              "unsupported"
+            ],
+            "title": "Model Class"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "safetensors",
+              "pytorch_pickle",
+              "gguf",
+              "adapter",
+              "unknown"
+            ],
+            "title": "Format"
+          },
+          "gated": {
+            "type": "boolean",
+            "title": "Gated"
+          },
+          "private": {
+            "type": "boolean",
+            "title": "Private"
+          },
+          "trust_remote_code_required": {
+            "type": "boolean",
+            "title": "Trust Remote Code Required"
+          },
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "GO",
+              "OPTIMIZE",
+              "NO",
+              "UNKNOWN"
+            ],
+            "title": "Verdict"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence"
+          },
+          "fits": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no",
+              "unknown"
+            ],
+            "title": "Fits"
+          },
+          "supported": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no",
+              "unknown"
+            ],
+            "title": "Supported"
+          },
+          "verified": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no",
+              "unknown"
+            ],
+            "title": "Verified"
+          },
+          "direct_runtime_available": {
+            "type": "boolean",
+            "title": "Direct Runtime Available"
+          },
+          "memory_budget_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Memory Budget Bytes"
+          },
+          "peak": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RangeBytes"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "speed": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RangeFloat"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "artifacts_count": {
+            "type": "integer",
+            "title": "Artifacts Count"
+          },
+          "best_artifact": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Artifact"
+          },
+          "best_artifact_size_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Artifact Size Bytes"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "repo_id",
+          "license",
+          "pipeline_tag",
+          "library_name",
+          "model_class",
+          "format",
+          "gated",
+          "private",
+          "trust_remote_code_required",
+          "verdict",
+          "confidence",
+          "fits",
+          "supported",
+          "verified",
+          "direct_runtime_available",
+          "memory_budget_bytes",
+          "peak",
+          "speed",
+          "artifacts_count",
+          "best_artifact",
+          "best_artifact_size_bytes",
+          "reason"
+        ],
+        "title": "FindCandidate"
+      },
+      "FindError": {
+        "properties": {
+          "repo_id": {
+            "type": "string",
+            "title": "Repo Id"
+          },
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "repo_id",
+          "code",
+          "message"
+        ],
+        "title": "FindError"
+      },
+      "FindRequest": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "maxLength": 100,
+            "title": "Query",
+            "default": ""
+          },
+          "task": {
+            "type": "string",
+            "enum": [
+              "text-generation",
+              "automatic-speech-recognition",
+              "text-to-speech"
+            ],
+            "title": "Task",
+            "default": "text-generation"
+          },
+          "hardware": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/HelperHardwareInput"
+              },
+              {
+                "$ref": "#/components/schemas/ManualHardwareInput"
+              },
+              {
+                "$ref": "#/components/schemas/UnknownHardwareInput"
+              }
+            ],
+            "title": "Hardware",
+            "discriminator": {
+              "propertyName": "source",
+              "mapping": {
+                "helper": "#/components/schemas/HelperHardwareInput",
+                "manual": "#/components/schemas/ManualHardwareInput",
+                "unknown": "#/components/schemas/UnknownHardwareInput"
+              }
+            }
+          },
+          "context": {
+            "type": "integer",
+            "maximum": 1048576.0,
+            "minimum": 1.0,
+            "title": "Context",
+            "default": 4096
+          },
+          "batch": {
+            "type": "integer",
+            "maximum": 1024.0,
+            "minimum": 1.0,
+            "title": "Batch",
+            "default": 1
+          },
+          "limit": {
+            "type": "integer",
+            "maximum": 8.0,
+            "minimum": 1.0,
+            "title": "Limit",
+            "default": 5
+          },
+          "hf_token": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "password",
+                "writeOnly": true
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hf Token",
+            "description": "Optional HF token for gated/private candidates. Never echoed or logged."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "hardware"
+        ],
+        "title": "FindRequest"
+      },
+      "FindResponse": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1.0",
+            "title": "Schema Version"
+          },
+          "request_id": {
+            "type": "string",
+            "title": "Request Id"
+          },
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/FindCandidate"
+            },
+            "type": "array",
+            "title": "Candidates"
+          },
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/FindError"
+            },
+            "type": "array",
+            "title": "Errors"
+          },
+          "searched": {
+            "type": "integer",
+            "title": "Searched"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "schema_version",
+          "request_id",
+          "candidates",
+          "errors",
+          "searched"
+        ],
+        "title": "FindResponse"
       },
       "FitClaimReport": {
         "properties": {
@@ -2145,6 +2597,187 @@
           "runtimes"
         ],
         "title": "SupportClaimReport"
+      },
+      "SweepPointReport": {
+        "properties": {
+          "context": {
+            "type": "integer",
+            "title": "Context"
+          },
+          "peak": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RangeBytes"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fits": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no",
+              "unknown"
+            ],
+            "title": "Fits"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "context",
+          "peak",
+          "fits"
+        ],
+        "title": "SweepPointReport"
+      },
+      "SweepReport": {
+        "properties": {
+          "budget_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Budget Bytes"
+          },
+          "model_max_context": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Max Context"
+          },
+          "context_points": {
+            "items": {
+              "$ref": "#/components/schemas/SweepPointReport"
+            },
+            "type": "array",
+            "title": "Context Points"
+          },
+          "max_context_that_fits": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Context That Fits"
+          },
+          "max_batch_that_fits": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Batch That Fits"
+          },
+          "best_quantization": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QuantAlternativeReport"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scenarios": {
+            "items": {
+              "$ref": "#/components/schemas/SweepScenarioReport"
+            },
+            "type": "array",
+            "title": "Scenarios"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "budget_bytes",
+          "model_max_context",
+          "context_points",
+          "max_context_that_fits",
+          "max_batch_that_fits",
+          "best_quantization",
+          "scenarios"
+        ],
+        "title": "SweepReport"
+      },
+      "SweepScenarioReport": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "context": {
+            "type": "integer",
+            "title": "Context"
+          },
+          "batch": {
+            "type": "integer",
+            "title": "Batch"
+          },
+          "budget_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Budget Bytes"
+          },
+          "peak": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RangeBytes"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fits": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no",
+              "unknown"
+            ],
+            "title": "Fits"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "context",
+          "batch",
+          "budget_bytes",
+          "peak",
+          "fits"
+        ],
+        "title": "SweepScenarioReport"
       },
       "UnknownHardwareInput": {
         "properties": {

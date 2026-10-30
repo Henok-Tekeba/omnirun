@@ -13,6 +13,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from api.finder import run_finder
 from api.rate_limit import RateLimiter, ceil_retry_after
 from api.schemas import (
     SCHEMA_VERSION,
@@ -22,6 +23,8 @@ from api.schemas import (
     DeviceEntry,
     DevicesResponse,
     ErrorResponse,
+    FindRequest,
+    FindResponse,
     SchemaResponse,
 )
 from api.service import build_response, error_response, resolve_hardware
@@ -64,6 +67,7 @@ def _result_cache_key(request: CheckRequest, settings: Settings, matrix_updated:
         "token_scope": _token_scope(token),
         "support_updated": matrix_updated,
         "artifacts": 2,
+        "sweep": 2,
     }
     return json.dumps(payload, sort_keys=True, separators=(",", ":"))
 
@@ -224,6 +228,60 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 for spec in device_table.devices.values()
             ],
         )
+
+    @app.post(
+        "/find",
+        response_model=FindResponse,
+        responses={
+            400: {"model": ErrorResponse},
+            403: {"model": ErrorResponse},
+            422: {"model": ErrorResponse},
+            429: {"model": ErrorResponse},
+            502: {"model": ErrorResponse},
+            504: {"model": ErrorResponse},
+        },
+    )
+    async def find(payload: FindRequest, request: Request) -> FindResponse:
+        client_host = request.client.host if request.client else "unknown"
+        retry_after = request.app.state.rate_limiter.check(client_host)
+        if retry_after is not None:
+            raise OmniRunError(
+                "rate_limited",
+                "Too many preflight requests from this client.",
+                status_code=429,
+                retryable=True,
+                hint="Wait and retry; the limit is per client IP per minute.",
+                details={"retry_after_seconds": retry_after},
+            )
+
+        client = request.app.state.hf_client
+        if client is None:
+            raise OmniRunError(
+                "service_not_ready",
+                "The Hugging Face client is not ready.",
+                status_code=503,
+                retryable=True,
+            )
+
+        try:
+            async with asyncio.timeout(settings.find_timeout_seconds):
+                async with request.app.state.check_semaphore:
+                    return await run_finder(
+                        client,
+                        payload,
+                        request_id=_request_id(request),
+                        device_table=device_table,
+                        support_matrix=support_matrix,
+                        verified_runs=verified_runs,
+                    )
+        except TimeoutError as exc:
+            raise OmniRunError(
+                "find_timeout",
+                "The model search exceeded its time budget.",
+                status_code=504,
+                retryable=True,
+                hint="Try a narrower query or a smaller limit.",
+            ) from exc
 
     @app.post(
         "/check",

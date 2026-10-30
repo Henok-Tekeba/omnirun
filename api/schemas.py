@@ -397,6 +397,32 @@ class ArtifactReport(StrictModel):
     note: str
 
 
+class SweepPointReport(StrictModel):
+    context: int
+    peak: RangeBytes | None
+    fits: ClaimStatusValue
+
+
+class SweepScenarioReport(StrictModel):
+    id: str
+    label: str
+    context: int
+    batch: int
+    budget_bytes: int | None
+    peak: RangeBytes | None
+    fits: ClaimStatusValue
+
+
+class SweepReport(StrictModel):
+    budget_bytes: int | None
+    model_max_context: int | None
+    context_points: list[SweepPointReport]
+    max_context_that_fits: int | None
+    max_batch_that_fits: int | None
+    best_quantization: QuantAlternativeReport | None
+    scenarios: list[SweepScenarioReport]
+
+
 # ------------------------------------------------------------------- response
 
 
@@ -414,6 +440,7 @@ class CheckResponse(StrictModel):
     recommendations: list[Recommendation]
     environment_hint: EnvironmentHint | None
     artifacts: list[ArtifactReport]
+    sweep: SweepReport
     assumptions: list[AssumptionItem]
     warnings: list[WarningItem]
     links: Links
@@ -441,6 +468,66 @@ class SchemaResponse(StrictModel):
     request: dict[str, Any]
     response: dict[str, Any]
     error: dict[str, Any]
+
+
+# ---------------------------------------------------------------------- finder
+
+
+class FindRequest(StrictModel):
+    query: str = Field(default="", max_length=100)
+    task: Literal[
+        "text-generation",
+        "automatic-speech-recognition",
+        "text-to-speech",
+    ] = "text-generation"
+    hardware: HardwareInput
+    context: int = Field(default=4096, ge=1, le=1_048_576)
+    batch: int = Field(default=1, ge=1, le=1024)
+    limit: int = Field(default=5, ge=1, le=8)
+    hf_token: SecretStr | None = Field(
+        default=None,
+        exclude=True,
+        description="Optional HF token for gated/private candidates. Never echoed or logged.",
+    )
+
+
+class FindCandidate(StrictModel):
+    repo_id: str
+    license: str | None
+    pipeline_tag: str | None
+    library_name: str | None
+    model_class: ModelClassValue
+    format: ModelFormatValue
+    gated: bool
+    private: bool
+    trust_remote_code_required: bool
+    verdict: VerdictValue
+    confidence: ConfidenceValue
+    fits: ClaimStatusValue
+    supported: ClaimStatusValue
+    verified: ClaimStatusValue
+    direct_runtime_available: bool
+    memory_budget_bytes: int | None
+    peak: RangeBytes | None
+    speed: RangeFloat | None
+    artifacts_count: int
+    best_artifact: str | None
+    best_artifact_size_bytes: int | None
+    reason: str
+
+
+class FindError(StrictModel):
+    repo_id: str
+    code: str
+    message: str
+
+
+class FindResponse(StrictModel):
+    schema_version: Literal["1.0"]
+    request_id: str
+    candidates: list[FindCandidate]
+    errors: list[FindError]
+    searched: int
 
 
 # --------------------------------------------------------------------- devices

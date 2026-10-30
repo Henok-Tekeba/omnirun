@@ -15,6 +15,7 @@ import { MemoryPanel } from "./MemoryPanel";
 import { ReasonsPanel } from "./ReasonsPanel";
 import { SpeedPanel } from "./SpeedPanel";
 import { VerdictHero } from "./VerdictHero";
+import { WhatIfPanel } from "./WhatIfPanel";
 import { WhatYouNeed } from "./WhatYouNeed";
 
 interface ResultViewProps {
@@ -110,6 +111,8 @@ export function ResultView({ result, shareUrl, onEdit }: ResultViewProps) {
         <MemoryPanel result={result} />
         <SpeedPanel result={result} />
       </div>
+
+      <WhatIfPanel result={result} />
 
       <div className="grid gap-5 xl:grid-cols-[1.1fr_1fr]">
         <ReasonsPanel result={result} />

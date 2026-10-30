@@ -35,6 +35,8 @@ test.describe("OmniRun preflight", () => {
     await expect(page.locator(".artifact-row").first()).toBeVisible();
     await expect(page.getByRole("heading", { name: "Budget and peak" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Speed" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "What if?" })).toBeVisible();
+    await expect(page.getByText("Max context that fits")).toBeVisible();
     await expect(page.getByText(/estimated|estimate/i).first()).toBeVisible();
 
     expect(page.url()).toContain("model=HuggingFaceTB%2FSmolLM2-135M-Instruct");
@@ -54,6 +56,61 @@ test.describe("OmniRun preflight", () => {
     await expect(page.getByText(/can’t judge ASR\/TTS yet/i)).toBeVisible();
     await expect(page.getByText("Speed estimate not available")).toBeVisible();
     await expect(page.getByText(/covers causal LLMs only/i).first()).toBeVisible();
+  });
+
+  test("finder ranks candidates and opens one in preflight", async ({ page }) => {
+    await page.route("**/api/find", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          schema_version: "1.0",
+          request_id: "test-find",
+          searched: 1,
+          errors: [],
+          candidates: [
+            {
+              repo_id: "org/model",
+              license: "apache-2.0",
+              pipeline_tag: "text-generation",
+              library_name: "transformers",
+              model_class: "llm",
+              format: "safetensors",
+              gated: false,
+              private: false,
+              trust_remote_code_required: false,
+              verdict: "GO",
+              confidence: "medium",
+              fits: "yes",
+              supported: "yes",
+              verified: "unknown",
+              direct_runtime_available: true,
+              memory_budget_bytes: 25769803776,
+              peak: { min: 600000000, likely: 640000000, max: 690000000 },
+              speed: { min: 300, likely: 380, max: 460 },
+              artifacts_count: 2,
+              best_artifact: "model.safetensors",
+              best_artifact_size_bytes: 269060552,
+              reason: "Fits and has a direct runtime path.",
+            },
+          ],
+        }),
+      });
+    });
+
+    await page.goto("/");
+    await page.getByRole("button", { name: /Run a preflight/i }).first().click();
+    await page.getByRole("tab", { name: /CPU only/i }).click();
+    await page.getByLabel("Total RAM", { exact: false }).last().fill("32");
+    await page
+      .locator(".dashboard-sidebar")
+      .getByRole("button", { name: "Find models" })
+      .click();
+    await page.locator("#dashboard-content").getByRole("button", { name: "Find models" }).click();
+    await expect(page.locator(".finder-card")).toBeVisible();
+    await expect(page.getByText("org/model")).toBeVisible();
+    await page.getByRole("button", { name: /Open in preflight/i }).click();
+    await expect(page.locator("#model")).toHaveValue("org/model");
   });
 
   test("invalid input is explained without a result", async ({ page }) => {

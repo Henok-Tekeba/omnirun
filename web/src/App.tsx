@@ -11,11 +11,12 @@ import { useCheck } from "./hooks/useCheck";
 import { useDevices } from "./hooks/useDevices";
 import { CheckForm } from "./components/CheckForm";
 import { DashboardShell } from "./components/DashboardShell";
+import { FinderView } from "./components/FinderView";
 import { LoadingView } from "./components/LoadingView";
 import { MarketingLanding } from "./components/MarketingLanding";
 import { ResultView } from "./components/ResultView";
 
-type Phase = "landing" | "form" | "loading" | "result";
+type Phase = "landing" | "form" | "loading" | "result" | "finder";
 
 function prefersReducedMotion(): boolean {
   return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
@@ -179,6 +180,23 @@ export default function App() {
     scrollToTop();
   }, []);
 
+  const handleFind = useCallback(() => {
+    setPhase("finder");
+    scrollToTop();
+  }, []);
+
+  const handleOpenModel = useCallback((repoId: string) => {
+    setForm((current) => ({ ...current, model: repoId }));
+    setFieldErrors({});
+    setPhase("form");
+    scrollToTop();
+  }, []);
+
+  const handleEditHardware = useCallback(() => {
+    setPhase("form");
+    scrollToTop();
+  }, []);
+
   const handleBackToLanding = useCallback(() => {
     resetCheck();
     setPhase("landing");
@@ -194,18 +212,25 @@ export default function App() {
     return <MarketingLanding onStart={handleStart} />;
   }
 
-  const shellTitle = showResult ? "Results" : "Preflight";
+  const shellTitle = showResult
+    ? "Results"
+    : phase === "finder"
+      ? "Find models"
+      : "Preflight";
   const shellSubtitle = showResult
     ? "Three checks: memory, runtime, and recorded runs."
-    : "One model. One machine. One honest answer.";
+    : phase === "finder"
+      ? "Start with your hardware, not a leaderboard."
+      : "One model. One machine. One honest answer.";
 
   return (
     <DashboardShell
-      active={showResult ? "result" : "preflight"}
+      active={showResult ? "result" : phase === "finder" ? "finder" : "preflight"}
       title={shellTitle}
       subtitle={shellSubtitle}
       onLanding={handleBackToLanding}
       onNewCheck={handleEdit}
+      onFind={handleFind}
       actions={
         showResult ? (
           <button
@@ -226,6 +251,13 @@ export default function App() {
         />
       ) : showResult ? (
         <ResultView result={result} shareUrl={shareUrl} onEdit={handleEdit} />
+      ) : phase === "finder" ? (
+        <FinderView
+          form={form}
+          devices={devicesState.devices}
+          onOpenModel={handleOpenModel}
+          onEditHardware={handleEditHardware}
+        />
       ) : (
         <CheckForm
           form={form}

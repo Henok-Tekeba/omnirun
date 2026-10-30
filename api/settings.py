@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     data_dir: Path = Field(default_factory=_project_data_dir)
     cache_dir: Path = Field(default_factory=_default_cache_dir)
     check_timeout_seconds: float = Field(default=30.0, gt=0, le=300)
+    find_timeout_seconds: float = Field(default=60.0, gt=0, le=300)
     hf_max_attempts: int = Field(default=3, ge=1, le=6)
     hf_max_concurrent: int = Field(default=4, ge=1, le=32)
     max_concurrent_checks: int = Field(default=8, ge=1, le=128)

@@ -3,9 +3,12 @@ import type {
   CheckResponse,
   DevicesResponse,
   ErrorResponse,
+  FindRequest,
+  FindResponse,
 } from "./types";
 
 const CHECK_TIMEOUT_MS = 60_000;
+const FIND_TIMEOUT_MS = 90_000;
 const DEVICES_TIMEOUT_MS = 10_000;
 
 export class ApiError extends Error {
@@ -167,5 +170,21 @@ export function checkModel(
       body: JSON.stringify(payload),
     },
     CHECK_TIMEOUT_MS,
+  );
+}
+
+export function findModels(
+  payload: FindRequest,
+  signal?: AbortSignal,
+): Promise<FindResponse> {
+  return requestJson<FindResponse>(
+    "/api/find",
+    {
+      method: "POST",
+      signal,
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload),
+    },
+    FIND_TIMEOUT_MS,
   );
 }

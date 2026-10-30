@@ -13,6 +13,15 @@ with size, quantization, runtime hint, fit status, and copyable download
 commands. Hypothetical quantization alternatives are only shown when the repo
 has no real artifacts.
 
+The result also includes a **What-if** panel backed by `sweep`: max fitting
+context and batch, a context-vs-memory frontier, the best smaller weights that
+fit, and free-memory/smaller-context/batch-1 scenarios.
+
+The dashboard’s **Find models** view calls `POST /find` with the current
+hardware. It searches a bounded HF candidate pool, inspects each candidate, and
+ranks by fit, support, artifact availability, and size. It does not rank model
+quality.
+
 ## Run everything from the repo root
 
 ```bash

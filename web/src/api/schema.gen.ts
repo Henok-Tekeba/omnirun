@@ -61,6 +61,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/find": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Find */
+        post: operations["find_find_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/check": {
         parameters: {
             query?: never;
@@ -190,6 +207,7 @@ export interface components {
             environment_hint: components["schemas"]["EnvironmentHint"] | null;
             /** Artifacts */
             artifacts: components["schemas"]["ArtifactReport"][];
+            sweep: components["schemas"]["SweepReport"];
             /** Assumptions */
             assumptions: components["schemas"]["AssumptionItem"][];
             /** Warnings */
@@ -279,6 +297,133 @@ export interface components {
             /** Request Id */
             request_id: string;
             error: components["schemas"]["ErrorDetail"];
+        };
+        /** FindCandidate */
+        FindCandidate: {
+            /** Repo Id */
+            repo_id: string;
+            /** License */
+            license: string | null;
+            /** Pipeline Tag */
+            pipeline_tag: string | null;
+            /** Library Name */
+            library_name: string | null;
+            /**
+             * Model Class
+             * @enum {string}
+             */
+            model_class: "llm" | "asr" | "tts" | "unsupported";
+            /**
+             * Format
+             * @enum {string}
+             */
+            format: "safetensors" | "pytorch_pickle" | "gguf" | "adapter" | "unknown";
+            /** Gated */
+            gated: boolean;
+            /** Private */
+            private: boolean;
+            /** Trust Remote Code Required */
+            trust_remote_code_required: boolean;
+            /**
+             * Verdict
+             * @enum {string}
+             */
+            verdict: "GO" | "OPTIMIZE" | "NO" | "UNKNOWN";
+            /**
+             * Confidence
+             * @enum {string}
+             */
+            confidence: "high" | "medium" | "low";
+            /**
+             * Fits
+             * @enum {string}
+             */
+            fits: "yes" | "no" | "unknown";
+            /**
+             * Supported
+             * @enum {string}
+             */
+            supported: "yes" | "no" | "unknown";
+            /**
+             * Verified
+             * @enum {string}
+             */
+            verified: "yes" | "no" | "unknown";
+            /** Direct Runtime Available */
+            direct_runtime_available: boolean;
+            /** Memory Budget Bytes */
+            memory_budget_bytes: number | null;
+            peak: components["schemas"]["RangeBytes"] | null;
+            speed: components["schemas"]["RangeFloat"] | null;
+            /** Artifacts Count */
+            artifacts_count: number;
+            /** Best Artifact */
+            best_artifact: string | null;
+            /** Best Artifact Size Bytes */
+            best_artifact_size_bytes: number | null;
+            /** Reason */
+            reason: string;
+        };
+        /** FindError */
+        FindError: {
+            /** Repo Id */
+            repo_id: string;
+            /** Code */
+            code: string;
+            /** Message */
+            message: string;
+        };
+        /** FindRequest */
+        FindRequest: {
+            /**
+             * Query
+             * @default
+             */
+            query: string;
+            /**
+             * Task
+             * @default text-generation
+             * @enum {string}
+             */
+            task: "text-generation" | "automatic-speech-recognition" | "text-to-speech";
+            /** Hardware */
+            hardware: components["schemas"]["HelperHardwareInput"] | components["schemas"]["ManualHardwareInput"] | components["schemas"]["UnknownHardwareInput"];
+            /**
+             * Context
+             * @default 4096
+             */
+            context: number;
+            /**
+             * Batch
+             * @default 1
+             */
+            batch: number;
+            /**
+             * Limit
+             * @default 5
+             */
+            limit: number;
+            /**
+             * Hf Token
+             * @description Optional HF token for gated/private candidates. Never echoed or logged.
+             */
+            hf_token?: string | null;
+        };
+        /** FindResponse */
+        FindResponse: {
+            /**
+             * Schema Version
+             * @constant
+             */
+            schema_version: "1.0";
+            /** Request Id */
+            request_id: string;
+            /** Candidates */
+            candidates: components["schemas"]["FindCandidate"][];
+            /** Errors */
+            errors: components["schemas"]["FindError"][];
+            /** Searched */
+            searched: number;
         };
         /** FitClaimReport */
         FitClaimReport: {
@@ -695,6 +840,52 @@ export interface components {
             /** Runtimes */
             runtimes: components["schemas"]["RuntimePathReport"][];
         };
+        /** SweepPointReport */
+        SweepPointReport: {
+            /** Context */
+            context: number;
+            peak: components["schemas"]["RangeBytes"] | null;
+            /**
+             * Fits
+             * @enum {string}
+             */
+            fits: "yes" | "no" | "unknown";
+        };
+        /** SweepReport */
+        SweepReport: {
+            /** Budget Bytes */
+            budget_bytes: number | null;
+            /** Model Max Context */
+            model_max_context: number | null;
+            /** Context Points */
+            context_points: components["schemas"]["SweepPointReport"][];
+            /** Max Context That Fits */
+            max_context_that_fits: number | null;
+            /** Max Batch That Fits */
+            max_batch_that_fits: number | null;
+            best_quantization: components["schemas"]["QuantAlternativeReport"] | null;
+            /** Scenarios */
+            scenarios: components["schemas"]["SweepScenarioReport"][];
+        };
+        /** SweepScenarioReport */
+        SweepScenarioReport: {
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+            /** Context */
+            context: number;
+            /** Batch */
+            batch: number;
+            /** Budget Bytes */
+            budget_bytes: number | null;
+            peak: components["schemas"]["RangeBytes"] | null;
+            /**
+             * Fits
+             * @enum {string}
+             */
+            fits: "yes" | "no" | "unknown";
+        };
         /** UnknownHardwareInput */
         UnknownHardwareInput: {
             /**
@@ -884,6 +1075,84 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DevicesResponse"];
+                };
+            };
+        };
+    };
+    find_find_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FindRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FindResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Too Many Requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Bad Gateway */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Gateway Timeout */
+            504: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };

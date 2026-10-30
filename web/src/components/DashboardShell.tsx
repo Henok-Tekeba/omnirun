@@ -4,18 +4,20 @@ import {
   ExternalLink,
   FileCode,
   Gauge,
+  Search,
   ShieldCheck,
   Spark,
 } from "./Icons";
 
 interface DashboardShellProps {
   children: ReactNode;
-  active: "preflight" | "result";
+  active: "preflight" | "result" | "finder";
   title: string;
   subtitle: string;
   actions?: ReactNode;
   onLanding: () => void;
   onNewCheck: () => void;
+  onFind: () => void;
 }
 
 export function DashboardShell({
@@ -26,6 +28,7 @@ export function DashboardShell({
   actions,
   onLanding,
   onNewCheck,
+  onFind,
 }: DashboardShellProps) {
   return (
     <div className="dashboard-app">
@@ -51,6 +54,13 @@ export function DashboardShell({
             onClick={onNewCheck}
           >
             <FileCode size={13} /> Preflight
+          </button>
+          <button
+            type="button"
+            className={`dashboard-menu-item ${active === "finder" ? "is-active" : ""}`}
+            onClick={onFind}
+          >
+            <Search size={13} /> Find models
           </button>
           <button
             type="button"
@@ -100,6 +110,13 @@ export function DashboardShell({
             onClick={onNewCheck}
           >
             Preflight
+          </button>
+          <button
+            type="button"
+            className={active === "finder" ? "is-active" : ""}
+            onClick={onFind}
+          >
+            Find models
           </button>
           <button
             type="button"

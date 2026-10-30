@@ -28,6 +28,9 @@ from api.schemas import (
     RuntimePathReport,
     SpeedReport,
     SupportClaimReport,
+    SweepPointReport,
+    SweepReport,
+    SweepScenarioReport,
     VerdictReport,
     VerifiedClaimReport,
     VerifiedRunReport,
@@ -48,6 +51,7 @@ from core.inspect.model import ModelInspection
 from core.inspect.types import Issue, RangeEstimate
 from core.speed import SpeedEstimate
 from core.support import SupportClaim
+from core.sweep import SweepResult, build_sweep
 from core.verdict import VerdictResult
 from core.verified import VerifiedClaim
 
@@ -272,6 +276,52 @@ def _assumptions(
     return items
 
 
+def _quant_report(quant) -> QuantAlternativeReport:
+    return QuantAlternativeReport(
+        name=quant.alternative.name,
+        bits_per_param=quant.alternative.bits_per_param,
+        weight_bytes=quant.alternative.weight_bytes,
+        peak=_range_bytes(quant.peak),
+        fits=quant.status.value,
+        confidence=quant.alternative.confidence.value,
+        note=quant.note,
+    )
+
+
+def _sweep_report(sweep: SweepResult) -> SweepReport:
+    return SweepReport(
+        budget_bytes=sweep.budget_bytes,
+        model_max_context=sweep.model_max_context,
+        context_points=[
+            SweepPointReport(
+                context=point.context,
+                peak=_range_bytes(point.peak),
+                fits=point.fits.value,
+            )
+            for point in sweep.context_points
+        ],
+        max_context_that_fits=sweep.max_context_that_fits,
+        max_batch_that_fits=sweep.max_batch_that_fits,
+        best_quantization=(
+            _quant_report(sweep.best_quantization)
+            if sweep.best_quantization is not None
+            else None
+        ),
+        scenarios=[
+            SweepScenarioReport(
+                id=scenario.id,
+                label=scenario.label,
+                context=scenario.context,
+                batch=scenario.batch,
+                budget_bytes=scenario.budget_bytes,
+                peak=_range_bytes(scenario.peak),
+                fits=scenario.fits.value,
+            )
+            for scenario in sweep.scenarios
+        ],
+    )
+
+
 def _artifact_report(
     artifact: ArtifactInfo,
     memory: MemoryEstimate,
@@ -425,18 +475,7 @@ def build_response(
         verified=verified_report,
     )
 
-    alternatives = [
-        QuantAlternativeReport(
-            name=quant.alternative.name,
-            bits_per_param=quant.alternative.bits_per_param,
-            weight_bytes=quant.alternative.weight_bytes,
-            peak=_range_bytes(quant.peak),
-            fits=quant.status.value,
-            confidence=quant.alternative.confidence.value,
-            note=quant.note,
-        )
-        for quant in result.quant_fits
-    ]
+    alternatives = [_quant_report(quant) for quant in result.quant_fits]
     weights = WeightReport(
         kind=memory.weights.kind,  # type: ignore[arg-type]
         actual_bytes=memory.weights.actual_bytes,
@@ -544,6 +583,15 @@ def build_response(
         recommendations=[],
         environment_hint=None,
         artifacts=[_artifact_report(artifact, memory, hardware) for artifact in artifacts],
+        sweep=_sweep_report(
+            build_sweep(
+                inspection,
+                hardware,
+                memory,
+                context=request.context,
+                batch=request.batch,
+            )
+        ),
         assumptions=_assumptions(
             request=request,
             inspection=inspection,

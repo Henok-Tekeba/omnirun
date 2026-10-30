@@ -65,6 +65,38 @@ def client_for(
     )
 
 
+async def test_search_models_and_license(tmp_path: Path) -> None:
+    async def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path == "/api/models":
+            assert request.url.params.get("search") == "smol"
+            assert request.url.params.get("pipeline_tag") == "text-generation"
+            return httpx.Response(
+                200,
+                json=[
+                    {"id": "org/a"},
+                    {"id": "org/b"},
+                    {"id": "org/a"},
+                ],
+            )
+        assert request.url.path == "/api/models/org/a"
+        return httpx.Response(
+            200,
+            json=repo_payload(
+                id="org/a",
+                cardData={"license": "apache-2.0"},
+            ),
+        )
+
+    async with client_for(tmp_path, handler) as client:
+        ids = await client.search_models(
+            "smol",
+            pipeline_tag="text-generation",
+        )
+        assert ids == ("org/a", "org/b")
+        repo = await client.resolve_repo("org/a")
+        assert repo.license == "apache-2.0"
+
+
 async def test_resolve_repo_and_cache(tmp_path: Path) -> None:
     calls: list[str] = []
 
