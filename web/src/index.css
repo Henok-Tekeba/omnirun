@@ -1446,22 +1446,6 @@
   color: #0b0b0b;
 }
 
-.marketing-login {
-  flex: none;
-  margin-left: auto;
-  border: 0;
-  background: transparent;
-  padding: 0;
-  color: #0b0b0b;
-  font-size: 0.875rem;
-  text-decoration: none;
-  transition: opacity 140ms var(--ease-out);
-}
-
-.marketing-login:hover {
-  opacity: 0.55;
-}
-
 .marketing-hero {
   width: 100%;
   max-width: 460px;
@@ -1615,27 +1599,6 @@
   mix-blend-mode: soft-light;
 }
 
-.marketing-ascii-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 18px;
-  color: rgba(55, 41, 73, 0.2);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
-  line-height: 1.7;
-  pointer-events: none;
-}
-
-.marketing-ascii-bg span:nth-child(2) {
-  align-self: flex-end;
-  text-align: right;
-}
-
 .mock-dashboard {
   position: absolute;
   z-index: 3;
@@ -1705,23 +1668,6 @@
   font-weight: 500;
 }
 
-.mock-note {
-  margin-top: auto;
-  border: 1px solid #ececea;
-  border-radius: 8px;
-  background: #f8f8f6;
-  padding: 9px;
-}
-
-.mock-note-title {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: #333;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
 .mock-dot {
   display: inline-block;
   height: 5px;
@@ -1730,29 +1676,6 @@
   border-radius: 999px;
   background: #35b56d;
   box-shadow: 0 0 6px rgba(53, 181, 109, 0.55);
-}
-
-.mock-note p {
-  margin-top: 4px;
-  color: #666666;
-  font-size: 0.6875rem;
-  line-height: 1.45;
-}
-
-.mock-note-bar {
-  height: 3px;
-  margin-top: 7px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: #e7e7e3;
-}
-
-.mock-note-bar span {
-  display: block;
-  height: 100%;
-  width: 62%;
-  border-radius: inherit;
-  background: #111;
 }
 
 .mock-main {
@@ -3124,20 +3047,6 @@
   }
 }
 
-.mock-ascii-body {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.mock-ascii-side {
-  flex: none;
-  color: #7d9b85;
-  opacity: 0.82;
-  text-align: right;
-}
-
 .mock-bottom {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3169,12 +3078,6 @@
 
 .mock-bottom strong.is-go {
   color: #2c8a55;
-}
-
-@media (max-width: 1300px) {
-  .mock-ascii-side {
-    display: none;
-  }
 }
 
 @media (min-width: 1500px) {
@@ -3219,10 +3122,6 @@
     grid-area: ascii;
     flex-direction: column;
     margin-top: 0;
-  }
-
-  .mock-ascii-body {
-    flex: 1;
   }
 
   .mock-table {
@@ -3940,10 +3839,6 @@
     display: inline-flex;
   }
 
-  .marketing-login {
-    display: none;
-  }
-
   .marketing-mobile-menu {
     left: 0;
     right: 0;
@@ -4179,7 +4074,6 @@
 .dashboard-app .tab,
 .dashboard-app .btn,
 .marketing-links,
-.marketing-login,
 .marketing-primary,
 .marketing-secondary,
 .marketing-mobile-menu button,
@@ -4248,10 +4142,6 @@
 
 /* The landing preview is decorative (role="img"), so it keeps a compact
    schematic scale while the real application uses readable sizes. */
-.marketing-ascii-bg {
-  font-size: 0.5rem;
-}
-
 .mock-menu-label {
   font-size: 0.5625rem;
 }
@@ -4260,7 +4150,6 @@
   font-size: 0.6875rem;
 }
 
-.mock-note-title,
 .mock-topline,
 .mock-chart-head,
 .mock-table-head,
@@ -4268,7 +4157,6 @@
   font-size: 0.625rem;
 }
 
-.mock-note p,
 .mock-sub,
 .mock-stat-label,
 .mock-stat-foot,
@@ -4412,8 +4300,7 @@
     color: #111;
   }
 
-  .mobile-preview-brand,
-  .mobile-preview-live {
+  .mobile-preview-brand {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -4422,14 +4309,6 @@
   .mobile-preview-brand {
     font-size: 0.75rem;
     font-weight: 600;
-  }
-
-  .mobile-preview-live {
-    color: #5f5f5f;
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
   }
 
   .mobile-preview-card {
@@ -4547,15 +4426,6 @@
     color: #111;
     font-weight: 600;
   }
-
-  .mobile-preview-foot {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding-inline: 4px;
-    color: #5f5f5f;
-    font-size: 0.6875rem;
-  }
 }
 
 @media (max-width: 380px) {
@@ -4604,10 +4474,6 @@
 }
 
 @media (max-width: 640px) {
-  .marketing-ascii-bg {
-    display: none;
-  }
-
   .preview-banner-actions a.preview-banner-api {
     display: none;
   }

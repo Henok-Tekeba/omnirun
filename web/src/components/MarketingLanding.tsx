@@ -45,18 +45,6 @@ const ASCII = String.raw`  ╭────────────────�
   > verdict  GO
   > _`;
 
-const SIDE_ASCII = String.raw`  ╭──────────────╮
-  │ 01 10 11 00  │
-  │ 10 01 00 11  │
-  │ 11 00 01 10  │
-  │ 00 11 10 01  │
-  ╰──────────────╯
-     ▲    ▲    ▲
-    ╱ ╲  ╱ ╲  ╱ ╲
-   ▔▔▔▔▔▔▔▔▔▔▔▔▔
-   SIGNAL / 0.93
-   MEMORY / 200 GB/s
-   PROMPT / —`;
 
 export function MarketingLanding({ onStart }: MarketingLandingProps) {
   const [dialog, setDialog] = useState<DialogKind | null>(null);
@@ -134,9 +122,6 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
             >
               {mobileOpen ? <X size={17} /> : <Menu size={17} />}
             </button>
-            <button type="button" className="marketing-login" onClick={start}>
-              Open app
-            </button>
             {mobileOpen ? (
               <div
                 id="marketing-mobile-menu"
@@ -208,19 +193,10 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
         >
           <div className="marketing-aurora" aria-hidden="true" />
           <div className="marketing-noise" aria-hidden="true" />
-          <div className="marketing-ascii-bg" aria-hidden="true">
-            <span>01001111 01001101 01001110 01001001</span>
-            <span>MEMORY / BANDWIDTH / CLAIMS</span>
-            <span>01100110 01101001 01110100 01110011</span>
-          </div>
-
           <div className="mobile-console-preview" aria-hidden="true">
             <div className="mobile-preview-head">
               <span className="mobile-preview-brand">
                 <Spark size={12} /> OmniRun
-              </span>
-              <span className="mobile-preview-live">
-                <span className="mock-dot" /> ready
               </span>
             </div>
             <div className="mobile-preview-card">
@@ -262,9 +238,6 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
                 <span>9 artifacts</span>
               </div>
             </div>
-            <div className="mobile-preview-foot">
-              <Gauge size={11} /> Metadata and headers only. Weights stay remote.
-            </div>
           </div>
 
           <div className="mock-dashboard">
@@ -298,15 +271,6 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
                 </div>
                 <div className="mock-menu-item">
                   <HelpCircle size={12} /> Support
-                </div>
-              </div>
-              <div className="mock-note">
-                <div className="mock-note-title">
-                  <span className="mock-dot" /> Weights stay remote
-                </div>
-                <p>Metadata and headers only. Unknown stays unknown.</p>
-                <div className="mock-note-bar">
-                  <span />
                 </div>
               </div>
             </aside>
@@ -366,10 +330,7 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
                     <span className="mock-dot" /> live
                   </span>
                 </div>
-                <div className="mock-ascii-body">
-                  <pre>{ASCII}</pre>
-                  <pre className="mock-ascii-side">{SIDE_ASCII}</pre>
-                </div>
+                <pre>{ASCII}</pre>
               </div>
 
               <div className="mock-table">
