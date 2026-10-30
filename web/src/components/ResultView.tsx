@@ -1,5 +1,6 @@
 import type { CheckResponse } from "../api/types";
 import { formatDate, formatDateTime, shortRevision } from "../lib/format";
+import { ArtifactShelf } from "./ArtifactShelf";
 import { AssumptionsPanel } from "./AssumptionsPanel";
 import { ClaimsGrid } from "./ClaimsGrid";
 import { CopyButton } from "./CopyButton";
@@ -102,6 +103,8 @@ export function ResultView({ result, shareUrl, onEdit }: ResultViewProps) {
       <VerdictHero result={result} />
 
       <ClaimsGrid result={result} />
+
+      <ArtifactShelf result={result} />
 
       <div className="grid gap-5 xl:grid-cols-[1.25fr_1fr]">
         <MemoryPanel result={result} />

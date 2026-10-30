@@ -7,6 +7,12 @@ preview). “Run a preflight” opens the app dashboard: a light sidebar shell w
 white cards, the same visual language as the preview. The landing page itself
 has no footer or long-form sections; method/claims explanations are dialogs.
 
+The result view includes an **artifact shelf** backed by `GET /check` →
+`artifacts`: real GGUF/safetensors/ONNX/CTranslate2 files from the HF tree,
+with size, quantization, runtime hint, fit status, and copyable download
+commands. Hypothetical quantization alternatives are only shown when the repo
+has no real artifacts.
+
 ## Run everything from the repo root
 
 ```bash

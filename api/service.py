@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 
 from api.schemas import (
     SCHEMA_VERSION,
+    ArtifactReport,
     AssumptionItem,
     CacheInfo,
     CheckRequest,
@@ -33,7 +34,9 @@ from api.schemas import (
     WarningItem,
     WeightReport,
 )
-from core.estimate import MemoryEstimate
+from core.artifacts import ArtifactFormat, ArtifactInfo
+from core.claims import ClaimStatus
+from core.estimate import MemoryEstimate, peak_for_weight_bytes, weights_peak_for_bytes
 from core.hardware import (
     DeviceTable,
     HardwareProfile,
@@ -269,6 +272,62 @@ def _assumptions(
     return items
 
 
+def _artifact_report(
+    artifact: ArtifactInfo,
+    memory: MemoryEstimate,
+    hardware: HardwareProfile,
+) -> ArtifactReport:
+    peak = None
+    weights_peak = None
+    if artifact.size_bytes is not None:
+        weights_peak = _range_bytes(weights_peak_for_bytes(artifact.size_bytes))
+    if (
+        artifact.format not in {ArtifactFormat.ADAPTER, ArtifactFormat.UNKNOWN}
+        and artifact.size_bytes is not None
+    ):
+        peak = _range_bytes(peak_for_weight_bytes(artifact.size_bytes, memory.kv))
+
+    budget = hardware.memory_budget_bytes
+    if peak is None or budget is None:
+        fits = ClaimStatus.UNKNOWN
+    elif peak.max <= budget:
+        fits = ClaimStatus.YES
+    elif peak.min > budget:
+        fits = ClaimStatus.NO
+    else:
+        fits = ClaimStatus.UNKNOWN
+
+    if weights_peak is None or budget is None:
+        weights_fit = ClaimStatus.UNKNOWN
+    elif weights_peak.max <= budget:
+        weights_fit = ClaimStatus.YES
+    elif weights_peak.min > budget:
+        weights_fit = ClaimStatus.NO
+    else:
+        weights_fit = ClaimStatus.UNKNOWN
+
+    # If weights alone exceed the budget, the full model cannot fit even when
+    # the context cache is unknown. Keep that definitive answer.
+    if weights_fit == ClaimStatus.NO:
+        fits = ClaimStatus.NO
+
+    return ArtifactReport(
+        path=artifact.path,
+        files=list(artifact.files),
+        format=artifact.format.value,  # type: ignore[arg-type]
+        quantization=artifact.quantization,
+        size_bytes=artifact.size_bytes,
+        runtime_hint=artifact.runtime_hint,
+        direct=artifact.direct,
+        fits=fits.value,
+        peak=peak,
+        weights_fit=weights_fit.value,
+        weights_peak=weights_peak,
+        confidence=artifact.confidence.value,  # type: ignore[arg-type]
+        note=artifact.note,
+    )
+
+
 def build_response(
     *,
     request: CheckRequest,
@@ -280,6 +339,7 @@ def build_response(
     support: SupportClaim,
     verified: VerifiedClaim,
     result: VerdictResult,
+    artifacts: tuple[ArtifactInfo, ...],
     cache_info: CacheInfo,
 ) -> CheckResponse:
     cls = model_class(inspection)
@@ -483,6 +543,7 @@ def build_response(
         speed=speed_report,
         recommendations=[],
         environment_hint=None,
+        artifacts=[_artifact_report(artifact, memory, hardware) for artifact in artifacts],
         assumptions=_assumptions(
             request=request,
             inspection=inspection,

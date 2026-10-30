@@ -370,6 +370,33 @@ class EnvironmentHint(StrictModel):
     notes: list[str]
 
 
+# --------------------------------------------------------------- artifacts
+
+
+class ArtifactReport(StrictModel):
+    path: str
+    files: list[str]
+    format: Literal[
+        "gguf",
+        "safetensors",
+        "pytorch_pickle",
+        "ctranslate2",
+        "onnx",
+        "adapter",
+        "unknown",
+    ]
+    quantization: str | None
+    size_bytes: int | None
+    runtime_hint: str | None
+    direct: bool
+    fits: ClaimStatusValue
+    peak: RangeBytes | None
+    weights_fit: ClaimStatusValue
+    weights_peak: RangeBytes | None
+    confidence: ConfidenceValue
+    note: str
+
+
 # ------------------------------------------------------------------- response
 
 
@@ -386,6 +413,7 @@ class CheckResponse(StrictModel):
     speed: SpeedReport
     recommendations: list[Recommendation]
     environment_hint: EnvironmentHint | None
+    artifacts: list[ArtifactReport]
     assumptions: list[AssumptionItem]
     warnings: list[WarningItem]
     links: Links

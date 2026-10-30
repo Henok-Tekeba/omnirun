@@ -82,6 +82,45 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** ArtifactReport */
+        ArtifactReport: {
+            /** Path */
+            path: string;
+            /** Files */
+            files: string[];
+            /**
+             * Format
+             * @enum {string}
+             */
+            format: "gguf" | "safetensors" | "pytorch_pickle" | "ctranslate2" | "onnx" | "adapter" | "unknown";
+            /** Quantization */
+            quantization: string | null;
+            /** Size Bytes */
+            size_bytes: number | null;
+            /** Runtime Hint */
+            runtime_hint: string | null;
+            /** Direct */
+            direct: boolean;
+            /**
+             * Fits
+             * @enum {string}
+             */
+            fits: "yes" | "no" | "unknown";
+            peak: components["schemas"]["RangeBytes"] | null;
+            /**
+             * Weights Fit
+             * @enum {string}
+             */
+            weights_fit: "yes" | "no" | "unknown";
+            weights_peak: components["schemas"]["RangeBytes"] | null;
+            /**
+             * Confidence
+             * @enum {string}
+             */
+            confidence: "high" | "medium" | "low";
+            /** Note */
+            note: string;
+        };
         /** AssumptionItem */
         AssumptionItem: {
             /** Id */
@@ -149,6 +188,8 @@ export interface components {
             /** Recommendations */
             recommendations: components["schemas"]["Recommendation"][];
             environment_hint: components["schemas"]["EnvironmentHint"] | null;
+            /** Artifacts */
+            artifacts: components["schemas"]["ArtifactReport"][];
             /** Assumptions */
             assumptions: components["schemas"]["AssumptionItem"][];
             /** Warnings */

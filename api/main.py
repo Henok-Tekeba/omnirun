@@ -27,6 +27,7 @@ from api.schemas import (
 from api.service import build_response, error_response, resolve_hardware
 from api.settings import Settings
 from core import __version__
+from core.artifacts import discover_artifacts
 from core.cache import DiskCache
 from core.errors import OmniRunError
 from core.estimate import estimate_memory
@@ -62,6 +63,7 @@ def _result_cache_key(request: CheckRequest, settings: Settings, matrix_updated:
         "batch": request.batch,
         "token_scope": _token_scope(token),
         "support_updated": matrix_updated,
+        "artifacts": 2,
     }
     return json.dumps(payload, sort_keys=True, separators=(",", ":"))
 
@@ -278,6 +280,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 async with request.app.state.check_semaphore:
                     hardware = resolve_hardware(payload, device_table)
                     inspection = await inspect_model(client, payload.model, token=token)
+                    artifacts = discover_artifacts(inspection.repo)
                     memory = estimate_memory(
                         inspection,
                         context=payload.context,
@@ -311,6 +314,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                         support=support,
                         verified=verified,
                         result=result,
+                        artifacts=artifacts,
                         cache_info=CacheInfo(
                             model_info_cached=inspection.repo.cache_hit,
                             model_info_stale=inspection.repo.cache_stale,

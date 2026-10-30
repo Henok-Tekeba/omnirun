@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import Any
 
+from core.artifacts import has_multiple_gguf_artifacts, primary_gguf_artifact
 from core.errors import HFError
 from core.hf_client import HFClient, HFRepo
 from core.inspect.config import ModelConfig, parse_config
@@ -282,24 +283,30 @@ async def _inspect_pickle(
 
 
 def _inspect_gguf_placeholder(repo: HFRepo) -> GGUFPlaceholder | None:
-    files = tuple(sorted(path for path in repo.filenames() if path.lower().endswith(".gguf")))
-    if not files:
+    artifact = primary_gguf_artifact(repo)
+    if artifact is None:
         return None
-    sizes = [repo.file(path).size if repo.file(path) else None for path in files]
-    complete = all(size is not None for size in sizes)
-    total = sum(size for size in sizes if size is not None) if complete else None
-    return GGUFPlaceholder(
-        files=files,
-        file_bytes=total,
-        complete=complete,
-        issues=(
+    issues = [
+        _config_issue(
+            "gguf_file_size_only",
+            "GGUF file bytes include metadata; they are shown as an upper bound.",
+            "warning",
+        )
+    ]
+    if has_multiple_gguf_artifacts(repo):
+        issues.append(
             _config_issue(
-                "gguf_file_size_only",
-                "GGUF header inspection is not yet enabled in this build; file bytes "
-                "are shown as a provisional upper bound.",
+                "multiple_gguf_artifacts",
+                "This repo has multiple GGUF variants. The main result uses the smallest "
+                "file; see the artifact shelf for each variant.",
                 "warning",
-            ),
-        ),
+            )
+        )
+    return GGUFPlaceholder(
+        files=artifact.files,
+        file_bytes=artifact.size_bytes,
+        complete=artifact.size_bytes is not None,
+        issues=tuple(issues),
     )
 
 

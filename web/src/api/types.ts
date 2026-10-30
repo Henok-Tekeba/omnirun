@@ -20,6 +20,7 @@ export type RangeBytes = components["schemas"]["RangeBytes"];
 export type RangeFloat = components["schemas"]["RangeFloat"];
 export type Recommendation = components["schemas"]["Recommendation"];
 export type EnvironmentHint = components["schemas"]["EnvironmentHint"];
+export type ArtifactReport = components["schemas"]["ArtifactReport"];
 export type HardwareSummary = components["schemas"]["HardwareSummary"];
 export type ModelSummary = components["schemas"]["ModelSummary"];
 export type Reason = components["schemas"]["Reason"];

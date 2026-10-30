@@ -176,6 +176,140 @@
   },
   "components": {
     "schemas": {
+      "ArtifactReport": {
+        "properties": {
+          "path": {
+            "type": "string",
+            "title": "Path"
+          },
+          "files": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Files"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "gguf",
+              "safetensors",
+              "pytorch_pickle",
+              "ctranslate2",
+              "onnx",
+              "adapter",
+              "unknown"
+            ],
+            "title": "Format"
+          },
+          "quantization": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quantization"
+          },
+          "size_bytes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size Bytes"
+          },
+          "runtime_hint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Runtime Hint"
+          },
+          "direct": {
+            "type": "boolean",
+            "title": "Direct"
+          },
+          "fits": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no",
+              "unknown"
+            ],
+            "title": "Fits"
+          },
+          "peak": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RangeBytes"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "weights_fit": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no",
+              "unknown"
+            ],
+            "title": "Weights Fit"
+          },
+          "weights_peak": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RangeBytes"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence"
+          },
+          "note": {
+            "type": "string",
+            "title": "Note"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "path",
+          "files",
+          "format",
+          "quantization",
+          "size_bytes",
+          "runtime_hint",
+          "direct",
+          "fits",
+          "peak",
+          "weights_fit",
+          "weights_peak",
+          "confidence",
+          "note"
+        ],
+        "title": "ArtifactReport"
+      },
       "AssumptionItem": {
         "properties": {
           "id": {
@@ -352,6 +486,13 @@
               }
             ]
           },
+          "artifacts": {
+            "items": {
+              "$ref": "#/components/schemas/ArtifactReport"
+            },
+            "type": "array",
+            "title": "Artifacts"
+          },
           "assumptions": {
             "items": {
               "$ref": "#/components/schemas/AssumptionItem"
@@ -388,6 +529,7 @@
           "speed",
           "recommendations",
           "environment_hint",
+          "artifacts",
           "assumptions",
           "warnings",
           "links",

@@ -203,6 +203,16 @@ export function LinkIcon(props: IconProps) {
   );
 }
 
+export function Download(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M12 3v12" />
+      <path d="m7 10 5 5 5-5" />
+      <path d="M4 21h16" />
+    </svg>
+  );
+}
+
 export function Copy(props: IconProps) {
   return (
     <svg {...base(props)}>

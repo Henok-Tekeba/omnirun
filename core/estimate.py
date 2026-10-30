@@ -490,6 +490,23 @@ def estimate_weights(inspection: ModelInspection) -> WeightEstimate:
     )
 
 
+def weights_peak_for_bytes(weight_bytes: int) -> RangeEstimate:
+    """Weights plus runtime overhead, without KV cache.
+
+    Used by the artifact shelf when the repo has no config.json and the KV
+    cache is therefore unknown. This is a partial answer, not a full peak.
+    """
+    base = OVERHEAD_BASE_GIB * GIB
+    overhead_min = base + OVERHEAD_FRACTION_MIN * weight_bytes
+    overhead_likely = base + OVERHEAD_FRACTION_LIKELY * weight_bytes
+    overhead_max = base + OVERHEAD_FRACTION_MAX * weight_bytes
+    return RangeEstimate(
+        weight_bytes + overhead_min,
+        weight_bytes + overhead_likely,
+        weight_bytes + overhead_max,
+    )
+
+
 def peak_for_weight_bytes(weight_bytes: int, kv: KVEstimate) -> RangeEstimate | None:
     """Peak memory if weights had a different (hypothetical) byte size."""
     if kv.bytes_range is None:

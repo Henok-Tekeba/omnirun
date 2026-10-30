@@ -31,6 +31,8 @@ test.describe("OmniRun preflight", () => {
       page.getByRole("heading", { name: "VERIFIED", exact: true }),
     ).toBeVisible();
     await expect(page.getByText("No recorded runs yet")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Artifacts" })).toBeVisible();
+    await expect(page.locator(".artifact-row").first()).toBeVisible();
     await expect(page.getByRole("heading", { name: "Budget and peak" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Speed" })).toBeVisible();
     await expect(page.getByText(/estimated|estimate/i).first()).toBeVisible();

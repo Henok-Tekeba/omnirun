@@ -68,8 +68,10 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
   const alternatives = result.memory.weights.alternatives;
   const recommendations = result.recommendations;
   const hint = result.environment_hint;
+  const actualArtifacts = result.artifacts?.length ?? 0;
+  const showAlternatives = alternatives.length > 0 && actualArtifacts === 0;
   const hasAnything =
-    alternatives.length > 0 ||
+    showAlternatives ||
     recommendations.length > 0 ||
     Boolean(hint?.available && (hint.command || hint.notes.length));
 
@@ -98,15 +100,16 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
                 No extra options
               </p>
               <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
-                The API returned no smaller-weight estimates or suggestions for this model.
-                The result above is complete. Try a different context, batch, or machine.
+                {actualArtifacts > 0
+                  ? "Real artifacts are listed above. No extra suggestions were returned."
+                  : "The API returned no smaller-weight estimates or suggestions for this model. Try a different context, batch, or machine."}
               </p>
             </div>
           </div>
         </div>
       ) : null}
 
-      {alternatives.length ? (
+      {showAlternatives ? (
         <div>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
@@ -160,7 +163,7 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
       ) : null}
 
       {recommendations.length ? (
-        <div className={alternatives.length ? "mt-5 border-t border-[var(--line)] pt-4" : ""}>
+        <div className={showAlternatives ? "mt-5 border-t border-[var(--line)] pt-4" : ""}>
           <h3 className="text-[13px] font-semibold">Recommendations</h3>
           <div className="mt-2">
             {recommendations.map((item, index) => (
@@ -171,7 +174,7 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
       ) : null}
 
       {hint?.available && (hint.command || hint.notes.length) ? (
-        <div className={alternatives.length || recommendations.length ? "mt-5 border-t border-[var(--line)] pt-4" : ""}>
+        <div className={showAlternatives || recommendations.length ? "mt-5 border-t border-[var(--line)] pt-4" : ""}>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <Terminal size={14} className="text-[var(--accent)]" />
@@ -201,7 +204,7 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
         </div>
       ) : null}
 
-      {!alternatives.length && !recommendations.length && hasAnything ? (
+      {!showAlternatives && !recommendations.length && hasAnything ? (
         <div className="mt-3">
           <EmptyLine>No smaller-weight estimates were returned.</EmptyLine>
         </div>

@@ -95,6 +95,14 @@ async def test_go_response_and_result_cache(tmp_path: Path) -> None:
             assert data["links"]["hf_model"].startswith("https://huggingface.co/")
             assert data["assumptions"]
             assert data["recommendations"] == []
+            artifacts = {item["path"]: item for item in data["artifacts"]}
+            assert "model.safetensors" in artifacts
+            assert artifacts["model.safetensors"]["format"] == "safetensors"
+            assert artifacts["model.safetensors"]["fits"] == "yes"
+            assert artifacts["model.safetensors"]["weights_fit"] == "yes"
+            assert artifacts["model.safetensors"]["weights_peak"] is not None
+            assert artifacts["model.safetensors"]["files"] == ["model.safetensors"]
+            assert any(item["format"] == "onnx" for item in data["artifacts"])
 
             again = await client.post("/check", json=payload)
             assert again.status_code == 200

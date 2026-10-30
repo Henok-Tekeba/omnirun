@@ -95,7 +95,9 @@ for the web picker. It is a lookup table, not a measurement.
 
 The response always reports FITS, SUPPORTED, and VERIFIED as separate claims.
 GO means FITS + a directly usable SUPPORTED runtime; it does not mean VERIFIED.
-VERIFIED is empty in v1.
+VERIFIED is empty in v1. `artifacts` lists actual files found in the repo
+(GGUF/safetensors/ONNX/etc.) with sizes and fit estimates; the UI uses it for
+the real artifact shelf instead of inventing quantization alternatives.
 
 ## Honesty rules
 
