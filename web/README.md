@@ -2,6 +2,8 @@
 
 Vite + React + TypeScript + Tailwind frontend for the OmniRun API.
 
+Static preview: https://henok-tekeba.github.io/omnirun/
+
 The root page is a fixed light marketing composition (hero + pastel console
 preview). “Run a preflight” opens the app dashboard: a light sidebar shell with
 white cards, the same visual language as the preview. Method/claims

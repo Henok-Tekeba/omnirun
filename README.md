@@ -8,6 +8,9 @@ versioned JSON report with memory math, decode-speed ranges, and three separate
 claims: **FITS**, **SUPPORTED**, and **VERIFIED**.
 
 > Status: v1 backend, core library, hardware helper, and web frontend.
+>
+> Static preview: https://henok-tekeba.github.io/omnirun/ (GitHub Pages hosts
+> the interface; live preflights need the local API).
 
 ## Quick start
 
