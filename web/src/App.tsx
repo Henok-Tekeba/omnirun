@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { CheckResponse } from "./api/types";
 import type { FieldErrors, FormState } from "./lib/form";
 import {
   DEFAULT_FORM,
@@ -15,6 +16,9 @@ import { FinderView } from "./components/FinderView";
 import { LoadingView } from "./components/LoadingView";
 import { MarketingLanding } from "./components/MarketingLanding";
 import { ResultView } from "./components/ResultView";
+import { StaticPreviewBanner } from "./components/StaticPreviewBanner";
+import { SAMPLE_RESULT } from "./demo/sample";
+import { IS_STATIC_PREVIEW } from "./lib/env";
 
 type Phase = "landing" | "form" | "loading" | "result" | "finder";
 
@@ -60,6 +64,7 @@ export default function App() {
     initialQuery.form.model ? "form" : "landing",
   );
   const [shareUrl, setShareUrl] = useState("");
+  const [sampleResult, setSampleResult] = useState<CheckResponse | null>(null);
   const devicesState = useDevices();
   const check = useCheck();
   const autoRunRef = useRef(false);
@@ -82,6 +87,7 @@ export default function App() {
 
       setFieldErrors({});
       saveHardware(candidate);
+      setSampleResult(null);
       setPhase("loading");
       setShareUrl("");
       clearRunFlag();
@@ -170,24 +176,35 @@ export default function App() {
 
   const handleEdit = useCallback(() => {
     resetCheck();
+    setSampleResult(null);
     setPhase("form");
     clearRunFlag();
     scrollToTop();
   }, [resetCheck]);
 
   const handleStart = useCallback(() => {
+    setSampleResult(null);
     setPhase("form");
     scrollToTop();
   }, []);
 
   const handleFind = useCallback(() => {
+    setSampleResult(null);
     setPhase("finder");
     scrollToTop();
   }, []);
 
+  const handleSample = useCallback(() => {
+    resetCheck();
+    setSampleResult(SAMPLE_RESULT);
+    setPhase("result");
+    scrollToTop();
+  }, [resetCheck]);
+
   const handleOpenModel = useCallback((repoId: string) => {
     setForm((current) => ({ ...current, model: repoId }));
     setFieldErrors({});
+    setSampleResult(null);
     setPhase("form");
     scrollToTop();
   }, []);
@@ -199,12 +216,13 @@ export default function App() {
 
   const handleBackToLanding = useCallback(() => {
     resetCheck();
+    setSampleResult(null);
     setPhase("landing");
     window.history.replaceState(null, "", window.location.pathname);
     scrollToTop();
   }, [resetCheck]);
 
-  const result = phase === "result" ? check.result : null;
+  const result = phase === "result" ? (check.result ?? sampleResult) : null;
   const showResult = result !== null;
   const error = phase === "form" ? check.error : null;
 
@@ -243,6 +261,8 @@ export default function App() {
         ) : null
       }
     >
+      {IS_STATIC_PREVIEW ? <StaticPreviewBanner onSample={handleSample} /> : null}
+
       {phase === "loading" ? (
         <LoadingView
           model={form.model}
@@ -250,7 +270,12 @@ export default function App() {
           onCancel={handleCancel}
         />
       ) : showResult ? (
-        <ResultView result={result} shareUrl={shareUrl} onEdit={handleEdit} />
+        <ResultView
+          result={result}
+          shareUrl={shareUrl}
+          sample={sampleResult !== null}
+          onEdit={handleEdit}
+        />
       ) : phase === "finder" ? (
         <FinderView
           form={form}

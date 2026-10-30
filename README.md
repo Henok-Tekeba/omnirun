@@ -33,6 +33,24 @@ For a production-style web build:
 npm run build
 ```
 
+## Static site / GitHub Pages
+
+The frontend is deployed to GitHub Pages by
+`.github/workflows/deploy-pages.yml`. GitHub Pages can host the static Vite
+build, not the FastAPI process. The deployed build therefore shows a clearly
+labelled **Static preview** banner and a recorded sample result.
+
+To connect a hosted API, set the repository variable `VITE_API_BASE_URL` to the
+API root (for example `https://api.example.com`) and re-run the workflow. The
+frontend will call `/check`, `/find`, and `/devices` on that host.
+
+Local production build with the GitHub Pages base path:
+
+```bash
+cd web
+VITE_BASE_PATH=/omnirun/ npm run build
+```
+
 ## Development
 
 Backend:
@@ -104,6 +122,11 @@ best fitting smaller weights, and free-memory/smaller-context scenarios.
 `POST /find` is a hardware-first candidate search. It inspects a bounded pool
 of Hugging Face models and ranks them by fit, runtime support, artifact
 availability, and size — not by downloads, likes, or model quality.
+
+The web app also includes privacy and terms pages at `?page=privacy` and
+`?page=terms`, a cookie/storage notice, a site footer, and a mobile navigation
+menu. The cookie notice is informational: OmniRun uses no analytics or
+advertising cookies, only essential browser storage.
 
 ## Honesty rules
 

@@ -1,6 +1,16 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("OmniRun preflight", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      try {
+        localStorage.setItem("omnirun.cookie-consent", "essential");
+      } catch {
+        /* Storage can be unavailable. */
+      }
+    });
+  });
+
   test("happy path: real small public model with the manual hardware picker", async ({
     page,
   }) => {

@@ -4,8 +4,9 @@ Vite + React + TypeScript + Tailwind frontend for the OmniRun API.
 
 The root page is a fixed light marketing composition (hero + pastel console
 preview). “Run a preflight” opens the app dashboard: a light sidebar shell with
-white cards, the same visual language as the preview. The landing page itself
-has no footer or long-form sections; method/claims explanations are dialogs.
+white cards, the same visual language as the preview. Method/claims
+explanations are dialogs; the landing page has a site footer, mobile menu, and
+links to the legal pages.
 
 The result view includes an **artifact shelf** backed by `GET /check` →
 `artifacts`: real GGUF/safetensors/ONNX/CTranslate2 files from the HF tree,
@@ -21,6 +22,21 @@ The dashboard’s **Find models** view calls `POST /find` with the current
 hardware. It searches a bounded HF candidate pool, inspects each candidate, and
 ranks by fit, support, artifact availability, and size. It does not rank model
 quality.
+
+## Static GitHub Pages build
+
+The GitHub Pages workflow builds the frontend only. GitHub Pages cannot run the
+Python API, so a production build without `VITE_API_BASE_URL` renders a
+**Static preview** banner and a recorded sample result. Live checks require the
+local API or a separately hosted API.
+
+- `VITE_BASE_PATH` controls the Pages subpath (for example `/omnirun/`).
+- `VITE_API_BASE_URL` points the frontend at a hosted API root. When omitted,
+  API calls use the local `/api` Vite proxy in development and the static
+  preview mode in a production build.
+- Legal pages live at `?page=privacy` and `?page=terms`.
+- Cookie choice and hardware preference are stored in `localStorage`; the app
+  sets no analytics or advertising cookies.
 
 ## Run everything from the repo root
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_DOCS_URL, IS_STATIC_PREVIEW, REPO_URL, SITE_BASE } from "../lib/env";
 import {
   ArrowRight,
   CheckCircle,
@@ -7,12 +8,14 @@ import {
   Gauge,
   HelpCircle,
   Layers,
+  Menu,
   Search,
   ShieldCheck,
   Sliders,
   Spark,
   X,
 } from "./Icons";
+import { SiteFooter } from "./SiteFooter";
 
 interface MarketingLandingProps {
   onStart: () => void;
@@ -51,6 +54,8 @@ const SIDE_ASCII = String.raw`  ╭──────────────╮
 
 export function MarketingLanding({ onStart }: MarketingLandingProps) {
   const [dialog, setDialog] = useState<DialogKind | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const apiHref = IS_STATIC_PREVIEW ? `${REPO_URL}#api-contract` : API_DOCS_URL;
 
   useEffect(() => {
     if (!dialog) return;
@@ -66,38 +71,95 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
     };
   }, [dialog]);
 
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  const openDialog = (kind: DialogKind) => {
+    setMobileOpen(false);
+    setDialog(kind);
+  };
+
+  const start = () => {
+    setMobileOpen(false);
+    onStart();
+  };
+
   return (
     <div className="marketing">
+      <a className="skip-link" href="#marketing-hero">
+        Skip to content
+      </a>
       <div className="marketing-shell">
         <div className="marketing-left">
           <header className="marketing-nav">
-            <a href="/" className="marketing-logo" aria-label="OmniRun home">
+            <a href={SITE_BASE} className="marketing-logo" aria-label="OmniRun home">
               <Spark size={17} />
               <span>OmniRun</span>
             </a>
             <nav className="marketing-links" aria-label="Main">
-              <button type="button" onClick={onStart}>
+              <button type="button" onClick={start}>
                 Preflight
               </button>
-              <button type="button" onClick={() => setDialog("claims")}>
+              <button type="button" onClick={() => openDialog("claims")}>
                 Checks
               </button>
-              <button type="button" onClick={onStart}>
+              <button type="button" onClick={start}>
                 Hardware
               </button>
-              <button type="button" onClick={() => setDialog("method")}>
+              <button type="button" onClick={() => openDialog("method")}>
                 Method
               </button>
-              <a href="/api/docs" target="_blank" rel="noreferrer">
+              <a href={apiHref} target="_blank" rel="noreferrer">
                 API
               </a>
             </nav>
-            <button type="button" className="marketing-login" onClick={onStart}>
+            <button
+              type="button"
+              className="marketing-menu-toggle"
+              aria-expanded={mobileOpen}
+              aria-controls="marketing-mobile-menu"
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              onClick={() => setMobileOpen((open) => !open)}
+            >
+              {mobileOpen ? <X size={17} /> : <Menu size={17} />}
+            </button>
+            <button type="button" className="marketing-login" onClick={start}>
               Console
             </button>
+            {mobileOpen ? (
+              <div
+                id="marketing-mobile-menu"
+                className="marketing-mobile-menu"
+                role="navigation"
+                aria-label="Mobile"
+              >
+                <button type="button" onClick={start}>
+                  Preflight
+                </button>
+                <button type="button" onClick={() => openDialog("claims")}>
+                  Checks
+                </button>
+                <button type="button" onClick={start}>
+                  Hardware
+                </button>
+                <button type="button" onClick={() => openDialog("method")}>
+                  Method
+                </button>
+                <a href={apiHref} target="_blank" rel="noreferrer">
+                  API
+                </a>
+                <a href="?page=privacy">Privacy</a>
+                <a href="?page=terms">Terms</a>
+              </div>
+            ) : null}
           </header>
 
-          <div className="marketing-hero">
+          <main id="marketing-hero" className="marketing-hero" tabIndex={-1}>
             <div className="marketing-pill">
               <Spark size={11} />
               Metadata-only model preflight
@@ -118,22 +180,26 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
             </p>
 
             <div className="marketing-actions">
-              <button type="button" className="marketing-primary" onClick={onStart}>
+              <button type="button" className="marketing-primary" onClick={start}>
                 Run a preflight
                 <ArrowRight size={14} />
               </button>
               <button
                 type="button"
                 className="marketing-secondary"
-                onClick={() => setDialog("method")}
+                onClick={() => openDialog("method")}
               >
                 See how it works
               </button>
             </div>
-          </div>
+          </main>
         </div>
 
-        <div className="marketing-visual" aria-label="OmniRun console preview">
+        <div
+          className="marketing-visual"
+          role="img"
+          aria-label="OmniRun console preview"
+        >
           <div className="marketing-aurora" aria-hidden="true" />
           <div className="marketing-noise" aria-hidden="true" />
           <div className="marketing-ascii-bg" aria-hidden="true">
@@ -337,6 +403,8 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
         </div>
       </div>
 
+      <SiteFooter onStart={onStart} />
+
       {dialog ? (
         <div
           className="marketing-modal"
@@ -434,7 +502,7 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
 
             <div className="marketing-dialog-footer">
               <span>Source: ASSUMPTIONS.md in the repository.</span>
-              <button type="button" className="marketing-primary" onClick={onStart}>
+              <button type="button" className="marketing-primary" onClick={start}>
                 Open console
                 <ArrowRight size={13} />
               </button>

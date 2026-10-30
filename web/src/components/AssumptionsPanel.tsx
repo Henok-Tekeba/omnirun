@@ -2,7 +2,13 @@ import type { CheckResponse } from "../api/types";
 import { CopyButton } from "./CopyButton";
 import { ChevronDown, RotateCcw } from "./Icons";
 
-export function AssumptionsPanel({ result }: { result: CheckResponse }) {
+export function AssumptionsPanel({
+  result,
+  sample = false,
+}: {
+  result: CheckResponse;
+  sample?: boolean;
+}) {
   const cache = result.cache;
   return (
     <section className="console" aria-labelledby="assumptions-title">
@@ -23,7 +29,9 @@ export function AssumptionsPanel({ result }: { result: CheckResponse }) {
 
       <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 font-mono text-[9.5px] text-[var(--faint)]">
         <span>Request ID: {result.request_id}</span>
-        <span>{cache.result_cache_hit ? "Cached result" : "Fresh result"}</span>
+        <span>
+          {sample ? "Recorded sample" : cache.result_cache_hit ? "Cached result" : "Fresh result"}
+        </span>
       </div>
 
       <details className="mt-3 border-t border-[var(--line)] pt-2">

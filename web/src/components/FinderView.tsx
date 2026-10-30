@@ -270,7 +270,7 @@ export function FinderView({
             </select>
             <button
               type="button"
-              className="btn btn-primary"
+              className="btn btn-primary w-full md:w-auto"
               onClick={() => void search()}
               disabled={status === "loading"}
             >

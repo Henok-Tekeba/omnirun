@@ -6,6 +6,7 @@ import type {
   FindRequest,
   FindResponse,
 } from "./types";
+import { API_BASE } from "../lib/env";
 
 const CHECK_TIMEOUT_MS = 60_000;
 const FIND_TIMEOUT_MS = 35_000;
@@ -151,7 +152,7 @@ async function requestJson<T>(
 
 export function getDevices(signal?: AbortSignal): Promise<DevicesResponse> {
   return requestJson<DevicesResponse>(
-    "/api/devices",
+    `${API_BASE}/devices`,
     { method: "GET", signal },
     DEVICES_TIMEOUT_MS,
   );
@@ -162,7 +163,7 @@ export function checkModel(
   signal?: AbortSignal,
 ): Promise<CheckResponse> {
   return requestJson<CheckResponse>(
-    "/api/check",
+    `${API_BASE}/check`,
     {
       method: "POST",
       signal,
@@ -178,7 +179,7 @@ export function findModels(
   signal?: AbortSignal,
 ): Promise<FindResponse> {
   return requestJson<FindResponse>(
-    "/api/find",
+    `${API_BASE}/find`,
     {
       method: "POST",
       signal,

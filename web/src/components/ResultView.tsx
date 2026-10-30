@@ -21,10 +21,25 @@ import { WhatYouNeed } from "./WhatYouNeed";
 interface ResultViewProps {
   result: CheckResponse;
   shareUrl: string;
+  sample?: boolean;
   onEdit: () => void;
 }
 
-export function ResultView({ result, shareUrl, onEdit }: ResultViewProps) {
+function RepoTitle({ value }: { value: string }) {
+  const [org, ...rest] = value.split("/");
+  return (
+    <>
+      {org}
+      {rest.length ? (
+        <>
+          <wbr />/{rest.join("/")}
+        </>
+      ) : null}
+    </>
+  );
+}
+
+export function ResultView({ result, shareUrl, sample = false, onEdit }: ResultViewProps) {
   return (
     <div className="space-y-5">
       <p className="sr-only" role="status" aria-live="polite">
@@ -44,6 +59,7 @@ export function ResultView({ result, shareUrl, onEdit }: ResultViewProps) {
               <div className="flex flex-wrap items-center gap-2">
                 <span className="badge">{result.model.model_class.toUpperCase()}</span>
                 <span className="badge">{result.model.format}</span>
+                {sample ? <span className="badge badge-optimize">recorded sample</span> : null}
                 {result.model.gated ? (
                   <span className="badge">
                     <Lock size={10} /> gated
@@ -60,7 +76,9 @@ export function ResultView({ result, shareUrl, onEdit }: ResultViewProps) {
                   </span>
                 ) : null}
               </div>
-              <h1 className="repo-title mt-2">{result.model.repo_id}</h1>
+              <h1 className="repo-title mt-2">
+                <RepoTitle value={result.model.repo_id} />
+              </h1>
               <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[9px] text-[var(--faint)]">
                 <span>Revision {shortRevision(result.model.revision, 10)}</span>
                 <span>Checked {formatDateTime(result.checked_at)}</span>
@@ -79,12 +97,14 @@ export function ResultView({ result, shareUrl, onEdit }: ResultViewProps) {
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              <CopyButton
-                value={shareUrl}
-                label="Copy share link"
-                copiedLabel="Link copied"
-                className="!min-h-9 !px-3 !py-2"
-              />
+              {sample ? null : (
+                <CopyButton
+                  value={shareUrl}
+                  label="Copy share link"
+                  copiedLabel="Link copied"
+                  className="!min-h-9 !px-3 !py-2"
+                />
+              )}
               <button type="button" className="btn btn-secondary btn-sm" onClick={onEdit}>
                 <ArrowLeft size={12} /> Edit inputs
               </button>
@@ -94,8 +114,9 @@ export function ResultView({ result, shareUrl, onEdit }: ResultViewProps) {
           <p className="mt-3 flex items-start gap-2 border-t border-[var(--line)] pt-2 text-[9.5px] leading-relaxed text-[var(--faint)]">
             <Clock size={11} className="mt-0.5 flex-none" />
             <span>
-              The share link includes the model, hardware, context, and batch. It never
-              includes your Hugging Face token. Helper codes contain machine details.
+              {sample
+                ? "This is a recorded sample from the local API, not a live check. The numbers are real for this model and hardware profile."
+                : "The share link includes the model, hardware, context, and batch. It never includes your Hugging Face token. Helper codes contain machine details."}
             </span>
           </p>
         </div>
@@ -119,7 +140,7 @@ export function ResultView({ result, shareUrl, onEdit }: ResultViewProps) {
         <WhatYouNeed result={result} />
       </div>
 
-      <AssumptionsPanel result={result} />
+      <AssumptionsPanel result={result} sample={sample} />
     </div>
   );
 }

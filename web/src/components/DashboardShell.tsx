@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { API_DOCS_URL, IS_STATIC_PREVIEW, REPO_URL } from "../lib/env";
+import { openCookieSettings } from "../lib/consent";
 import {
   ArrowRight,
   ExternalLink,
@@ -19,6 +21,8 @@ interface DashboardShellProps {
   onNewCheck: () => void;
   onFind: () => void;
 }
+
+const apiHref = IS_STATIC_PREVIEW ? `${REPO_URL}#api-contract` : API_DOCS_URL;
 
 export function DashboardShell({
   children,
@@ -72,7 +76,7 @@ export function DashboardShell({
           >
             <ShieldCheck size={13} /> Results
           </button>
-          <a className="dashboard-menu-item" href="/api/docs" target="_blank" rel="noreferrer">
+          <a className="dashboard-menu-item" href={apiHref} target="_blank" rel="noreferrer">
             <Gauge size={13} /> API reference <ExternalLink size={9} className="ml-auto" />
           </a>
         </nav>
@@ -97,7 +101,8 @@ export function DashboardShell({
           </div>
           <div className="dashboard-topbar-actions">
             <span className="dashboard-local">
-              <span className="dashboard-dot" /> Ready
+              <span className={`dashboard-dot ${IS_STATIC_PREVIEW ? "is-preview" : ""}`} />{" "}
+              {IS_STATIC_PREVIEW ? "Static preview" : "Ready"}
             </span>
             {actions}
           </div>
@@ -136,9 +141,16 @@ export function DashboardShell({
 
         <footer className="dashboard-footer">
           <span>Estimates are not guarantees. GO does not mean verified.</span>
-          <a href="/api/docs" target="_blank" rel="noreferrer" className="dashboard-footer-link">
-            API reference <ArrowRight size={10} />
-          </a>
+          <div className="dashboard-footer-links">
+            <a href="?page=privacy">Privacy</a>
+            <a href="?page=terms">Terms</a>
+            <button type="button" onClick={openCookieSettings}>
+              Cookies
+            </button>
+            <a href={apiHref} target="_blank" rel="noreferrer" className="dashboard-footer-link">
+              API reference <ArrowRight size={10} />
+            </a>
+          </div>
         </footer>
       </div>
     </div>

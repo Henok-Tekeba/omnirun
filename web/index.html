@@ -1,30 +1,41 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
     <meta
       name="description"
       content="OmniRun preflights a Hugging Face model against your hardware without downloading weights. FITS, SUPPORTED, and VERIFIED are reported separately."
     />
     <meta name="theme-color" content="#fbfbfa" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="robots" content="index,follow" />
+    <meta name="application-name" content="OmniRun" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="OmniRun" />
+    <meta property="og:title" content="OmniRun — model preflight" />
+    <meta
+      property="og:description"
+      content="Estimate memory fit and decode speed for local AI models without downloading weights. Estimates are not guarantees."
+    />
+    <meta property="og:url" content="https://henok-tekeba.github.io/omnirun/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="OmniRun — model preflight" />
+    <meta
+      name="twitter:description"
+      content="Metadata-only model preflight for local AI. FITS, SUPPORTED, and VERIFIED stay separate."
+    />
+    <link rel="canonical" href="https://henok-tekeba.github.io/omnirun/" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <link rel="manifest" href="%BASE_URL%site.webmanifest" />
     <title>OmniRun — model preflight</title>
-    <script>
-      (() => {
-        try {
-          const saved = localStorage.getItem("omnirun.theme");
-          if (saved === "light" || saved === "dark") {
-            document.documentElement.dataset.theme = saved;
-          }
-        } catch {
-          /* localStorage can be unavailable; dark remains the default. */
-        }
-      })();
-    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      OmniRun is a client-side React app. Enable JavaScript to use the preflight
+      console and read the legal pages.
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

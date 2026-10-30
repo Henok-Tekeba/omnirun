@@ -1,16 +1,25 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, getDevices } from "../api/client";
 import type { DeviceEntry } from "../api/types";
+import { IS_STATIC_PREVIEW } from "../lib/env";
 
 type DevicesStatus = "loading" | "ready" | "error";
 
 export function useDevices() {
   const [devices, setDevices] = useState<DeviceEntry[]>([]);
-  const [status, setStatus] = useState<DevicesStatus>("loading");
+  const [status, setStatus] = useState<DevicesStatus>(
+    IS_STATIC_PREVIEW ? "ready" : "loading",
+  );
   const [error, setError] = useState<ApiError | null>(null);
   const controllerRef = useRef<AbortController | null>(null);
 
   const load = useCallback(async () => {
+    if (IS_STATIC_PREVIEW) {
+      setDevices([]);
+      setStatus("ready");
+      setError(null);
+      return;
+    }
     controllerRef.current?.abort();
     const controller = new AbortController();
     controllerRef.current = controller;
@@ -38,6 +47,7 @@ export function useDevices() {
   }, []);
 
   useEffect(() => {
+    if (IS_STATIC_PREVIEW) return;
     void load();
     return () => controllerRef.current?.abort();
   }, [load]);
