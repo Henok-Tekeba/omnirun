@@ -126,16 +126,16 @@ export function CheckForm({
           </div>
 
           <div className="mt-2 flex flex-wrap items-start justify-between gap-2">
-            <p id="model-help" className="text-[11px] leading-relaxed text-[var(--muted)]">
+            <p id="model-help" className="text-sm leading-relaxed text-[var(--muted)]">
               Paste a model page URL or a repo ID like{" "}
-              <span className="font-mono text-[10px]">org/model</span>.
+              <span className="font-mono text-xs">org/model</span>.
             </p>
-            <span className="flex items-center gap-1.5 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)]">
+            <span className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)]">
               <Lock size={10} /> no weight downloads
             </span>
           </div>
           {errors.model ? (
-            <p id="model-error" className="mt-1 text-[11px] text-[var(--no)]">
+            <p id="model-error" className="mt-1 text-sm text-[var(--no)]">
               {errors.model}
             </p>
           ) : null}
@@ -150,10 +150,10 @@ export function CheckForm({
                 onClick={() => onExample(example.model)}
                 title={example.model}
               >
-                <span className="font-mono text-[10px] text-[var(--text-2)] underline decoration-[var(--line-strong)] underline-offset-3 group-hover:text-[var(--accent)] group-hover:decoration-[var(--accent)]">
+                <span className="font-mono text-xs text-[var(--text-2)] underline decoration-[var(--line-strong)] underline-offset-3 group-hover:text-[var(--accent)] group-hover:decoration-[var(--accent)]">
                   {example.label}
                 </span>
-                <span className="font-mono text-[8px] uppercase tracking-[0.06em] text-[var(--faint)]">
+                <span className="font-mono text-xs uppercase tracking-[0.06em] text-[var(--faint)]">
                   {example.note}
                 </span>
               </button>
@@ -198,8 +198,8 @@ export function CheckForm({
           <div className="mt-6 flex flex-col gap-3 border-t border-[var(--line)] pt-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="micro">Current setup</p>
-              <p className="mt-1 text-[12px] text-[var(--text-2)]">{summary}</p>
-              <p className="mt-0.5 font-mono text-[9px] text-[var(--faint)]">
+              <p className="mt-1 text-sm text-[var(--text-2)]">{summary}</p>
+              <p className="mt-0.5 font-mono text-xs text-[var(--faint)]">
                 Context {form.context || "—"} / Batch {form.batch || "—"}
               </p>
             </div>

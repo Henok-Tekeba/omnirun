@@ -72,7 +72,7 @@ function CandidateCard({
             ) : null}
           </div>
           <h3 className="finder-repo mt-2">{candidate.repo_id}</h3>
-          <p className="mt-1 text-[11px] text-[var(--muted)]">
+          <p className="mt-1 text-sm text-[var(--muted)]">
             {candidate.reason} {candidate.pipeline_tag ? `/ ${taskLabel(candidate.pipeline_tag)}` : ""}
           </p>
         </div>
@@ -82,25 +82,25 @@ function CandidateCard({
       <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 border-t border-[var(--line)] pt-2 sm:grid-cols-4">
         <div>
           <p className="micro">Memory</p>
-          <p className="mt-0.5 font-mono text-[11px] text-[var(--text-2)]">
+          <p className="mt-0.5 font-mono text-sm text-[var(--text-2)]">
             {formatBytesRange(candidate.peak)}
           </p>
         </div>
         <div>
           <p className="micro">Speed</p>
-          <p className="mt-0.5 font-mono text-[11px] text-[var(--text-2)]">
+          <p className="mt-0.5 font-mono text-sm text-[var(--text-2)]">
             {candidate.speed ? formatRangeFloat(candidate.speed, "tok/s") : "—"}
           </p>
         </div>
         <div>
           <p className="micro">Artifacts</p>
-          <p className="mt-0.5 font-mono text-[11px] text-[var(--text-2)]">
+          <p className="mt-0.5 font-mono text-sm text-[var(--text-2)]">
             {formatInteger(candidate.artifacts_count)}
           </p>
         </div>
         <div>
           <p className="micro">Best artifact</p>
-          <p className="mt-0.5 font-mono text-[11px] text-[var(--text-2)]">
+          <p className="mt-0.5 font-mono text-sm text-[var(--text-2)]">
             {formatGB(candidate.best_artifact_size_bytes)}
           </p>
         </div>
@@ -215,13 +215,13 @@ export function FinderView({
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <Cpu size={13} className="text-[var(--faint)]" />
-                <span className="text-[12px] text-[var(--text-2)]">{hardware}</span>
+                <span className="text-sm text-[var(--text-2)]">{hardware}</span>
               </div>
               <button type="button" className="btn btn-ghost btn-sm" onClick={onEditHardware}>
                 Change hardware
               </button>
             </div>
-            <p className="mt-1 text-[10px] text-[var(--faint)]">
+            <p className="mt-1 text-xs text-[var(--faint)]">
               Candidates are ranked by fit, runtime support, artifact availability, and size.
               Model quality is not scored.
             </p>
@@ -235,6 +235,10 @@ export function FinderView({
               />
               <input
                 className="field pl-8"
+                name="query"
+                aria-label="Search models"
+                autoComplete="off"
+                spellCheck={false}
                 placeholder="Search models (optional)"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
@@ -248,6 +252,7 @@ export function FinderView({
             </div>
             <select
               className="field"
+              name="task"
               value={task}
               onChange={(event) => setTask(event.target.value as Task)}
               aria-label="Task"
@@ -260,6 +265,7 @@ export function FinderView({
             </select>
             <select
               className="field"
+              name="limit"
               value={limit}
               onChange={(event) => setLimit(event.target.value)}
               aria-label="Result limit"
@@ -278,7 +284,7 @@ export function FinderView({
               <ArrowRight size={13} />
             </button>
           </div>
-          <p className="mt-2 text-[10px] text-[var(--faint)]">
+          <p className="mt-2 text-xs text-[var(--faint)]">
             An empty search uses a broad candidate pool, not a recommendation. Up to{" "}
             {limit} candidates are returned after inspection. Usually 5–20 seconds; slow
             candidates are skipped so one model cannot block the search.
@@ -287,16 +293,23 @@ export function FinderView({
           {status === "loading" ? (
             <div className="mt-4">
               <div className="progress-line" aria-hidden="true" />
-              <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.08em] text-[var(--muted)]">
+              <p
+                className="mt-2 font-mono text-xs uppercase tracking-[0.08em] text-[var(--muted)]"
+                role="status"
+                aria-live="polite"
+              >
                 Searching Hugging Face and inspecting candidates…
               </p>
             </div>
           ) : null}
 
           {error ? (
-            <div className="mt-4 border border-[color-mix(in_srgb,var(--no)_45%,var(--line))] bg-[var(--no-soft)] p-3">
-              <p className="text-[12px] font-medium text-[var(--no)]">Search failed</p>
-              <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">{error}</p>
+            <div
+              className="mt-4 border border-[color-mix(in_srgb,var(--no)_45%,var(--line))] bg-[var(--no-soft)] p-3"
+              role="alert"
+            >
+              <p className="text-sm font-medium text-[var(--no)]">Search failed</p>
+              <p className="mt-1 text-sm leading-relaxed text-[var(--muted)]">{error}</p>
             </div>
           ) : null}
         </div>
@@ -331,13 +344,13 @@ export function FinderView({
             )}
             {response.errors.length > 0 ? (
               <details className="mt-3 border-t border-[var(--line)] pt-2">
-                <summary className="cursor-pointer list-none font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)] hover:text-[var(--text-2)] [&::-webkit-details-marker]:hidden">
+                <summary className="cursor-pointer list-none font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)] hover:text-[var(--text-2)] [&::-webkit-details-marker]:hidden">
                   {response.errors.length} candidates could not be inspected
                 </summary>
                 <ul className="mt-2 space-y-1">
                   {response.errors.map((item) => (
-                    <li key={item.repo_id} className="text-[10px] text-[var(--muted)]">
-                      <span className="font-mono text-[9px]">{item.repo_id}</span>:{" "}
+                    <li key={item.repo_id} className="text-xs text-[var(--muted)]">
+                      <span className="font-mono text-xs">{item.repo_id}</span>:{" "}
                       {item.message}
                     </li>
                   ))}

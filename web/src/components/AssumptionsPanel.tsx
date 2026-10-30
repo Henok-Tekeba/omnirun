@@ -23,13 +23,13 @@ export function AssumptionsPanel({
         <h2 id="assumptions-title" className="module-title">
           Methodology
         </h2>
-        <p className="mt-1 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)]">
+        <p className="mt-1 font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)]">
           Estimates are not guarantees
         </p>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-[9.5px] text-[var(--faint)]">
-        <span>Request ID: {result.request_id}</span>
+      <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-xs text-[var(--faint)]">
+        <span className="break-all">Request ID: {result.request_id}</span>
         <span>
           {sample ? "Recorded sample" : cache.result_cache_hit ? "Cached" : "Computed now"}
         </span>
@@ -44,7 +44,7 @@ export function AssumptionsPanel({
       </div>
 
       <details className="mt-3 border-t border-[var(--line)] pt-2">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-2 py-1 text-[11px] text-[var(--muted)] [&::-webkit-details-marker]:hidden">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-2 py-1 text-sm text-[var(--muted)] [&::-webkit-details-marker]:hidden">
           <span>View methodology</span>
           <ChevronDown size={14} className="text-[var(--faint)]" />
         </summary>
@@ -52,9 +52,9 @@ export function AssumptionsPanel({
           {result.assumptions.map((assumption) => (
             <li
               key={assumption.id}
-              className="border-t border-[var(--line)] pt-2 text-[11px] leading-relaxed text-[var(--muted)] first:border-t-0 first:pt-0"
+              className="border-t border-[var(--line)] pt-2 text-sm leading-relaxed text-[var(--muted)] first:border-t-0 first:pt-0"
             >
-              <span className="font-mono text-[9px] uppercase tracking-[0.07em] text-[var(--faint)]">
+              <span className="font-mono text-xs uppercase tracking-[0.07em] text-[var(--faint)]">
                 {assumption.id}
               </span>
               <span className="mt-0.5 block">{assumption.text}</span>
@@ -64,7 +64,7 @@ export function AssumptionsPanel({
       </details>
 
       <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--line)] pt-3">
-        <p className="max-w-xl text-[10.5px] leading-relaxed text-[var(--faint)]">
+        <p className="max-w-xl text-xs leading-relaxed text-[var(--faint)]">
           Estimates are not guarantees. A GO is not a recorded run.
         </p>
         <div className="flex items-center gap-2">

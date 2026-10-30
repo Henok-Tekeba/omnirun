@@ -27,15 +27,15 @@ export function AdvancedPanel({
     <details id="advanced" className="group mt-6 border-t border-[var(--line)]">
       <summary className="flex min-h-[42px] cursor-pointer list-none items-center justify-between gap-3 py-2 [&::-webkit-details-marker]:hidden">
         <span className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-          <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--muted)]">
+          <span className="font-mono text-xs uppercase tracking-[0.1em] text-[var(--muted)]">
             Advanced settings
           </span>
-          <span className="font-mono text-[9px] text-[var(--faint)]">
+          <span className="font-mono text-xs text-[var(--faint)]">
             Context, batch, and token
           </span>
         </span>
         <span className="flex items-center gap-2">
-          <span className="hidden items-center gap-1.5 font-mono text-[8px] uppercase tracking-[0.08em] text-[var(--faint)] sm:flex">
+          <span className="hidden items-center gap-1.5 font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)] sm:flex">
             <Lock size={10} /> token not stored
           </span>
           <ChevronDown
@@ -53,6 +53,7 @@ export function AdvancedPanel({
           <div className="relative mt-2">
             <input
               id="context"
+              name="context"
               className="field field-mono pr-16"
               inputMode="numeric"
               autoComplete="off"
@@ -61,16 +62,16 @@ export function AdvancedPanel({
               aria-invalid={Boolean(errors.context)}
               aria-describedby="context-help"
             />
-            <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 font-mono text-[9px] text-[var(--faint)]">
+            <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 font-mono text-xs text-[var(--faint)]">
               tokens
             </span>
           </div>
-          <p id="context-help" className="mt-1.5 text-[10.5px] leading-relaxed text-[var(--muted)]">
+          <p id="context-help" className="mt-1.5 text-xs leading-relaxed text-[var(--muted)]">
             The context window used for the memory estimate. If it is above the model
             maximum, it is clamped.
           </p>
           {errors.context ? (
-            <p className="mt-1 text-[10.5px] text-[var(--no)]">{errors.context}</p>
+            <p className="mt-1 text-xs text-[var(--no)]">{errors.context}</p>
           ) : null}
         </div>
 
@@ -89,15 +90,15 @@ export function AdvancedPanel({
               aria-invalid={Boolean(errors.batch)}
               aria-describedby="batch-help"
             />
-            <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 font-mono text-[9px] text-[var(--faint)]">
+            <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 font-mono text-xs text-[var(--faint)]">
               sequences
             </span>
           </div>
-          <p id="batch-help" className="mt-1.5 text-[10.5px] leading-relaxed text-[var(--muted)]">
+          <p id="batch-help" className="mt-1.5 text-xs leading-relaxed text-[var(--muted)]">
             Number of sequences processed together. Speed assumes ideal batching.
           </p>
           {errors.batch ? (
-            <p className="mt-1 text-[10.5px] text-[var(--no)]">{errors.batch}</p>
+            <p className="mt-1 text-xs text-[var(--no)]">{errors.batch}</p>
           ) : null}
         </div>
 
@@ -112,6 +113,7 @@ export function AdvancedPanel({
             />
             <input
               id="hf-token"
+              name="hf-token"
               className="field field-mono px-8 pr-11"
               type={showToken ? "text" : "password"}
               autoComplete="off"
@@ -130,7 +132,7 @@ export function AdvancedPanel({
               {showToken ? <EyeOff size={14} /> : <Eye size={14} />}
             </button>
           </div>
-          <p className="mt-1.5 flex items-start gap-2 text-[10.5px] leading-relaxed text-[var(--muted)]">
+          <p className="mt-1.5 flex items-start gap-2 text-xs leading-relaxed text-[var(--muted)]">
             <Lock size={11} className="mt-0.5 flex-none text-[var(--accent)]" />
             <span>
               Sent only with this request. Never stored in the URL, browser storage, or the

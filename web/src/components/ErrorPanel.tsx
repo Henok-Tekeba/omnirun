@@ -34,20 +34,20 @@ export function ErrorPanel({
           </span>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-[8.5px] uppercase tracking-[0.1em] text-[var(--no)]">
+              <span className="font-mono text-xs uppercase tracking-[0.1em] text-[var(--no)]">
                 Something went wrong
               </span>
-              <span className="font-mono text-[8.5px] text-[var(--faint)]">
+              <span className="font-mono text-xs text-[var(--faint)]">
                 {error.code}
                 {error.status ? ` / HTTP ${error.status}` : ""}
               </span>
             </div>
-            <p className="mt-1.5 text-[14px] font-semibold">{copy.title}</p>
-            <p className="mt-1 max-w-2xl text-[12px] leading-relaxed text-[var(--text-2)]">
+            <p className="mt-1.5 text-sm font-semibold">{copy.title}</p>
+            <p className="mt-1 max-w-2xl text-sm leading-relaxed text-[var(--text-2)]">
               {copy.body}
             </p>
             {copy.hint ? (
-              <p className="mt-2 max-w-2xl text-[11px] leading-relaxed text-[var(--muted)]">
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--muted)]">
                 {copy.hint}
               </p>
             ) : null}
@@ -74,7 +74,7 @@ export function ErrorPanel({
             </div>
 
             {error.requestId ? (
-              <p className="mt-3 font-mono text-[8.5px] text-[var(--faint)]">
+              <p className="mt-3 font-mono text-xs text-[var(--faint)]">
                 Request ID: {error.requestId}
               </p>
             ) : null}
@@ -90,7 +90,7 @@ export function ErrorPanel({
         </button>
       </div>
 
-      <div className="mt-3 border-t border-[color-mix(in_srgb,var(--no)_25%,var(--line))] pt-2 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)]">
+      <div className="mt-3 border-t border-[color-mix(in_srgb,var(--no)_25%,var(--line))] pt-2 font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)]">
         No model files were downloaded.
       </div>
     </div>

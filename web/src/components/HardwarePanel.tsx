@@ -80,7 +80,7 @@ function DeviceList({
         <label htmlFor="device-search" className="micro">
           Search GPU or chip
         </label>
-        <span className="font-mono text-[8.5px] text-[var(--faint)]">
+        <span className="font-mono text-xs text-[var(--faint)]">
           {filtered.length}/{devices.length}
         </span>
       </div>
@@ -92,6 +92,7 @@ function DeviceList({
         <input
           ref={inputRef}
           id="device-search"
+          name="device-search"
           className="field pl-8"
           type="search"
           placeholder="M2 Pro, RTX 4090, CPU…"
@@ -101,13 +102,13 @@ function DeviceList({
         />
       </div>
       <div className="mt-2 flex items-center justify-between">
-        <p className="font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)]">
+        <p className="font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)]">
           Curated device list
         </p>
         {query ? (
           <button
             type="button"
-            className="font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--muted)] underline underline-offset-2 hover:text-[var(--text)]"
+            className="font-mono text-xs uppercase tracking-[0.08em] text-[var(--muted)] underline underline-offset-2 hover:text-[var(--text)]"
             onClick={() => {
               setQuery("");
               inputRef.current?.focus();
@@ -120,7 +121,7 @@ function DeviceList({
 
       <div className="device-list mt-2" aria-label="Device profiles">
         {filtered.length === 0 ? (
-          <p className="px-3 py-6 text-center text-[11px] text-[var(--muted)]">
+          <p className="px-3 py-6 text-center text-sm text-[var(--muted)]">
             No matching profiles. Try “M2”, “4090”, or “CPU”.
           </p>
         ) : (
@@ -146,16 +147,16 @@ function DeviceList({
                         <DeviceIcon kind={device.kind} />
                       </span>
                       <span className="min-w-0">
-                        <span className="block truncate text-[12px] font-medium">
+                        <span className="block truncate text-sm font-medium">
                           {device.name}
                         </span>
-                        <span className="block font-mono text-[8.5px] uppercase tracking-[0.06em] text-[var(--faint)]">
+                        <span className="block font-mono text-xs uppercase tracking-[0.06em] text-[var(--faint)]">
                           {device.vendor} / {hardwareKindLabel(device.kind)}
                         </span>
                       </span>
                     </span>
                     <span className="flex flex-none items-center gap-2">
-                      <span className="hidden text-right font-mono text-[9px] text-[var(--muted)] sm:block">
+                      <span className="hidden text-right font-mono text-xs text-[var(--muted)] sm:block">
                         {device.kind === "discrete" && device.vram_gib
                           ? `${formatInteger(device.vram_gib)} GB VRAM`
                           : `${formatInteger(device.bandwidth_gbps)} GB/s`}
@@ -195,7 +196,7 @@ function RamField({
         <label htmlFor={id} className="micro">
           Total RAM {optional ? "(optional)" : ""}
         </label>
-        <span className="font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)]">
+        <span className="font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)]">
           {optional ? "blank = unknown" : "required"}
         </span>
       </div>
@@ -203,6 +204,7 @@ function RamField({
         <div className="relative min-w-[130px] flex-1">
           <input
             id={id}
+            name={id}
             className="field field-mono pr-10"
             inputMode="decimal"
             autoComplete="off"
@@ -212,7 +214,7 @@ function RamField({
             aria-invalid={Boolean(error)}
             aria-describedby={`${id}-help${error ? ` ${id}-error` : ""}`}
           />
-          <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 font-mono text-[9px] text-[var(--faint)]">
+          <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 font-mono text-xs text-[var(--faint)]">
             GB
           </span>
         </div>
@@ -232,7 +234,7 @@ function RamField({
           </div>
         ) : null}
       </div>
-      <p id={`${id}-help`} className="mt-1.5 text-[10.5px] leading-relaxed text-[var(--muted)]">
+      <p id={`${id}-help`} className="mt-1.5 text-xs leading-relaxed text-[var(--muted)]">
         {optional
           ? "Without RAM, memory fit stays UNKNOWN rather than guessing your machine."
           : device?.kind === "unified"
@@ -240,7 +242,7 @@ function RamField({
             : "The CPU budget will be 80% of this value; bandwidth is assumed at 25 GB/s."}
       </p>
       {error ? (
-        <p id={`${id}-error`} className="mt-1 text-[10.5px] text-[var(--no)]">
+        <p id={`${id}-error`} className="mt-1 text-xs text-[var(--no)]">
           {error}
         </p>
       ) : null}
@@ -322,8 +324,8 @@ export function HardwarePanel({
       >
         <div className="grid gap-5 md:grid-cols-[1.05fr_1fr]">
           <div>
-            <h3 className="text-[13px] font-semibold">Run the helper on this machine</h3>
-            <p className="mt-2 text-[12px] leading-relaxed text-[var(--muted)]">
+            <h3 className="text-sm font-semibold">Run the helper on this machine</h3>
+            <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
               It detects your processor, memory, and GPU, then runs a quick memory speed
               test. It does not download model weights. Paste the code it prints below.
             </p>
@@ -331,7 +333,7 @@ export function HardwarePanel({
               <code>$ {HELPER_COMMAND}</code>
               <CopyButton value={HELPER_COMMAND} label="Copy" />
             </div>
-            <p className="mt-2 font-mono text-[8.5px] leading-relaxed text-[var(--faint)]">
+            <p className="mt-2 font-mono text-xs leading-relaxed text-[var(--faint)]">
               Run this from the repository root.
             </p>
             <div className="note-box mt-4">
@@ -347,7 +349,7 @@ export function HardwarePanel({
             </label>
             <textarea
               id="helper-code"
-              className="field field-mono mt-2 min-h-[118px] resize-y text-[11px] leading-relaxed"
+              className="field field-mono mt-2 min-h-[118px] resize-y text-sm leading-relaxed"
               placeholder="OR1.eyJ2IjoxLCJ0cyI6..."
               value={helperCode}
               onChange={(event) => onHelperCodeChange(event.target.value)}
@@ -357,12 +359,12 @@ export function HardwarePanel({
               aria-invalid={Boolean(errors.helperCode)}
               aria-describedby={errors.helperCode ? "helper-code-error" : "helper-code-help"}
             />
-            <p id="helper-code-help" className="mt-1.5 text-[10.5px] leading-relaxed text-[var(--muted)]">
+            <p id="helper-code-help" className="mt-1.5 text-xs leading-relaxed text-[var(--muted)]">
               Saved on this device as your last hardware choice. Share links include it
               because it contains machine details.
             </p>
             {errors.helperCode ? (
-              <p id="helper-code-error" className="mt-1 text-[10.5px] text-[var(--no)]">
+              <p id="helper-code-error" className="mt-1 text-xs text-[var(--no)]">
                 {errors.helperCode}
               </p>
             ) : null}
@@ -392,7 +394,7 @@ export function HardwarePanel({
             </div>
             <div className="border border-[var(--line)] bg-[var(--bg-elevated)] p-4">
               <p className="micro">Loading device table</p>
-              <p className="mt-2 text-[11px] text-[var(--muted)]">
+              <p className="mt-2 text-sm text-[var(--muted)]">
                 Reading curated profiles from the API…
               </p>
             </div>
@@ -402,8 +404,8 @@ export function HardwarePanel({
             <div className="flex items-start gap-2.5">
               <AlertTriangle size={15} className="mt-0.5 flex-none text-[var(--optimize)]" />
               <div>
-                <p className="text-[12px] font-semibold">Couldn’t load the device list</p>
-                <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
+                <p className="text-sm font-semibold">Couldn’t load the device list</p>
+                <p className="mt-1 text-sm leading-relaxed text-[var(--muted)]">
                   {devicesError?.message ?? "The API did not return the hardware profiles."}{" "}
                   Helper code and CPU-only modes still work.
                 </p>
@@ -430,10 +432,10 @@ export function HardwarePanel({
                 <>
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-[14px] font-semibold leading-snug">
+                      <p className="text-sm font-semibold leading-snug">
                         {selectedDevice.name}
                       </p>
-                      <p className="mt-1 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)]">
+                      <p className="mt-1 font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)]">
                         {selectedDevice.vendor} / {hardwareKindLabel(selectedDevice.kind)}
                       </p>
                     </div>
@@ -443,23 +445,23 @@ export function HardwarePanel({
                   <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-[var(--line)] pt-3">
                     <div>
                       <dt className="micro">Bandwidth</dt>
-                      <dd className="mt-0.5 font-mono text-[12px] text-[var(--text-2)]">
+                      <dd className="mt-0.5 font-mono text-sm text-[var(--text-2)]">
                         {formatInteger(selectedDevice.bandwidth_gbps)} GB/s
                       </dd>
-                      <dd className="mt-0.5 text-[9px] text-[var(--faint)]">device table</dd>
+                      <dd className="mt-0.5 text-xs text-[var(--faint)]">device table</dd>
                     </div>
                     <div>
                       <dt className="micro">
                         {selectedDevice.kind === "discrete" ? "VRAM" : "Memory"}
                       </dt>
-                      <dd className="mt-0.5 font-mono text-[12px] text-[var(--text-2)]">
+                      <dd className="mt-0.5 font-mono text-sm text-[var(--text-2)]">
                         {selectedDevice.kind === "discrete" && selectedDevice.vram_gib
                           ? `${formatGBValue(selectedDevice.vram_gib * 1024 ** 3, 0)} GB`
                           : ramGib
                             ? `${ramGib} GB`
                             : "set below"}
                       </dd>
-                      <dd className="mt-0.5 text-[9px] text-[var(--faint)]">
+                      <dd className="mt-0.5 text-xs text-[var(--faint)]">
                         {selectedDevice.kind === "discrete" ? "device table" : "user input"}
                       </dd>
                     </div>
@@ -483,25 +485,25 @@ export function HardwarePanel({
                   )}
 
                   {selectedDevice.notes ? (
-                    <p className="mt-3 border-t border-[var(--line)] pt-3 text-[10px] leading-relaxed text-[var(--faint)]">
+                    <p className="mt-3 border-t border-[var(--line)] pt-3 text-xs leading-relaxed text-[var(--faint)]">
                       {selectedDevice.notes}
                     </p>
                   ) : null}
-                  <p className="mt-3 border-t border-[var(--line)] pt-3 font-mono text-[8.5px] leading-relaxed text-[var(--faint)]">
+                  <p className="mt-3 border-t border-[var(--line)] pt-3 font-mono text-xs leading-relaxed text-[var(--faint)]">
                     Source: {selectedDevice.source}
                   </p>
                 </>
               ) : (
                 <div className="flex min-h-[190px] flex-col items-start justify-center">
                   <Gpu size={20} className="text-[var(--faint)]" />
-                  <p className="mt-3 text-[12px] font-medium">No device selected</p>
-                  <p className="mt-1 max-w-xs text-[11px] leading-relaxed text-[var(--muted)]">
+                  <p className="mt-3 text-sm font-medium">No device selected</p>
+                  <p className="mt-1 max-w-xs text-sm leading-relaxed text-[var(--muted)]">
                     Choose a device to see its memory budget.
                   </p>
                 </div>
               )}
               {errors.hardware ? (
-                <p className="mt-2 text-[10.5px] text-[var(--no)]">{errors.hardware}</p>
+                <p className="mt-2 text-xs text-[var(--no)]">{errors.hardware}</p>
               ) : null}
             </div>
           </div>
@@ -531,8 +533,8 @@ export function HardwarePanel({
                   <Cpu size={13} />
                 </span>
                 <span>
-                  <span className="block text-[12px] font-semibold">CPU only</span>
-                  <span className="mt-0.5 block text-[10.5px] leading-relaxed text-[var(--muted)]">
+                  <span className="block text-sm font-semibold">CPU only</span>
+                  <span className="mt-0.5 block text-xs leading-relaxed text-[var(--muted)]">
                     Use the generic CPU profile. Enter this machine’s RAM; the budget is 80%
                     of it and bandwidth is assumed at 25 GB/s.
                   </span>
@@ -552,15 +554,15 @@ export function HardwarePanel({
                   <HelpCircle size={13} />
                 </span>
                 <span>
-                  <span className="block text-[12px] font-semibold">I’m not sure</span>
-                  <span className="mt-0.5 block text-[10.5px] leading-relaxed text-[var(--muted)]">
+                  <span className="block text-sm font-semibold">I’m not sure</span>
+                  <span className="mt-0.5 block text-xs leading-relaxed text-[var(--muted)]">
                     Use conservative defaults. RAM is optional; without it, FITS is UNKNOWN
                     rather than a guess.
                   </span>
                 </span>
               </label>
             </div>
-            <p className="mt-3 font-mono text-[8.5px] leading-relaxed text-[var(--faint)]">
+            <p className="mt-3 font-mono text-xs leading-relaxed text-[var(--faint)]">
               These are conservative estimates. Use the helper for a measured profile.
             </p>
           </div>
@@ -575,12 +577,12 @@ export function HardwarePanel({
             />
             <div className="mt-4 border-t border-[var(--line)] pt-3">
               <p className="micro">What we'll use</p>
-              <p className="mt-1.5 text-[10.5px] leading-relaxed text-[var(--muted)]">
+              <p className="mt-1.5 text-xs leading-relaxed text-[var(--muted)]">
                 {cpuMode === "cpu"
                   ? "The generic CPU profile with your RAM."
                   : "Conservative defaults, with your RAM if provided."}
               </p>
-              <div className="mt-3 flex items-center gap-2 text-[10px] text-[var(--faint)]">
+              <div className="mt-3 flex items-center gap-2 text-xs text-[var(--faint)]">
                 <Terminal size={12} />
                 <span>No helper code needed.</span>
               </div>

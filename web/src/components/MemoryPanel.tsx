@@ -63,10 +63,10 @@ function GaugeRow({
     <div>
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="text-[12px] font-medium text-[var(--text-2)]">{label}</span>
+          <span className="text-sm font-medium text-[var(--text-2)]">{label}</span>
           {badge ? <span className="badge">{badge}</span> : null}
         </div>
-        <span className="font-mono text-[11px] text-[var(--text-2)]">
+        <span className="font-mono text-sm text-[var(--text-2)]">
           {range ? formatBytesRange(range) : "—"}
         </span>
       </div>
@@ -105,7 +105,7 @@ function GaugeRow({
         ) : null}
       </div>
       {detail ? (
-        <p className="mt-1 text-[10.5px] leading-relaxed text-[var(--faint)]">{detail}</p>
+        <p className="mt-1 text-xs leading-relaxed text-[var(--faint)]">{detail}</p>
       ) : null}
     </div>
   );
@@ -162,19 +162,19 @@ export function MemoryPanel({ result }: { result: CheckResponse }) {
       <div className="grid grid-cols-2 border border-[var(--line)] bg-[var(--bg-elevated)]">
         <div className="border-r border-[var(--line)] p-3">
           <p className="micro">Budget</p>
-          <p className="mt-1 font-mono text-[22px] leading-none text-[var(--text)]">
+          <p className="mt-1 font-mono text-2xl leading-none text-[var(--text)]">
             {formatGB(budget)}
           </p>
-          <p className="mt-1 text-[10px] text-[var(--faint)]">
+          <p className="mt-1 text-xs text-[var(--faint)]">
             {result.hardware.memory_source.replaceAll("_", " ")}
           </p>
         </div>
         <div className="p-3">
           <p className="micro">Peak range</p>
-          <p className="mt-1 font-mono text-[22px] leading-none" style={{ color: peakColor }}>
+          <p className="mt-1 font-mono text-2xl leading-none" style={{ color: peakColor }}>
             {formatBytesRange(peak)}
           </p>
-          <p className="mt-1 text-[10px] text-[var(--faint)]">
+          <p className="mt-1 text-xs text-[var(--faint)]">
             {fit.headroom_bytes === null
               ? "headroom unknown"
               : fit.headroom_bytes < 0
@@ -232,7 +232,7 @@ export function MemoryPanel({ result }: { result: CheckResponse }) {
         />
       </div>
 
-      <div className="mt-1 flex justify-between border-t border-[var(--line)] pt-1.5 font-mono text-[8px] text-[var(--faint)]">
+      <div className="mt-1 flex justify-between border-t border-[var(--line)] pt-1.5 font-mono text-xs text-[var(--faint)]">
         <span>0</span>
         <span>25</span>
         <span>50</span>
@@ -240,7 +240,7 @@ export function MemoryPanel({ result }: { result: CheckResponse }) {
         <span>{formatGB(scaleMax)}</span>
       </div>
 
-      <div className="mt-3 flex items-start gap-2 text-[10px] leading-relaxed text-[var(--faint)]">
+      <div className="mt-3 flex items-start gap-2 text-xs leading-relaxed text-[var(--faint)]">
         <Gauge size={12} className="mt-0.5 flex-none text-[var(--accent)]" />
         <span>
           The band shows the estimated range. The bright tick is the likely value, and the

@@ -22,7 +22,7 @@ function SpeedBar({ range, label }: { range: RangeFloat; label: string }) {
     <div>
       <div className="flex items-baseline justify-between gap-2">
         <span className="micro">{label}</span>
-        <span className="font-mono text-[10px] text-[var(--text-2)]">
+        <span className="font-mono text-xs text-[var(--text-2)]">
           {formatRangeFloat(range, "tok/s")}
         </span>
       </div>
@@ -113,20 +113,20 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
             <div className="border border-[var(--line)] bg-[var(--bg-elevated)]">
               <div className="border-b border-[var(--line)] p-3">
                 <p className="micro">Tokens per second</p>
-                <p className="mt-1 font-mono text-[28px] leading-none text-[var(--text)]">
+                <p className="mt-1 font-mono text-3xl leading-none text-[var(--text)]">
                   {formatRangeFloat(speed.aggregate, "tok/s")}
                 </p>
               </div>
               <div className="grid grid-cols-2">
                 <div className="border-r border-[var(--line)] p-3">
                   <p className="micro">Likely</p>
-                  <p className="mt-1 font-mono text-[12px] text-[var(--text-2)]">
+                  <p className="mt-1 font-mono text-sm text-[var(--text-2)]">
                     {speed.aggregate.likely.toFixed(1)} tok/s
                   </p>
                 </div>
                 <div className="p-3">
                   <p className="micro">Speed class</p>
-                  <p className="mt-1 font-mono text-[12px] text-[var(--text-2)]">
+                  <p className="mt-1 font-mono text-sm text-[var(--text-2)]">
                     {speedClassLabel(speed.speed_class)}
                   </p>
                 </div>
@@ -143,15 +143,15 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
             <div className="mt-4 border border-[var(--line)] bg-[var(--bg-elevated)] p-3">
               <div className="flex items-center justify-between gap-2">
                 <p className="micro">Speed source</p>
-                <span className="flex items-center gap-1.5 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--text-2)]">
+                <span className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.08em] text-[var(--text-2)]">
                   <SourceIcon size={10} />
                   {kind === "measured" ? "measured" : kind === "table" ? "device list" : "assumed"}
                 </span>
               </div>
-              <p className="mt-1 font-mono text-[16px] text-[var(--text-2)]">
+              <p className="mt-1 font-mono text-base text-[var(--text-2)]">
                 {speed.bandwidth_gbps === null ? "—" : `${formatFloat(speed.bandwidth_gbps, 1)} GB/s`}
               </p>
-              <p className="mt-1 text-[10px] leading-relaxed text-[var(--faint)]">
+              <p className="mt-1 text-xs leading-relaxed text-[var(--faint)]">
                 {sourceDetail}
               </p>
             </div>
@@ -159,28 +159,28 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
             <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 border-t border-[var(--line)] pt-3">
               <div>
                 <dt className="micro">Efficiency</dt>
-                <dd className="mt-0.5 font-mono text-[10px] text-[var(--text-2)]">
+                <dd className="mt-0.5 font-mono text-xs text-[var(--text-2)]">
                   {speed.efficiency.min.toFixed(2)}–{speed.efficiency.max.toFixed(2)}
                 </dd>
               </div>
               <div>
                 <dt className="micro">Weights per token</dt>
-                <dd className="mt-0.5 font-mono text-[10px] text-[var(--text-2)]">
+                <dd className="mt-0.5 font-mono text-xs text-[var(--text-2)]">
                   {formatGB(speed.active_weight_bytes)}
                 </dd>
-                <dd className="text-[9px] text-[var(--faint)]">
+                <dd className="text-xs text-[var(--faint)]">
                   {activeWeightSource(speed.active_weight_source)}
                 </dd>
               </div>
             </dl>
 
             <details className="mt-3 border-t border-[var(--line)] pt-2">
-              <summary className="cursor-pointer list-none py-1 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)] hover:text-[var(--text-2)] [&::-webkit-details-marker]:hidden">
+              <summary className="cursor-pointer list-none py-1 font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)] hover:text-[var(--text-2)] [&::-webkit-details-marker]:hidden">
                 How this is estimated
               </summary>
               <ul className="mt-1 space-y-1.5">
                 {speed.notes.map((note) => (
-                  <li key={note} className="text-[10px] leading-relaxed text-[var(--muted)]">
+                  <li key={note} className="text-xs leading-relaxed text-[var(--muted)]">
                     {note}
                   </li>
                 ))}
@@ -193,8 +193,8 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
               <div className="flex items-start gap-2.5">
                 <HelpCircle size={15} className="mt-0.5 flex-none text-[var(--unknown)]" />
                 <div>
-                  <p className="text-[12px] font-medium">Speed estimate not available</p>
-                  <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
+                  <p className="text-sm font-medium">Speed estimate not available</p>
+                  <p className="mt-1 text-sm leading-relaxed text-[var(--muted)]">
                     {result.model.model_class === "asr" || result.model.model_class === "tts"
                       ? "OmniRun can inspect this model, but the v1 decode-speed model covers causal LLMs only. No real-time factor is estimated."
                       : "OmniRun will not turn an unknown bandwidth or KV layout into a speed number."}
@@ -204,13 +204,13 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
             </div>
             <div className="mt-3">
               {speed.notes.map((note) => (
-                <p key={note} className="mt-1 text-[10px] leading-relaxed text-[var(--muted)]">
+                <p key={note} className="mt-1 text-xs leading-relaxed text-[var(--muted)]">
                   {note}
                 </p>
               ))}
             </div>
             {speed.bandwidth_gbps !== null ? (
-              <p className="mt-3 font-mono text-[9px] text-[var(--faint)]">
+              <p className="mt-3 font-mono text-xs text-[var(--faint)]">
                 bandwidth {formatFloat(speed.bandwidth_gbps, 1)} GB/s /{" "}
                 {bandwidthSourceLabel(result.hardware.bandwidth_source)}
               </p>
@@ -218,7 +218,7 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
           </div>
         )}
 
-        <div className="mt-3 flex items-start gap-2 border-t border-[var(--line)] pt-2 text-[10px] leading-relaxed text-[var(--faint)]">
+        <div className="mt-3 flex items-start gap-2 border-t border-[var(--line)] pt-2 text-xs leading-relaxed text-[var(--faint)]">
           <Gauge size={12} className="mt-0.5 flex-none text-[var(--accent)]" />
           <span>
             Generation speed only. Prompt processing and first-token time are not estimated.

@@ -134,6 +134,14 @@ cd web
 VITE_BASE_PATH=/omnirun/ npm run build
 ```
 
+## Accessibility
+
+The interface uses a 16px base with a rem-based scale. Supporting labels are
+never smaller than 12px, UI copy is 14px, and legal body copy is 16px. Text and
+background colors are chosen for WCAG AA contrast, focus states use
+`:focus-visible`, headings are hierarchical, and the layout is tested down to
+320px with no horizontal overflow.
+
 ## Testing
 
 Backend:

@@ -30,10 +30,10 @@ export function ReasonList({
           >
             <Icon size={14} className="severity-icon" />
             <span className="min-w-0">
-              <span className="block text-[12px] leading-relaxed text-[var(--text-2)]">
+              <span className="block text-sm leading-relaxed text-[var(--text-2)]">
                 {issue.message}
               </span>
-              <span className="mt-0.5 block font-mono text-[8.5px] uppercase tracking-[0.07em] text-[var(--faint)]">
+              <span className="mt-0.5 block font-mono text-xs uppercase tracking-[0.07em] text-[var(--faint)]">
                 {issue.severity} · {issue.code}
               </span>
             </span>

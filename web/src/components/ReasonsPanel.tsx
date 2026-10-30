@@ -56,8 +56,8 @@ export function ReasonsPanel({ result }: { result: CheckResponse }) {
         <div className="mb-4 flex items-start gap-2.5 border border-[color-mix(in_srgb,var(--optimize)_35%,var(--line))] bg-[var(--optimize-soft)] p-3">
           <FileCode size={15} className="mt-0.5 flex-none text-[var(--optimize)]" />
           <div>
-            <p className="text-[12px] font-medium">This model needs custom code</p>
-            <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
+            <p className="text-sm font-medium">This model needs custom code</p>
+            <p className="mt-1 text-sm leading-relaxed text-[var(--muted)]">
               The support matrix covers the architecture and runtime, not this model’s own
               code.
             </p>
@@ -68,7 +68,7 @@ export function ReasonsPanel({ result }: { result: CheckResponse }) {
       {result.model.gated || result.model.private ? (
         <div className="mb-4 flex items-start gap-2.5 border border-[var(--line)] bg-[var(--bg-elevated)] p-3">
           <Lock size={14} className="mt-0.5 flex-none text-[var(--muted)]" />
-          <p className="text-[11px] leading-relaxed text-[var(--muted)]">
+          <p className="text-sm leading-relaxed text-[var(--muted)]">
             Access to this {result.model.private ? "private" : "gated"} model was confirmed.
             The token is not included in the result or share link.
           </p>
@@ -83,7 +83,7 @@ export function ReasonsPanel({ result }: { result: CheckResponse }) {
 
       {technicalIssues.length ? (
         <details className="mt-3 border-t border-[var(--line)] pt-2">
-          <summary className="cursor-pointer list-none py-1 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)] hover:text-[var(--text-2)] [&::-webkit-details-marker]:hidden">
+          <summary className="cursor-pointer list-none py-1 font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)] hover:text-[var(--text-2)] [&::-webkit-details-marker]:hidden">
             Technical details ({technicalIssues.length})
           </summary>
           <div className="mt-2">
@@ -122,7 +122,7 @@ export function ReasonsPanel({ result }: { result: CheckResponse }) {
             </dd>
           </div>
         </dl>
-        <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 border-t border-[var(--line)] pt-3 font-mono text-[9.5px] text-[var(--faint)]">
+        <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 border-t border-[var(--line)] pt-3 font-mono text-xs text-[var(--faint)]">
           <span>Speed source: {confidenceShort(result.hardware.bandwidth_confidence)}</span>
           <span>Memory: {confidenceShort(result.hardware.memory_confidence)}</span>
           <span className="col-span-2">
@@ -136,7 +136,7 @@ export function ReasonsPanel({ result }: { result: CheckResponse }) {
             {result.hardware.notes.map((note) => (
               <li
                 key={note}
-                className="flex items-start gap-2 text-[10.5px] leading-relaxed text-[var(--muted)]"
+                className="flex items-start gap-2 text-xs leading-relaxed text-[var(--muted)]"
               >
                 <AlertTriangle size={11} className="mt-0.5 flex-none text-[var(--faint)]" />
                 {friendlyHardwareNote(note)}
@@ -146,7 +146,7 @@ export function ReasonsPanel({ result }: { result: CheckResponse }) {
         ) : null}
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-[var(--line)] pt-3 font-mono text-[9.5px] text-[var(--faint)]">
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-[var(--line)] pt-3 font-mono text-xs text-[var(--faint)]">
         <span className="flex items-center gap-1.5">
           <ShieldCheck size={11} /> budget {formatGB(result.hardware.memory_budget_bytes)}
         </span>

@@ -76,10 +76,10 @@ export function ResultView({ result, shareUrl, sample = false, onEdit }: ResultV
                   </span>
                 ) : null}
               </div>
-              <h1 className="repo-title mt-2">
+              <h2 className="repo-title mt-2">
                 <RepoTitle value={result.model.repo_id} />
-              </h1>
-              <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[9px] text-[var(--faint)]">
+              </h2>
+              <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs text-[var(--faint)]">
                 <span>Revision {shortRevision(result.model.revision, 10)}</span>
                 <span>Checked {formatDateTime(result.checked_at)}</span>
                 {result.model.last_modified ? (
@@ -111,7 +111,7 @@ export function ResultView({ result, shareUrl, sample = false, onEdit }: ResultV
             </div>
           </div>
 
-          <p className="mt-3 flex items-start gap-2 border-t border-[var(--line)] pt-2 text-[9.5px] leading-relaxed text-[var(--faint)]">
+          <p className="mt-3 flex items-start gap-2 border-t border-[var(--line)] pt-2 text-xs leading-relaxed text-[var(--faint)]">
             <Clock size={11} className="mt-0.5 flex-none" />
             <span>
               {sample

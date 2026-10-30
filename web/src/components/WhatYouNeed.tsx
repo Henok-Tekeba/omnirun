@@ -37,12 +37,12 @@ function RecommendationCard({ item }: { item: Recommendation }) {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="badge">{recommendationKind(item.kind)}</span>
-          <h3 className="text-[12.5px] font-semibold">{item.title}</h3>
+          <h3 className="text-sm font-semibold">{item.title}</h3>
         </div>
         <ConfidenceMeter value={item.confidence} compact />
       </div>
-      <p className="mt-1.5 text-[11.5px] leading-relaxed text-[var(--muted)]">{item.detail}</p>
-      <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[9.5px] text-[var(--faint)]">
+      <p className="mt-1.5 text-sm leading-relaxed text-[var(--muted)]">{item.detail}</p>
+      <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs text-[var(--faint)]">
         {item.runtime ? <span>runtime: {item.runtime}</span> : null}
         {item.min_version ? <span>min: {item.min_version}</span> : null}
         {item.requires_conversion ? <span>requires conversion</span> : null}
@@ -55,7 +55,7 @@ function RecommendationCard({ item }: { item: Recommendation }) {
           href={item.url}
           target="_blank"
           rel="noreferrer"
-          className="mt-2 inline-flex items-center gap-1.5 text-[10.5px] text-[var(--accent)] underline underline-offset-2"
+          className="mt-2 inline-flex items-center gap-1.5 text-xs text-[var(--accent)] underline underline-offset-2"
         >
           Open reference <ExternalLink size={11} />
         </a>
@@ -96,10 +96,10 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
           <div className="flex items-start gap-2.5">
             <Box size={16} className="mt-0.5 flex-none text-[var(--faint)]" />
             <div>
-              <p className="text-[12px] font-medium text-[var(--text-2)]">
+              <p className="text-sm font-medium text-[var(--text-2)]">
                 No additional options
               </p>
-              <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
+              <p className="mt-1 text-sm leading-relaxed text-[var(--muted)]">
                 {actualArtifacts > 0
                   ? "Real artifacts are listed above. No additional recommendations were returned."
                   : "The API returned no smaller-weight estimates or suggestions for this model. Try a different context, batch, or machine."}
@@ -114,11 +114,11 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <Layers size={14} className="text-[var(--accent)]" />
-              <h3 className="text-[13px] font-semibold">Smaller-weight estimates</h3>
+              <h3 className="text-sm font-semibold">Smaller-weight estimates</h3>
             </div>
             <span className="badge badge-accent">Estimate</span>
           </div>
-          <p className="mt-1 text-[10.5px] leading-relaxed text-[var(--faint)]">
+          <p className="mt-1 text-xs leading-relaxed text-[var(--faint)]">
             Weights-only estimates; they do not imply a ready-to-use artifact exists. KV
             memory is unchanged.
           </p>
@@ -130,10 +130,10 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
               >
                 <div className="flex items-center justify-between gap-2">
                   <div>
-                    <p className="font-mono text-[12px] text-[var(--text-2)]">
+                    <p className="font-mono text-sm text-[var(--text-2)]">
                       {alternativeLabel(alternative.name)}
                     </p>
-                    <p className="mt-0.5 text-[9.5px] text-[var(--faint)]">
+                    <p className="mt-0.5 text-xs text-[var(--faint)]">
                       Weights-only estimate
                     </p>
                   </div>
@@ -142,13 +142,13 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
                 <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 border-t border-[var(--line)] pt-2">
                   <div>
                     <dt className="micro">Weights</dt>
-                    <dd className="mt-0.5 font-mono text-[10.5px] text-[var(--text-2)]">
+                    <dd className="mt-0.5 font-mono text-xs text-[var(--text-2)]">
                       {formatGB(alternative.weight_bytes)}
                     </dd>
                   </div>
                   <div>
                     <dt className="micro">Peak</dt>
-                    <dd className="mt-0.5 font-mono text-[10.5px] text-[var(--text-2)]">
+                    <dd className="mt-0.5 font-mono text-xs text-[var(--text-2)]">
                       {formatBytesRange(alternative.peak)}
                     </dd>
                   </div>
@@ -164,7 +164,7 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
 
       {recommendations.length ? (
         <div className={showAlternatives ? "mt-5 border-t border-[var(--line)] pt-4" : ""}>
-          <h3 className="text-[13px] font-semibold">Recommendations</h3>
+          <h3 className="text-sm font-semibold">Recommendations</h3>
           <div className="mt-2">
             {recommendations.map((item, index) => (
               <RecommendationCard key={`${item.kind}-${item.title}-${index}`} item={item} />
@@ -178,10 +178,10 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <Terminal size={14} className="text-[var(--accent)]" />
-              <h3 className="text-[13px] font-semibold">Environment note</h3>
+              <h3 className="text-sm font-semibold">Environment note</h3>
             </div>
             {hint.reference_date ? (
-              <span className="font-mono text-[9.5px] text-[var(--faint)]">
+              <span className="font-mono text-xs text-[var(--faint)]">
                 reference {formatDate(hint.reference_date)}
               </span>
             ) : null}
@@ -195,7 +195,7 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
           {hint.notes.length ? (
             <ul className="mt-2 space-y-1">
               {hint.notes.map((note) => (
-                <li key={note} className="text-[10.5px] leading-relaxed text-[var(--muted)]">
+                <li key={note} className="text-xs leading-relaxed text-[var(--muted)]">
                   {note}
                 </li>
               ))}

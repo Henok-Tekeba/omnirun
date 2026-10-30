@@ -26,10 +26,10 @@ function SupportRuntimeList({ runtimes }: { runtimes: RuntimePath[] }) {
           className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-[var(--line)] pt-1.5 first:border-t-0 first:pt-0"
         >
           <span className="flex items-center gap-2">
-            <span className="font-mono text-[10px] text-[var(--text-2)]">{path.name}</span>
+            <span className="font-mono text-xs text-[var(--text-2)]">{path.name}</span>
             <RuntimeBadge path={path} />
           </span>
-          <span className="font-mono text-[8.5px] text-[var(--faint)]">
+          <span className="font-mono text-xs text-[var(--faint)]">
             {path.artifact} / {path.min_version}
           </span>
         </li>
@@ -46,19 +46,19 @@ function FitBody({ result }: { result: CheckResponse }) {
       <div className="mt-2 grid grid-cols-3 gap-x-3 gap-y-1 border-t border-[var(--line)] pt-2">
         <div>
           <p className="micro">Budget</p>
-          <p className="mt-0.5 font-mono text-[10px] text-[var(--text-2)]">
+          <p className="mt-0.5 font-mono text-xs text-[var(--text-2)]">
             {formatGB(fit.budget_bytes)}
           </p>
         </div>
         <div>
           <p className="micro">Peak</p>
-          <p className="mt-0.5 font-mono text-[10px] text-[var(--text-2)]">
+          <p className="mt-0.5 font-mono text-xs text-[var(--text-2)]">
             {formatBytesRange(fit.peak)}
           </p>
         </div>
         <div>
           <p className="micro">Headroom</p>
-          <p className="mt-0.5 font-mono text-[10px] text-[var(--text-2)]">
+          <p className="mt-0.5 font-mono text-xs text-[var(--text-2)]">
             {headroom === null
               ? "—"
               : headroom < 0
@@ -79,7 +79,7 @@ function SupportedBody({ result }: { result: CheckResponse }) {
       <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 border-t border-[var(--line)] pt-2">
         <div>
           <p className="micro">Documented</p>
-          <p className="mt-0.5 flex items-center gap-1.5 text-[10px] text-[var(--text-2)]">
+          <p className="mt-0.5 flex items-center gap-1.5 text-xs text-[var(--text-2)]">
             {supported.matrix_entry_found ? (
               <>
                 <Check size={11} className="text-[var(--go)]" /> Yes
@@ -93,7 +93,7 @@ function SupportedBody({ result }: { result: CheckResponse }) {
         </div>
         <div>
           <p className="micro">Tested</p>
-          <p className="mt-0.5 flex items-center gap-1.5 text-[10px] text-[var(--text-2)]">
+          <p className="mt-0.5 flex items-center gap-1.5 text-xs text-[var(--text-2)]">
             {tested > 0 ? (
               <>
                 <ShieldCheck size={11} className="text-[var(--go)]" /> {tested} run
@@ -108,25 +108,25 @@ function SupportedBody({ result }: { result: CheckResponse }) {
         </div>
         <div>
           <p className="micro">Matched by</p>
-          <p className="mt-0.5 font-mono text-[9px] text-[var(--text-2)]">
+          <p className="mt-0.5 font-mono text-xs text-[var(--text-2)]">
             {supported.matched_by ?? "—"}
           </p>
         </div>
         <div>
           <p className="micro">Runs directly</p>
-          <p className="mt-0.5 text-[10px] text-[var(--text-2)]">
+          <p className="mt-0.5 text-xs text-[var(--text-2)]">
             {supported.direct_runtime_available ? "Yes" : "No"}
           </p>
         </div>
       </div>
       {supported.custom_code_risk ? (
-        <p className="mt-2 flex items-start gap-2 border-l-2 border-[var(--optimize)] bg-[var(--optimize-soft)] p-2 text-[10px] leading-relaxed text-[var(--text-2)]">
+        <p className="mt-2 flex items-start gap-2 border-l-2 border-[var(--optimize)] bg-[var(--optimize-soft)] p-2 text-xs leading-relaxed text-[var(--text-2)]">
           <FileCode size={12} className="mt-0.5 flex-none text-[var(--optimize)]" />
           This model needs custom code. The support matrix does not cover that code.
         </p>
       ) : null}
       <SupportRuntimeList runtimes={supported.runtimes} />
-      <p className="mt-2 font-mono text-[8.5px] leading-relaxed text-[var(--faint)]">
+      <p className="mt-2 font-mono text-xs leading-relaxed text-[var(--faint)]">
         Documented path, not a recorded run.
       </p>
     </>
@@ -141,8 +141,8 @@ function VerifiedBody({ result }: { result: CheckResponse }) {
         <div className="flex items-start gap-2.5 border border-dashed border-[var(--line-strong)] bg-[var(--bg-elevated)] p-2.5">
           <Minus size={13} className="mt-0.5 flex-none text-[var(--faint)]" />
           <div>
-            <p className="text-[11px] font-medium text-[var(--text-2)]">No recorded runs yet</p>
-            <p className="mt-0.5 text-[10px] leading-relaxed text-[var(--muted)]">
+            <p className="text-sm font-medium text-[var(--text-2)]">No recorded runs yet</p>
+            <p className="mt-0.5 text-xs leading-relaxed text-[var(--muted)]">
               The model can be inspected, but no run has been recorded on this hardware.
             </p>
           </div>
@@ -154,8 +154,8 @@ function VerifiedBody({ result }: { result: CheckResponse }) {
   return (
     <ul className="mt-2 space-y-1.5 border-t border-[var(--line)] pt-2">
       {verified.runs.map((run) => (
-        <li key={run.run_id} className="text-[10px] leading-relaxed text-[var(--text-2)]">
-          <span className="font-mono text-[9px]">{run.runtime}</span> on{" "}
+        <li key={run.run_id} className="text-xs leading-relaxed text-[var(--text-2)]">
+          <span className="font-mono text-xs">{run.runtime}</span> on{" "}
           {run.hardware_device_name} / {formatInteger(run.decode_tokens_per_second)} tok/s / peak{" "}
           {formatGB(run.peak_memory_bytes)}
         </li>
@@ -183,7 +183,7 @@ function ClaimRow({
     <div className="claim-row">
       <div>
         <h3 className="module-title">{name}</h3>
-        <p className="mt-0.5 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)]">
+        <p className="mt-0.5 font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)]">
           {label}
         </p>
       </div>
@@ -191,7 +191,7 @@ function ClaimRow({
         <StatusPill status={status} />
       </div>
       <div>
-        <p className="text-[11px] leading-relaxed text-[var(--text-2)]">{summary}</p>
+        <p className="text-sm leading-relaxed text-[var(--text-2)]">{summary}</p>
         {children}
       </div>
       <div>
@@ -210,11 +210,11 @@ export function ClaimsGrid({ result }: { result: CheckResponse }) {
           <h2 id="claims-title" className="module-title">
             Checks
           </h2>
-          <p className="mt-1 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)]">
+          <p className="mt-1 font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)]">
             Three separate checks
           </p>
         </div>
-        <p className="max-w-sm text-right text-[10px] leading-relaxed text-[var(--muted)]">
+        <p className="max-w-sm text-right text-xs leading-relaxed text-[var(--muted)]">
           Memory, runtime, and recorded run.
         </p>
       </div>

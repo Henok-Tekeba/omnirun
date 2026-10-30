@@ -20,7 +20,7 @@ export function ConfidenceMeter({
         <span />
         <span />
       </span>
-      <span className="font-mono text-[9px] uppercase tracking-[0.08em]">
+      <span className="font-mono text-xs uppercase tracking-[0.08em]">
         {compact ? value : confidenceLabel(value)}
       </span>
     </span>
@@ -55,7 +55,7 @@ export function SectionHeading({
           {title}
         </h2>
         {eyebrow ? (
-          <p className="mt-1 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)]">
+          <p className="mt-1 font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)]">
             {eyebrow}
           </p>
         ) : null}
@@ -67,7 +67,7 @@ export function SectionHeading({
 
 export function EmptyLine({ children }: { children: ReactNode }) {
   return (
-    <div className="flex items-start gap-2.5 py-2 text-[11px] text-[var(--muted)]">
+    <div className="flex items-start gap-2.5 py-2 text-sm text-[var(--muted)]">
       <Minus size={13} className="mt-0.5 flex-none text-[var(--faint)]" />
       <span>{children}</span>
     </div>
@@ -84,7 +84,7 @@ export function KeyValue({
   return (
     <div>
       <dt className="micro">{label}</dt>
-      <dd className="mt-1 text-[12px] text-[var(--text-2)]">{children}</dd>
+      <dd className="mt-1 text-sm text-[var(--text-2)]">{children}</dd>
     </div>
   );
 }

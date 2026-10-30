@@ -26,6 +26,12 @@ test("cookie notice, mobile menu, and legal pages", async ({ page }) => {
     .click();
   await expect(page.getByRole("heading", { name: "Privacy policy" })).toBeVisible();
 
+  const legalBodySize = await page
+    .locator(".legal-article p")
+    .first()
+    .evaluate((element) => parseFloat(getComputedStyle(element).fontSize));
+  expect(legalBodySize).toBeGreaterThanOrEqual(16);
+
   await page.locator(".legal-nav").getByRole("link", { name: "Terms" }).click();
   await expect(page.getByRole("heading", { name: "Terms & conditions" })).toBeVisible();
 

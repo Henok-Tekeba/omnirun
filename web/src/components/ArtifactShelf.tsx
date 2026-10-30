@@ -94,11 +94,11 @@ function ArtifactRow({
       <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-[var(--line)] pt-2">
         <CopyButton value={download} label="Copy download" />
         <details className="min-w-0">
-          <summary className="cursor-pointer list-none font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)] hover:text-[var(--text-2)] [&::-webkit-details-marker]:hidden">
+          <summary className="cursor-pointer list-none font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)] hover:text-[var(--text-2)] [&::-webkit-details-marker]:hidden">
             Details
           </summary>
           <div className="mt-2 space-y-2">
-            <p className="text-[10.5px] leading-relaxed text-[var(--muted)]">
+            <p className="text-xs leading-relaxed text-[var(--muted)]">
               {artifact.note}
               {weightsOnly
                 ? " Context memory is unknown, so this is a weights-only fit."
@@ -108,7 +108,7 @@ function ArtifactRow({
               <CopyButton value={artifact.path} label="Copy path" />
               {command ? <CopyButton value={command} label="Copy run command" /> : null}
               <ConfidenceMeter value={artifact.confidence} compact />
-              <span className="font-mono text-[8.5px] text-[var(--faint)]">
+              <span className="font-mono text-xs text-[var(--faint)]">
                 {formatInteger(artifact.files.length)} file
                 {artifact.files.length === 1 ? "" : "s"}
               </span>
@@ -116,7 +116,7 @@ function ArtifactRow({
             {artifact.files.length > 1 ? (
               <ul className="space-y-0.5">
                 {artifact.files.map((file) => (
-                  <li key={file} className="break-all font-mono text-[9px] text-[var(--muted)]">
+                  <li key={file} className="break-all font-mono text-xs text-[var(--muted)]">
                     {file}
                   </li>
                 ))}
@@ -179,13 +179,13 @@ export function ArtifactShelf({ result }: { result: CheckResponse }) {
           </>
         )}
 
-        <p className="mt-3 flex items-start gap-2 border-t border-[var(--line)] pt-2 text-[10px] leading-relaxed text-[var(--faint)]">
+        <p className="mt-3 flex items-start gap-2 border-t border-[var(--line)] pt-2 text-xs leading-relaxed text-[var(--faint)]">
           <Download size={12} className="mt-0.5 flex-none" />
           Sizes are file sizes from Hugging Face, not tensor math. Peak estimates are
           upper-bound planning numbers. Download commands are for you to run; OmniRun does not
           download weights.
         </p>
-        <p className="mt-1 flex items-center gap-1.5 text-[10px] text-[var(--faint)]">
+        <p className="mt-1 flex items-center gap-1.5 text-xs text-[var(--faint)]">
           <Cpu size={11} /> Runtime hints are not a guarantee that the artifact loads.
         </p>
       </div>

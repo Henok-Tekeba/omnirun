@@ -42,8 +42,14 @@ function FrontierChart({
   )},${height - padBottom} Z`;
   const budgetY = budget !== null ? y(budget) : null;
 
+  const latest = usable[usable.length - 1];
+
   return (
     <div>
+      <div className="mb-1 flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--faint)]">
+        <span>Peak {formatBytesRange(latest.peak)}</span>
+        <span>Budget {formatGB(budget)}</span>
+      </div>
       <svg
         viewBox={`0 0 ${width} ${height}`}
         className="h-auto w-full"
@@ -78,27 +84,15 @@ function FrontierChart({
           />
         ))}
         {budgetY !== null ? (
-          <>
-            <line
-              x1={padLeft}
-              y1={budgetY}
-              x2={width - padRight}
-              y2={budgetY}
-              stroke="var(--text)"
-              strokeDasharray="3 3"
-              strokeWidth="1"
-            />
-            <text
-              x={width - padRight}
-              y={budgetY - 5}
-              textAnchor="end"
-              fill="var(--faint)"
-              fontFamily="var(--font-mono)"
-              fontSize="8"
-            >
-              budget {formatGB(budget)}
-            </text>
-          </>
+          <line
+            x1={padLeft}
+            y1={budgetY}
+            x2={width - padRight}
+            y2={budgetY}
+            stroke="var(--text)"
+            strokeDasharray="3 3"
+            strokeWidth="1"
+          />
         ) : null}
         {maxContext !== null ? (
           <line
@@ -111,37 +105,13 @@ function FrontierChart({
             opacity="0.5"
           />
         ) : null}
-        <text
-          x={padLeft}
-          y={height - 10}
-          fill="var(--faint)"
-          fontFamily="var(--font-mono)"
-          fontSize="8"
-        >
-          0
-        </text>
-        <text
-          x={width - padRight}
-          y={height - 10}
-          textAnchor="end"
-          fill="var(--faint)"
-          fontFamily="var(--font-mono)"
-          fontSize="8"
-        >
-          {formatInteger(maxX)} tokens
-        </text>
-        <text
-          x={padLeft - 6}
-          y={padTop + 4}
-          textAnchor="end"
-          fill="var(--faint)"
-          fontFamily="var(--font-mono)"
-          fontSize="8"
-        >
-          {formatGB(maxY)}
-        </text>
+
       </svg>
-      <p className="mt-1 text-[10px] text-[var(--faint)]">
+      <div className="mt-1 flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--faint)]">
+        <span>0 tokens</span>
+        <span>{formatInteger(maxX)} tokens</span>
+      </div>
+      <p className="mt-1 text-xs text-[var(--faint)]">
         Peak memory by context. The dashed line is your budget.
         {maxContext !== null ? " The green line is the largest context that fits." : ""}
       </p>
@@ -183,24 +153,24 @@ export function WhatIfPanel({ result }: { result: CheckResponse }) {
         <div className="grid grid-cols-2 border border-[var(--line)] bg-[var(--bg-elevated)] sm:grid-cols-3">
           <div className="border-r border-[var(--line)] p-3">
             <p className="micro">Max context that fits</p>
-            <p className="mt-1 font-mono text-[20px] leading-none text-[var(--text)]">
+            <p className="mt-1 font-mono text-xl leading-none text-[var(--text)]">
               {hasContext ? formatInteger(sweep.max_context_that_fits) : "—"}
             </p>
-            <p className="mt-1 text-[10px] text-[var(--faint)]">tokens</p>
+            <p className="mt-1 text-xs text-[var(--faint)]">tokens</p>
           </div>
           <div className="border-r border-[var(--line)] p-3">
             <p className="micro">Max batch that fits</p>
-            <p className="mt-1 font-mono text-[20px] leading-none text-[var(--text)]">
+            <p className="mt-1 font-mono text-xl leading-none text-[var(--text)]">
               {hasBatch ? formatInteger(sweep.max_batch_that_fits) : "—"}
             </p>
-            <p className="mt-1 text-[10px] text-[var(--faint)]">sequences</p>
+            <p className="mt-1 text-xs text-[var(--faint)]">sequences</p>
           </div>
           <div className="col-span-2 p-3 sm:col-span-1">
             <p className="micro">Best fitting quantization</p>
-            <p className="mt-1 text-[13px] font-medium text-[var(--text)]">
+            <p className="mt-1 text-sm font-medium text-[var(--text)]">
               {best ? quantLabel(best.name) : "No fit"}
             </p>
-            <p className="mt-1 text-[10px] text-[var(--faint)]">
+            <p className="mt-1 text-xs text-[var(--faint)]">
               {best ? formatBytesRange(best.peak) : "No alternative fits this budget."}
             </p>
           </div>
@@ -209,7 +179,7 @@ export function WhatIfPanel({ result }: { result: CheckResponse }) {
         <div className="mt-4 border border-[var(--line)] p-3">
           <div className="mb-1 flex items-center justify-between gap-2">
             <p className="micro">Memory frontier</p>
-            <span className="font-mono text-[8.5px] text-[var(--faint)]">
+            <span className="font-mono text-xs text-[var(--faint)]">
               {sweep.model_max_context ? `model max ${formatInteger(sweep.model_max_context)}` : "max unknown"}
             </span>
           </div>
@@ -223,7 +193,7 @@ export function WhatIfPanel({ result }: { result: CheckResponse }) {
         <div className="mt-4">
           <div className="flex items-center justify-between gap-2">
             <p className="micro">Scenarios</p>
-            <span className="font-mono text-[8.5px] text-[var(--faint)]">
+            <span className="font-mono text-xs text-[var(--faint)]">
               estimates / not guarantees
             </span>
           </div>
@@ -240,13 +210,13 @@ export function WhatIfPanel({ result }: { result: CheckResponse }) {
                 >
                   <div className="flex items-center gap-2">
                     <Sliders size={12} className="text-[var(--faint)]" />
-                    <span className="text-[11px] text-[var(--text-2)]">{scenario.label}</span>
-                    <span className="font-mono text-[8.5px] text-[var(--faint)]">
+                    <span className="text-sm text-[var(--text-2)]">{scenario.label}</span>
+                    <span className="font-mono text-xs text-[var(--faint)]">
                       {formatInteger(scenario.context)} tokens / batch {scenario.batch}
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="font-mono text-[10px] text-[var(--text-2)]">
+                    <span className="font-mono text-xs text-[var(--text-2)]">
                       {formatBytesRange(scenario.peak)}
                     </span>
                     <StatusPill status={scenario.fits} />
@@ -257,7 +227,7 @@ export function WhatIfPanel({ result }: { result: CheckResponse }) {
           </div>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-[var(--line)] pt-2 font-mono text-[9px] text-[var(--faint)]">
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-[var(--line)] pt-2 font-mono text-xs text-[var(--faint)]">
           <span className="flex items-center gap-1.5">
             <Gauge size={11} /> budget {formatGB(sweep.budget_bytes)}
           </span>
