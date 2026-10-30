@@ -22,3 +22,6 @@ web/playwright-report/
 web/.vite/
 playwright-report/
 test-results/
+
+# deployment
+.vercel/

@@ -56,10 +56,12 @@ npm run build
 ## Architecture
 
 ```text
-web/        React + Vite + TypeScript frontend
-api/        FastAPI service, request validation, response assembly
-Dockerfile  Production API image
-render.yaml Render blueprint for the API
+web/          React + Vite + TypeScript frontend
+api/          FastAPI service, request validation, response assembly
+app.py        Vercel FastAPI entrypoint
+vercel.json   Vercel function and bundle configuration
+Dockerfile    Production API image
+render.yaml   Render blueprint for the API
 core/       model inspection, memory/speed estimation, support and artifact logic
 helper/     local hardware measurement helper
 data/       curated device profiles and support matrix
@@ -113,9 +115,11 @@ The full set of assumptions and limitations is in [docs/methodology.md](docs/met
 
 The frontend is deployed to GitHub Pages by [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml). GitHub Pages hosts the static Vite build, not the FastAPI process.
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Henok-Tekeba/omnirun)
+
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Henok-Tekeba/omnirun)
 
-The repository includes a production `Dockerfile`, a `render.yaml` blueprint, CORS configuration, and a full [deployment guide](docs/deployment.md).
+The repository includes a serverless Vercel entrypoint, a production `Dockerfile`, a `render.yaml` blueprint, CORS configuration, and a full [deployment guide](docs/deployment.md).
 
 - Static preview: [henok-tekeba.github.io/omnirun](https://henok-tekeba.github.io/omnirun/)
 - Recorded sample report: [henok-tekeba.github.io/omnirun/?sample=1](https://henok-tekeba.github.io/omnirun/?sample=1)

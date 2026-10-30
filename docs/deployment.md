@@ -3,11 +3,41 @@
 OmniRun has two deployables:
 
 - `web/` — static React frontend. GitHub Pages hosts this.
-- `api/` — FastAPI service. It needs a Python container host.
+- `api/` — FastAPI service. It needs a Python host.
 
 GitHub Pages cannot run the API. The public site stays in static preview mode until the frontend is pointed at a hosted API.
 
-## Option A: Render (recommended)
+## Option A: Vercel Hobby (serverless)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Henok-Tekeba/omnirun)
+
+The repository includes a root `app.py` entrypoint, `requirements.txt`, and `vercel.json` for Vercel’s Python runtime. Vercel serves the FastAPI app as one function.
+
+1. Sign in to [Vercel](https://vercel.com) with GitHub.
+2. Import `Henok-Tekeba/omnirun`.
+3. Keep the project root at the repository root. If Vercel asks for a framework, select **FastAPI**.
+4. Add these Environment Variables for Production and Preview:
+
+   ```text
+   OMNIRUN_CORS_ORIGINS=https://henok-tekeba.github.io
+   OMNIRUN_CACHE_DIR=/tmp/omnirun-cache
+   OMNIRUN_TRUST_PROXY_HEADERS=true
+   ```
+
+5. Deploy. The API URL will look like `https://omnirun.vercel.app`.
+6. Set the GitHub Actions variable:
+
+   ```bash
+   gh variable set VITE_API_BASE_URL \
+     --repo Henok-Tekeba/omnirun \
+     --body "https://your-project.vercel.app"
+
+   gh workflow run deploy-pages.yml --repo Henok-Tekeba/omnirun
+   ```
+
+Vercel Hobby is free and does not require a card, but it is limited to personal, non-commercial use. It provides up to 2 GB memory and 300 seconds per function. The API is stateless: the metadata cache and rate limiter are per instance, not global.
+
+## Option B: Render (container)
 
 The repository includes [`render.yaml`](../render.yaml) and a production [`Dockerfile`](../Dockerfile).
 
@@ -48,7 +78,7 @@ The Pages build will now call the hosted API. The static-preview banner disappea
 
 Free Render services sleep after inactivity. The scheduled `keepalive.yml` workflow pings `/health` every 10 minutes when `VITE_API_BASE_URL` is configured. For production traffic, use a paid always-on instance.
 
-## Option B: Docker anywhere
+## Option C: Docker anywhere
 
 ```bash
 docker build -t omnirun-api .
