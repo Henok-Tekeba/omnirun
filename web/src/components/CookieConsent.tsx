@@ -29,8 +29,7 @@ export function CookieConsent() {
       <div className="cookie-consent-copy">
         <p className="cookie-consent-kicker">Cookies &amp; storage</p>
         <p>
-          OmniRun uses essential browser storage only. No analytics, advertising, or
-          cross-site tracking cookies.{" "}
+          Essential browser storage only. No tracking cookies.{" "}
           <a href="?page=privacy#cookies">Privacy policy</a>
           {choice ? " You can change this choice at any time." : ""}
         </p>

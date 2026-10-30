@@ -17,9 +17,14 @@ export function StaticPreviewBanner({ onSample }: { onSample: () => void }) {
           Run locally <ArrowRight size={11} />
         </a>
         <button type="button" onClick={onSample}>
-          View sample result
+          Sample report
         </button>
-        <a href={`${REPO_URL}#api-contract`} target="_blank" rel="noreferrer">
+        <a
+          href={`${REPO_URL}#api-contract`}
+          target="_blank"
+          rel="noreferrer"
+          className="preview-banner-api"
+        >
           API contract
         </a>
       </div>

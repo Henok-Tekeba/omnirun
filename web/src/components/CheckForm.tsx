@@ -109,7 +109,7 @@ export function CheckForm({
               id="model"
               name="model"
               type="text"
-              placeholder="HuggingFaceTB/SmolLM2-135M-Instruct"
+              placeholder="org/model"
               value={form.model}
               onChange={(event) => onChange({ model: event.target.value })}
               autoComplete="off"
@@ -119,7 +119,7 @@ export function CheckForm({
               aria-invalid={Boolean(errors.model)}
               aria-describedby={errors.model ? "model-error" : "model-help"}
             />
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary hidden md:inline-flex">
               Run preflight
               <ArrowRight size={13} />
             </button>

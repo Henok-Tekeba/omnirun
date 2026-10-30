@@ -214,6 +214,59 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
             <span>01100110 01101001 01110100 01110011</span>
           </div>
 
+          <div className="mobile-console-preview" aria-hidden="true">
+            <div className="mobile-preview-head">
+              <span className="mobile-preview-brand">
+                <Spark size={12} /> OmniRun
+              </span>
+              <span className="mobile-preview-live">
+                <span className="mock-dot" /> ready
+              </span>
+            </div>
+            <div className="mobile-preview-card">
+              <div className="mobile-preview-kicker">Preflight / SmolLM2-135M</div>
+              <div className="mobile-preview-verdict-row">
+                <span className="mobile-preview-verdict">GO</span>
+                <span className="mobile-preview-claim">
+                  <CheckCircle size={11} /> FITS YES
+                </span>
+              </div>
+              <div className="mobile-preview-metrics">
+                <div>
+                  <span>Peak memory</span>
+                  <strong>0.60–0.64 GB</strong>
+                </div>
+                <div>
+                  <span>Decode</span>
+                  <strong>302–467 tok/s</strong>
+                </div>
+              </div>
+              <div className="mobile-preview-chart" aria-hidden="true">
+                {[28, 44, 36, 58, 48, 70, 54, 62].map((height, index) => (
+                  <span
+                    key={index}
+                    className={index === 5 ? "is-peak" : ""}
+                    style={{ height: `${height}%` }}
+                  />
+                ))}
+              </div>
+              <div className="mobile-preview-claims">
+                <span>
+                  <ShieldCheck size={10} /> SUPPORTED <b>YES</b>
+                </span>
+                <span>VERIFIED <b>NONE</b></span>
+              </div>
+              <div className="mobile-preview-recent">
+                <span>Runtime</span>
+                <strong>transformers</strong>
+                <span>9 artifacts</span>
+              </div>
+            </div>
+            <div className="mobile-preview-foot">
+              <Gauge size={11} /> Metadata and headers only. Weights stay remote.
+            </div>
+          </div>
+
           <div className="mock-dashboard">
             <aside className="mock-sidebar">
               <div className="mock-brand">

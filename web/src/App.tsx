@@ -58,11 +58,13 @@ export default function App() {
     [],
   );
   const storedHardware = useMemo(() => loadHardware(), []);
-  const [form, setForm] = useState<FormState>(() =>
-    initialQuery.form.model
-      ? initialQuery.form
-      : { ...DEFAULT_FORM, ...storedHardware },
-  );
+  const [form, setForm] = useState<FormState>(() => {
+    if (initialQuery.form.model) return initialQuery.form;
+    const defaults = IS_STATIC_PREVIEW
+      ? { ...DEFAULT_FORM, mode: "cpu" as const, ramGib: "32" }
+      : DEFAULT_FORM;
+    return { ...defaults, ...storedHardware };
+  });
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [phase, setPhase] = useState<Phase>(() =>
     initialSample ? "result" : initialQuery.form.model ? "form" : "landing",

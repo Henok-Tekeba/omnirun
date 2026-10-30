@@ -4377,3 +4377,257 @@
     height: 2.75rem;
   }
 }
+
+/* Purpose-built mobile console preview. The desktop mock is intentionally
+   hidden on phones so the hero never shows a cropped dashboard. */
+.mobile-console-preview {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .mock-dashboard {
+    display: none;
+  }
+
+  .marketing-visual {
+    height: 500px;
+    min-height: 500px;
+  }
+
+  .mobile-console-preview {
+    position: absolute;
+    z-index: 4;
+    inset: 20px 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mobile-preview-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-inline: 4px;
+    color: #111;
+  }
+
+  .mobile-preview-brand,
+  .mobile-preview-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .mobile-preview-brand {
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .mobile-preview-live {
+    color: #5f5f5f;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .mobile-preview-card {
+    display: flex;
+    min-height: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 18px;
+    background: #fff;
+    padding: 14px;
+    box-shadow: 0 20px 50px rgba(62, 50, 84, 0.16);
+  }
+
+  .mobile-preview-kicker {
+    color: #5f5f5f;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .mobile-preview-verdict-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .mobile-preview-verdict {
+    color: #1f6f43;
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  .mobile-preview-claim {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: 1px solid #cfe7d8;
+    border-radius: 999px;
+    background: #eef8f2;
+    padding: 4px 8px;
+    color: #1f6f43;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.04em;
+  }
+
+  .mobile-preview-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    border-top: 1px solid #ededeb;
+    padding-top: 10px;
+  }
+
+  .mobile-preview-metrics span {
+    display: block;
+    color: #666;
+    font-size: 0.625rem;
+  }
+
+  .mobile-preview-metrics strong {
+    display: block;
+    margin-top: 3px;
+    color: #111;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+
+  .mobile-preview-chart {
+    display: flex;
+    height: 56px;
+    align-items: flex-end;
+    gap: 5px;
+    border-bottom: 1px solid #ededeb;
+    padding-bottom: 2px;
+  }
+
+  .mobile-preview-chart span {
+    flex: 1;
+    border-radius: 2px 2px 0 0;
+    background: #ededeb;
+  }
+
+  .mobile-preview-chart span.is-peak {
+    background: #111;
+  }
+
+  .mobile-preview-claims {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 6px;
+    color: #5f5f5f;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .mobile-preview-claims span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .mobile-preview-claims b {
+    color: #111;
+    font-weight: 600;
+  }
+
+  .mobile-preview-foot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-inline: 4px;
+    color: #5f5f5f;
+    font-size: 0.6875rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .marketing-visual {
+    height: 460px;
+    min-height: 460px;
+  }
+}
+
+@media (max-width: 640px) {
+  .preview-banner-api {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .preview-banner-actions .preview-banner-api {
+    display: none;
+  }
+
+  .cookie-consent {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .cookie-consent-kicker {
+    font-size: 0.625rem;
+  }
+
+  .cookie-consent-copy p:last-child {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+
+  .marketing-visual {
+    height: 400px;
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 380px) {
+  .marketing-visual {
+    height: 400px;
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 640px) {
+  .marketing-ascii-bg {
+    display: none;
+  }
+
+  .preview-banner-actions a.preview-banner-api {
+    display: none;
+  }
+
+  .mobile-preview-recent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-top: 1px solid #ededeb;
+    padding-top: 9px;
+    color: #5f5f5f;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .mobile-preview-recent strong {
+    color: #111;
+    font-weight: 600;
+  }
+}

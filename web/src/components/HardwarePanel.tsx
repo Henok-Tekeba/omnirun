@@ -122,7 +122,9 @@ function DeviceList({
       <div className="device-list mt-2" aria-label="Device profiles">
         {filtered.length === 0 ? (
           <p className="px-3 py-6 text-center text-sm text-[var(--muted)]">
-            No matching profiles. Try “M2”, “4090”, or “CPU”.
+            {devices.length === 0
+              ? "The device list requires the live API. Use CPU only or run locally."
+              : "No matching profiles. Try “M2”, “4090”, or “CPU”."}
           </p>
         ) : (
           <ul>
@@ -494,7 +496,7 @@ export function HardwarePanel({
                   </p>
                 </>
               ) : (
-                <div className="flex min-h-[190px] flex-col items-start justify-center">
+                <div className="flex min-h-[120px] flex-col items-start justify-center md:min-h-[190px]">
                   <Gpu size={20} className="text-[var(--faint)]" />
                   <p className="mt-3 text-sm font-medium">No device selected</p>
                   <p className="mt-1 max-w-xs text-sm leading-relaxed text-[var(--muted)]">
