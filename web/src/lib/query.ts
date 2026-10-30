@@ -82,3 +82,15 @@ export function clearRunFlag(): void {
   url.searchParams.delete("run");
   window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
 }
+
+export function clearSampleFlag(): void {
+  const url = new URL(window.location.href);
+  url.searchParams.delete("sample");
+  window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+}
+
+export function setSampleFlag(): void {
+  const url = new URL(window.location.href);
+  url.searchParams.set("sample", "1");
+  window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+}

@@ -6,7 +6,7 @@ import {
   hardwareDescription,
   validateForm,
 } from "./lib/form";
-import { clearRunFlag, readQuery, writeQuery } from "./lib/query";
+import { clearRunFlag, clearSampleFlag, readQuery, setSampleFlag, writeQuery } from "./lib/query";
 import { loadHardware, saveHardware } from "./lib/storage";
 import { useCheck } from "./hooks/useCheck";
 import { useDevices } from "./hooks/useDevices";
@@ -53,6 +53,10 @@ function focusFirstError(form: FormState, errors: FieldErrors) {
 
 export default function App() {
   const initialQuery = useMemo(() => readQuery(), []);
+  const initialSample = useMemo(
+    () => new URLSearchParams(window.location.search).get("sample") === "1",
+    [],
+  );
   const storedHardware = useMemo(() => loadHardware(), []);
   const [form, setForm] = useState<FormState>(() =>
     initialQuery.form.model
@@ -61,10 +65,12 @@ export default function App() {
   );
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [phase, setPhase] = useState<Phase>(() =>
-    initialQuery.form.model ? "form" : "landing",
+    initialSample ? "result" : initialQuery.form.model ? "form" : "landing",
   );
   const [shareUrl, setShareUrl] = useState("");
-  const [sampleResult, setSampleResult] = useState<CheckResponse | null>(null);
+  const [sampleResult, setSampleResult] = useState<CheckResponse | null>(() =>
+    initialSample ? SAMPLE_RESULT : null,
+  );
   const devicesState = useDevices();
   const check = useCheck();
   const autoRunRef = useRef(false);
@@ -90,6 +96,7 @@ export default function App() {
       setSampleResult(null);
       setPhase("loading");
       setShareUrl("");
+      clearSampleFlag();
       clearRunFlag();
       const response = await runCheck(validation.payload);
       if (response) {
@@ -170,6 +177,7 @@ export default function App() {
   const handleCancel = useCallback(() => {
     cancelCheck();
     setPhase("form");
+    clearSampleFlag();
     clearRunFlag();
     scrollToTop();
   }, [cancelCheck]);
@@ -178,18 +186,21 @@ export default function App() {
     resetCheck();
     setSampleResult(null);
     setPhase("form");
+    clearSampleFlag();
     clearRunFlag();
     scrollToTop();
   }, [resetCheck]);
 
   const handleStart = useCallback(() => {
     setSampleResult(null);
+    clearSampleFlag();
     setPhase("form");
     scrollToTop();
   }, []);
 
   const handleFind = useCallback(() => {
     setSampleResult(null);
+    clearSampleFlag();
     setPhase("finder");
     scrollToTop();
   }, []);
@@ -197,6 +208,7 @@ export default function App() {
   const handleSample = useCallback(() => {
     resetCheck();
     setSampleResult(SAMPLE_RESULT);
+    setSampleFlag();
     setPhase("result");
     scrollToTop();
   }, [resetCheck]);
@@ -205,6 +217,7 @@ export default function App() {
     setForm((current) => ({ ...current, model: repoId }));
     setFieldErrors({});
     setSampleResult(null);
+    clearSampleFlag();
     setPhase("form");
     scrollToTop();
   }, []);
@@ -217,6 +230,7 @@ export default function App() {
   const handleBackToLanding = useCallback(() => {
     resetCheck();
     setSampleResult(null);
+    clearSampleFlag();
     setPhase("landing");
     window.history.replaceState(null, "", window.location.pathname);
     scrollToTop();

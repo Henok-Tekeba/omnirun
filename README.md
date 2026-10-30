@@ -11,6 +11,7 @@ claims: **FITS**, **SUPPORTED**, and **VERIFIED**.
 >
 > Static preview: https://henok-tekeba.github.io/omnirun/ (GitHub Pages hosts
 > the interface; live preflights need the local API).
+> Recorded sample result: https://henok-tekeba.github.io/omnirun/?sample=1
 
 ## Quick start
 
