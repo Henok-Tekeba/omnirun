@@ -12,7 +12,7 @@ test("cookie notice, mobile menu, and legal pages", async ({ page }) => {
 
   const banner = page.locator(".cookie-consent");
   await expect(banner).toBeVisible();
-  await page.getByRole("button", { name: "Essential only" }).click();
+  await page.getByRole("button", { name: "Accept" }).click();
   await expect(banner).toBeHidden();
 
   await page.reload();

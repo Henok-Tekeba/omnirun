@@ -11,7 +11,12 @@ export function CookieConsent() {
   const [choice, setChoice] = useState<CookieChoice | null>(() => readCookieChoice());
 
   useEffect(() => {
-    const openSettings = () => setOpen(true);
+    const openSettings = () => {
+      setOpen(true);
+      if (window.matchMedia("(max-width: 640px)").matches) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    };
     window.addEventListener(COOKIE_SETTINGS_EVENT, openSettings);
     return () => window.removeEventListener(COOKIE_SETTINGS_EVENT, openSettings);
   }, []);
@@ -29,17 +34,14 @@ export function CookieConsent() {
       <div className="cookie-consent-copy">
         <p className="cookie-consent-kicker">Cookies &amp; storage</p>
         <p>
-          Essential browser storage only. No tracking cookies.{" "}
+          Essential storage only.{" "}
           <a href="?page=privacy#cookies">Privacy policy</a>
           {choice ? " You can change this choice at any time." : ""}
         </p>
       </div>
       <div className="cookie-consent-actions">
-        <button type="button" className="cookie-btn cookie-btn-primary" onClick={() => choose("accepted")}>
+        <button type="button" className="cookie-btn cookie-btn-primary" onClick={() => choose("essential")}>
           Accept
-        </button>
-        <button type="button" className="cookie-btn" onClick={() => choose("essential")}>
-          Essential only
         </button>
       </div>
     </section>

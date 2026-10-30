@@ -4631,3 +4631,45 @@
     font-weight: 600;
   }
 }
+
+@media (max-width: 640px) {
+  .cookie-consent {
+    position: static;
+    left: auto;
+    bottom: auto;
+    width: auto;
+    margin: 10px 10px 0;
+    transform: none;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    box-shadow: 0 8px 24px rgba(20, 20, 20, 0.08);
+  }
+
+  .cookie-consent-copy {
+    flex: 1;
+  }
+
+  .cookie-consent-kicker {
+    display: none;
+  }
+
+  .cookie-consent-copy p:last-child {
+    margin-top: 0;
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+
+  .cookie-consent-actions {
+    flex: none;
+    width: auto;
+  }
+
+  .cookie-btn {
+    min-height: 2.5rem;
+    flex: none;
+    padding-inline: 12px;
+    font-size: 0.75rem;
+  }
+}
