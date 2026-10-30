@@ -30,14 +30,7 @@
       <div class="kicker">404 / Off the map</div>
       <h1>That page isn’t here.</h1>
       <p>The OmniRun site is a single-page app. Use the link below to get back to the preflight console.</p>
-      <a id="home" href="/omnirun/">Back to OmniRun</a>
+      <a id="home" href="/">Back to OmniRun</a>
     </main>
-    <script>
-      (() => {
-        const parts = window.location.pathname.split("/").filter(Boolean);
-        const base = parts.length ? `/${parts[0]}/` : "/";
-        document.getElementById("home").href = base;
-      })();
-    </script>
   </body>
 </html>

@@ -19,7 +19,7 @@ The repository includes a root `app.py` entrypoint, `requirements.txt`, and `ver
 4. Add these Environment Variables for Production and Preview:
 
    ```text
-   OMNIRUN_CORS_ORIGINS=https://henok-tekeba.github.io
+   OMNIRUN_CORS_ORIGINS=https://omnirun.enoch.et,https://henok-tekeba.github.io
    OMNIRUN_CACHE_DIR=/tmp/omnirun-cache
    OMNIRUN_TRUST_PROXY_HEADERS=true
    ```
@@ -72,7 +72,7 @@ The Pages build will now call the hosted API. The static-preview banner disappea
 
 | Variable | Value | Purpose |
 | --- | --- | --- |
-| `OMNIRUN_CORS_ORIGINS` | `https://henok-tekeba.github.io` | Allows the Pages origin |
+| `OMNIRUN_CORS_ORIGINS` | `https://omnirun.enoch.et,https://henok-tekeba.github.io` | Allows the Pages origins |
 | `OMNIRUN_CACHE_DIR` | `/tmp/omnirun-cache` | Ephemeral metadata cache |
 | `OMNIRUN_TRUST_PROXY_HEADERS` | `true` | Rate-limit by real client IP behind Render's proxy |
 
@@ -83,7 +83,7 @@ Free Render services sleep after inactivity. The scheduled `keepalive.yml` workf
 ```bash
 docker build -t omnirun-api .
 docker run --rm -p 8000:8000 \
-  -e OMNIRUN_CORS_ORIGINS=https://henok-tekeba.github.io \
+  -e OMNIRUN_CORS_ORIGINS=https://omnirun.enoch.et,https://henok-tekeba.github.io \
   -e OMNIRUN_TRUST_PROXY_HEADERS=true \
   omnirun-api
 ```
@@ -119,6 +119,6 @@ Then open the Pages site and run a preflight. Browser CORS failures usually mean
 | Variable | Purpose |
 | --- | --- |
 | `VITE_API_BASE_URL` | API origin, without `/api` |
-| `VITE_BASE_PATH` | Pages subpath, e.g. `/omnirun/` |
+| `VITE_BASE_PATH` | `/` for the custom domain |
 
 See [`web/.env.example`](../web/.env.example).

@@ -4,7 +4,7 @@
 
 OmniRun is the preflight layer for local inference. Given a Hugging Face model and a hardware profile, it returns a versioned report with memory fit, runtime support, decode-speed range, real artifacts, and capacity scenarios — without downloading tensor weights.
 
-[Live preview](https://henok-tekeba.github.io/omnirun/) · [Sample report](https://henok-tekeba.github.io/omnirun/?sample=1) · [Methodology](docs/methodology.md) · [Security](SECURITY.md)
+[Live preview](https://omnirun.enoch.et/) · [Sample report](https://omnirun.enoch.et/?sample=1) · [Methodology](docs/methodology.md) · [Security](SECURITY.md)
 
 > The GitHub Pages deployment is a static product preview. Live preflights and model discovery require the API; see [Deployment](#deployment).
 
@@ -121,18 +121,14 @@ The frontend is deployed to GitHub Pages by [`.github/workflows/deploy-pages.yml
 
 The repository includes a serverless Vercel entrypoint, a production `Dockerfile`, a `render.yaml` blueprint, CORS configuration, and a full [deployment guide](docs/deployment.md).
 
-- Static preview: [henok-tekeba.github.io/omnirun](https://henok-tekeba.github.io/omnirun/)
-- Recorded sample report: [henok-tekeba.github.io/omnirun/?sample=1](https://henok-tekeba.github.io/omnirun/?sample=1)
+- Static preview: [omnirun.enoch.et](https://omnirun.enoch.et/)
+- Recorded sample report: [omnirun.enoch.et/?sample=1](https://omnirun.enoch.et/?sample=1)
 - Live preflights: run `npm run dev` locally, or deploy the API with [docs/deployment.md](docs/deployment.md) and set the repository variable `VITE_API_BASE_URL` to the API root.
 
 Environment overrides are documented in [`web/.env.example`](web/.env.example).
 
-Local production build with the Pages base path:
-
-```bash
-cd web
-VITE_BASE_PATH=/omnirun/ npm run build
-```
+The custom domain is served from the root path, so the production build uses
+`VITE_BASE_PATH=/`.
 
 ## Accessibility
 

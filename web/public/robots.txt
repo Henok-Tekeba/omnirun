@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://henok-tekeba.github.io/omnirun/sitemap.xml
+Sitemap: https://omnirun.enoch.et/sitemap.xml

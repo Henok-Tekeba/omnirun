@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://henok-tekeba.github.io/omnirun/</loc>
+    <loc>https://omnirun.enoch.et/</loc>
     <lastmod>2026-10-30</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://henok-tekeba.github.io/omnirun/?page=privacy</loc>
+    <loc>https://omnirun.enoch.et/?page=privacy</loc>
     <lastmod>2026-10-30</lastmod>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://henok-tekeba.github.io/omnirun/?page=terms</loc>
+    <loc>https://omnirun.enoch.et/?page=terms</loc>
     <lastmod>2026-10-30</lastmod>
     <priority>0.4</priority>
   </url>

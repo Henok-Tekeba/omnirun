@@ -1,4 +1,4 @@
 Contact: https://github.com/Henok-Tekeba/omnirun/issues
 Expires: 2027-10-30T00:00:00.000Z
 Preferred-Languages: en
-Canonical: https://henok-tekeba.github.io/omnirun/.well-known/security.txt
+Canonical: https://omnirun.enoch.et/.well-known/security.txt

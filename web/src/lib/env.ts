@@ -4,9 +4,9 @@ const rawApiBase = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.tr
 export const API_BASE = rawApiBase ? rawApiBase.replace(/\/+$/, "") : "/api";
 export const API_DOCS_URL = `${API_BASE}/docs`;
 
-/** Base path injected by Vite, e.g. /omnirun/ on GitHub Pages. */
+/** Base path injected by Vite. The custom domain uses the root path. */
 export const SITE_BASE = import.meta.env.BASE_URL;
-export const SITE_URL = "https://henok-tekeba.github.io/omnirun/";
+export const SITE_URL = "https://omnirun.enoch.et/";
 
 export const REPO_URL = "https://github.com/Henok-Tekeba/omnirun";
 export const ISSUES_URL = `${REPO_URL}/issues`;
