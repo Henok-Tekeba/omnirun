@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import type { CheckResponse, RuntimePath } from "../api/types";
 import { formatBytesRange, formatGB, formatInteger, formatPercent } from "../lib/format";
 import { Check, FileCode, Minus, ShieldCheck } from "./Icons";
-import { ReasonList } from "./ReasonList";
 import { ConfidenceMeter, EmptyLine, StatusPill } from "./ui";
 
 function RuntimeBadge({ path }: { path: RuntimePath }) {
@@ -17,7 +16,7 @@ function RuntimeBadge({ path }: { path: RuntimePath }) {
 
 function SupportRuntimeList({ runtimes }: { runtimes: RuntimePath[] }) {
   if (runtimes.length === 0) {
-    return <EmptyLine>No runtime paths were returned for this repo.</EmptyLine>;
+    return <EmptyLine>No runtime paths were returned.</EmptyLine>;
   }
   return (
     <ul className="mt-2 space-y-1.5">
@@ -68,7 +67,6 @@ function FitBody({ result }: { result: CheckResponse }) {
           </p>
         </div>
       </div>
-      <ReasonList issues={fit.reasons} limit={2} className="mt-2" />
     </>
   );
 }
@@ -84,11 +82,11 @@ function SupportedBody({ result }: { result: CheckResponse }) {
           <p className="mt-0.5 flex items-center gap-1.5 text-[10px] text-[var(--text-2)]">
             {supported.matrix_entry_found ? (
               <>
-                <Check size={11} className="text-[var(--go)]" /> matrix entry
+                <Check size={11} className="text-[var(--go)]" /> Yes
               </>
             ) : (
               <>
-                <Minus size={11} className="text-[var(--faint)]" /> no entry
+                <Minus size={11} className="text-[var(--faint)]" /> No
               </>
             )}
           </p>
@@ -115,22 +113,21 @@ function SupportedBody({ result }: { result: CheckResponse }) {
           </p>
         </div>
         <div>
-          <p className="micro">Direct runtime</p>
+          <p className="micro">Runs directly</p>
           <p className="mt-0.5 text-[10px] text-[var(--text-2)]">
-            {supported.direct_runtime_available ? "yes" : "no"}
+            {supported.direct_runtime_available ? "Yes" : "No"}
           </p>
         </div>
       </div>
       {supported.custom_code_risk ? (
         <p className="mt-2 flex items-start gap-2 border-l-2 border-[var(--optimize)] bg-[var(--optimize-soft)] p-2 text-[10px] leading-relaxed text-[var(--text-2)]">
           <FileCode size={12} className="mt-0.5 flex-none text-[var(--optimize)]" />
-          trust_remote_code is required. The matrix covers the architecture/runtime pair, not
-          this repo’s custom code.
+          This model needs custom code. The support matrix does not cover that code.
         </p>
       ) : null}
       <SupportRuntimeList runtimes={supported.runtimes} />
       <p className="mt-2 font-mono text-[8.5px] leading-relaxed text-[var(--faint)]">
-        Documented path, not a test run. A GO never implies VERIFIED.
+        Documented path, not a recorded run.
       </p>
     </>
   );
@@ -146,8 +143,8 @@ function VerifiedBody({ result }: { result: CheckResponse }) {
           <div>
             <p className="text-[11px] font-medium text-[var(--text-2)]">No recorded runs yet</p>
             <p className="mt-0.5 text-[10px] leading-relaxed text-[var(--muted)]">
-              v1 ships with an empty verified-runs record. OmniRun can inspect this model but
-              cannot claim that anyone ran it on this hardware.
+              OmniRun has no recorded run for this model yet. It can inspect the model, but
+              it cannot claim anyone ran it on this hardware.
             </p>
           </div>
         </div>
@@ -212,15 +209,14 @@ export function ClaimsGrid({ result }: { result: CheckResponse }) {
       <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
         <div>
           <h2 id="claims-title" className="module-title">
-            Claims
+            Checks
           </h2>
           <p className="mt-1 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)]">
-            Three separate questions
+            Three separate checks
           </p>
         </div>
         <p className="max-w-sm text-right text-[10px] leading-relaxed text-[var(--muted)]">
-          FITS is memory. SUPPORTED is a documented runtime path. VERIFIED needs a recorded
-          real run.
+          Memory, runtime, and recorded run.
         </p>
       </div>
 
@@ -234,30 +230,48 @@ export function ClaimsGrid({ result }: { result: CheckResponse }) {
 
         <ClaimRow
           name="FITS"
-          label="memory fit"
+          label="memory"
           status={fits.status}
           confidence={fits.confidence}
-          summary={fits.summary}
+          summary={
+            fits.status === "yes"
+              ? "Fits within your memory budget."
+              : fits.status === "no"
+                ? "Does not fit within your memory budget."
+                : "The memory estimate is inconclusive."
+          }
         >
           <FitBody result={result} />
         </ClaimRow>
 
         <ClaimRow
           name="SUPPORTED"
-          label="runtime path"
+          label="runtime"
           status={supported.status}
           confidence={supported.confidence}
-          summary={supported.summary}
+          summary={
+            supported.status === "yes"
+              ? supported.direct_runtime_available
+                ? "A direct runtime is documented."
+                : "Only a conversion path is documented."
+              : supported.status === "no"
+                ? "No usable runtime path was found."
+                : "Runtime support is not confirmed."
+          }
         >
           <SupportedBody result={result} />
         </ClaimRow>
 
         <ClaimRow
           name="VERIFIED"
-          label="recorded run"
+          label="real run"
           status={verified.status}
           confidence={verified.confidence}
-          summary={verified.summary}
+          summary={
+            verified.runs.length > 0
+              ? "Recorded runs match this model."
+              : "No recorded run yet."
+          }
         >
           <VerifiedBody result={result} />
         </ClaimRow>

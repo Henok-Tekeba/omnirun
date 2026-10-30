@@ -28,10 +28,10 @@ export function AdvancedPanel({
       <summary className="flex min-h-[42px] cursor-pointer list-none items-center justify-between gap-3 py-2 [&::-webkit-details-marker]:hidden">
         <span className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
           <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--muted)]">
-            Advanced inputs
+            Advanced settings
           </span>
           <span className="font-mono text-[9px] text-[var(--faint)]">
-            context / batch / HF token
+            Context, batch, and token
           </span>
         </span>
         <span className="flex items-center gap-2">
@@ -48,7 +48,7 @@ export function AdvancedPanel({
       <div className="grid gap-5 border-t border-[var(--line)] pb-2 pt-4 md:grid-cols-2">
         <div>
           <label htmlFor="context" className="micro">
-            Context length
+            Context window
           </label>
           <div className="relative mt-2">
             <input
@@ -66,8 +66,8 @@ export function AdvancedPanel({
             </span>
           </div>
           <p id="context-help" className="mt-1.5 text-[10.5px] leading-relaxed text-[var(--muted)]">
-            KV-cache allocation context, not prompt length. Above the model maximum, the API
-            clamps it and flags the result.
+            The context window used for the memory estimate. If it is above the model
+            maximum, it is clamped.
           </p>
           {errors.context ? (
             <p className="mt-1 text-[10.5px] text-[var(--no)]">{errors.context}</p>
@@ -94,8 +94,7 @@ export function AdvancedPanel({
             </span>
           </div>
           <p id="batch-help" className="mt-1.5 text-[10.5px] leading-relaxed text-[var(--muted)]">
-            Concurrent sequences, not gradient batch. Aggregate speed assumes perfect
-            continuous batching.
+            Number of sequences processed together. Speed assumes ideal batching.
           </p>
           {errors.batch ? (
             <p className="mt-1 text-[10.5px] text-[var(--no)]">{errors.batch}</p>
@@ -134,8 +133,8 @@ export function AdvancedPanel({
           <p className="mt-1.5 flex items-start gap-2 text-[10.5px] leading-relaxed text-[var(--muted)]">
             <Lock size={11} className="mt-0.5 flex-none text-[var(--accent)]" />
             <span>
-              Sent only with this request. Never stored in the URL, localStorage, or the
-              result. The API does not log request bodies. Not needed for public repos.
+              Sent only with this request. Never stored in the URL, browser storage, or the
+              result. Not needed for public repos.
             </span>
           </p>
         </div>

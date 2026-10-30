@@ -11,17 +11,17 @@ const EXAMPLES = [
   {
     label: "SmolLM2 135M",
     model: "HuggingFaceTB/SmolLM2-135M-Instruct",
-    note: "small LLM",
+    note: "small model",
   },
   {
     label: "Mistral 7B",
     model: "mistralai/Mistral-7B-v0.1",
-    note: "larger LLM",
+    note: "7B model",
   },
   {
     label: "Whisper Tiny",
     model: "openai/whisper-tiny",
-    note: "ASR · UNKNOWN",
+    note: "speech model",
   },
 ];
 
@@ -66,10 +66,10 @@ export function CheckForm({
     <section className="console" id="check" aria-labelledby="check-title">
       <div className="console-label">
         <span>
-          <strong>Input bay</strong> / model + hardware
+          <strong>Model and hardware</strong>
         </span>
         <span>Estimate only</span>
-        <span className="hidden sm:inline">POST /check</span>
+        <span className="hidden sm:inline">Live check</span>
       </div>
 
       <div className="p-4 md:p-7">
@@ -95,11 +95,11 @@ export function CheckForm({
             <h2 id="check-title" className="module-title">
               Model
             </h2>
-            <span className="rule-tag">repo id / huggingface.co URL</span>
+            <span className="rule-tag">Hugging Face model</span>
           </div>
 
           <label htmlFor="model" className="micro mt-4 block">
-            HF reference
+            Model URL or repo ID
           </label>
           <div className="input-bay mt-2">
             <span className="prompt" aria-hidden="true">
@@ -127,8 +127,8 @@ export function CheckForm({
 
           <div className="mt-2 flex flex-wrap items-start justify-between gap-2">
             <p id="model-help" className="text-[11px] leading-relaxed text-[var(--muted)]">
-              Datasets and Spaces are not supported. A repo id like{" "}
-              <span className="font-mono text-[10px]">org/model</span> is enough.
+              Paste a model page URL or a repo ID like{" "}
+              <span className="font-mono text-[10px]">org/model</span>.
             </p>
             <span className="flex items-center gap-1.5 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)]">
               <Lock size={10} /> no weight downloads
@@ -197,11 +197,10 @@ export function CheckForm({
 
           <div className="mt-6 flex flex-col gap-3 border-t border-[var(--line)] pt-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="micro">Selected setup</p>
+              <p className="micro">Current setup</p>
               <p className="mt-1 text-[12px] text-[var(--text-2)]">{summary}</p>
               <p className="mt-0.5 font-mono text-[9px] text-[var(--faint)]">
-                context {form.context || "—"} / batch {form.batch || "—"} / hardware{" "}
-                {form.mode === "cpu" && form.cpuMode === "unsure" ? "unknown" : form.mode}
+                Context {form.context || "—"} / Batch {form.batch || "—"}
               </p>
             </div>
             <button type="submit" className="btn btn-primary sm:min-w-[170px]">

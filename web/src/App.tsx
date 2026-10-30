@@ -196,7 +196,7 @@ export default function App() {
 
   const shellTitle = showResult ? "Results" : "Preflight";
   const shellSubtitle = showResult
-    ? "FITS, SUPPORTED, and VERIFIED are separate claims."
+    ? "Three checks: memory, runtime, and recorded runs."
     : "One model. One machine. One honest answer.";
 
   return (

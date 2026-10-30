@@ -52,11 +52,11 @@ export function errorCopy(error: ApiError): ErrorCopy {
       title:
         error.code === "repo_access_denied"
           ? "Hugging Face rejected that token."
-          : "This repo is gated, private, or doesn’t exist.",
+          : "This model is gated, private, or doesn’t exist.",
       body:
         error.code === "repo_access_denied"
           ? "The token was sent, but Hugging Face did not grant access. Check that it is valid and that the account has accepted the model license."
-          : "Hugging Face returns an authentication error for gated, private, and some missing repos. OmniRun does not bypass gated access.",
+          : "Hugging Face returns an authentication error for gated, private, and some missing models. OmniRun does not bypass gated access.",
       hint,
       showTokenAction: true,
       retryAfter: null,
@@ -66,9 +66,9 @@ export function errorCopy(error: ApiError): ErrorCopy {
   if (NOT_FOUND_CODES.has(error.code)) {
     return {
       kind: "not_found",
-      title: "No model repo found.",
+      title: "No model found.",
       body:
-        "Hugging Face did not find that owner/model. Check the spelling, or paste the model page URL instead.",
+        "Hugging Face did not find that model. Check the spelling, or paste the model page URL instead.",
       hint,
       showTokenAction: false,
       retryAfter: null,
@@ -110,7 +110,7 @@ export function errorCopy(error: ApiError): ErrorCopy {
         ? "That helper code isn’t valid."
         : unsupportedResource
           ? "That isn’t a model repo."
-          : "Check the model or hardware input.",
+          : "Check your input.",
       body: error.message,
       hint,
       showTokenAction: false,

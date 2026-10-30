@@ -102,7 +102,7 @@ function DeviceList({
       </div>
       <div className="mt-2 flex items-center justify-between">
         <p className="font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)]">
-          Curated table / not measured
+          Curated device list
         </p>
         {query ? (
           <button
@@ -290,7 +290,7 @@ export function HardwarePanel({
     <div>
       <div className="section-heading">
         <h2 className="module-title">Hardware</h2>
-        <span className="rule-tag">helper = measured / manual = table / cpu = conservative</span>
+        <span className="rule-tag">Measured, curated, or conservative</span>
       </div>
 
       <div className="tab-list mt-4" role="tablist" aria-label="Hardware input mode">
@@ -322,23 +322,22 @@ export function HardwarePanel({
       >
         <div className="grid gap-5 md:grid-cols-[1.05fr_1fr]">
           <div>
-            <h3 className="text-[13px] font-semibold">Run the helper on the target machine</h3>
+            <h3 className="text-[13px] font-semibold">Run the helper on this machine</h3>
             <p className="mt-2 text-[12px] leading-relaxed text-[var(--muted)]">
-              It detects CPU, RAM, and accelerator details, then runs a short memory-bandwidth
-              benchmark. It does not download model weights. Paste the printed{" "}
-              <span className="font-mono text-[11px] text-[var(--text-2)]">OR1…</span> code.
+              It detects your processor, memory, and GPU, then runs a quick memory speed
+              test. It does not download model weights. Paste the code it prints below.
             </p>
             <div className="code-block mt-3">
               <code>$ {HELPER_COMMAND}</code>
               <CopyButton value={HELPER_COMMAND} label="Copy" />
             </div>
             <p className="mt-2 font-mono text-[8.5px] leading-relaxed text-[var(--faint)]">
-              From the repository root. Add --code-only if you only want the code.
+              Run this from the repository root.
             </p>
             <div className="note-box mt-4">
-              <strong className="text-[var(--text-2)]">Unsigned and self-reported.</strong>{" "}
-              The code has a version and CRC, but it is not proof of hardware. Confidence
-              means “measured by the helper on this machine”, not cryptographic attestation.
+              <strong className="text-[var(--text-2)]">Self-reported, not signed.</strong>{" "}
+              The code reports what the helper measured. It is not proof of hardware; use it
+              on machines you trust.
             </div>
           </div>
 
@@ -359,8 +358,8 @@ export function HardwarePanel({
               aria-describedby={errors.helperCode ? "helper-code-error" : "helper-code-help"}
             />
             <p id="helper-code-help" className="mt-1.5 text-[10.5px] leading-relaxed text-[var(--muted)]">
-              Stored on this device as your last hardware choice. It contains machine
-              details, so a share link that reproduces this result includes it.
+              Saved on this device as your last hardware choice. Share links include it
+              because it contains machine details.
             </p>
             {errors.helperCode ? (
               <p id="helper-code-error" className="mt-1 text-[10.5px] text-[var(--no)]">
@@ -468,8 +467,8 @@ export function HardwarePanel({
 
                   {selectedDevice.kind === "discrete" ? (
                     <div className="note-box mt-4">
-                      Budget is VRAM minus a 512 MiB runtime reserve. System RAM does not add
-                      capacity in v1; there is no CPU+GPU offload.
+                      The budget is VRAM minus a small runtime reserve. System RAM is not
+                      added in v1.
                     </div>
                   ) : (
                     <div className="mt-4">
@@ -497,8 +496,7 @@ export function HardwarePanel({
                   <Gpu size={20} className="text-[var(--faint)]" />
                   <p className="mt-3 text-[12px] font-medium">No device selected</p>
                   <p className="mt-1 max-w-xs text-[11px] leading-relaxed text-[var(--muted)]">
-                    Pick a profile on the left to see its memory budget and set RAM where the
-                    API needs it.
+                    Choose a device to see its memory budget.
                   </p>
                 </div>
               )}
@@ -563,7 +561,7 @@ export function HardwarePanel({
               </label>
             </div>
             <p className="mt-3 font-mono text-[8.5px] leading-relaxed text-[var(--faint)]">
-              Both paths are LOW confidence. Use the helper for a measured profile.
+              These are conservative estimates. Use the helper for a measured profile.
             </p>
           </div>
 
@@ -576,15 +574,15 @@ export function HardwarePanel({
               optional={cpuMode === "unsure"}
             />
             <div className="mt-4 border-t border-[var(--line)] pt-3">
-              <p className="micro">Payload</p>
-              <p className="mt-1.5 font-mono text-[9px] leading-relaxed text-[var(--muted)]">
+              <p className="micro">What we'll use</p>
+              <p className="mt-1.5 text-[10.5px] leading-relaxed text-[var(--muted)]">
                 {cpuMode === "cpu"
-                  ? "source: manual / device_id: cpu-generic / ram_gib: your RAM"
-                  : "source: unknown / ram_gib: your RAM if provided"}
+                  ? "The generic CPU profile with your RAM."
+                  : "Conservative defaults, with your RAM if provided."}
               </p>
               <div className="mt-3 flex items-center gap-2 text-[10px] text-[var(--faint)]">
                 <Terminal size={12} />
-                <span>No helper code is required for this path.</span>
+                <span>No helper code needed.</span>
               </div>
             </div>
           </div>

@@ -35,7 +35,7 @@ export function ErrorPanel({
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="font-mono text-[8.5px] uppercase tracking-[0.1em] text-[var(--no)]">
-                Fault / request failed
+                Something went wrong
               </span>
               <span className="font-mono text-[8.5px] text-[var(--faint)]">
                 {error.code}
@@ -58,7 +58,7 @@ export function ErrorPanel({
               </button>
               {copy.showTokenAction ? (
                 <button type="button" className="btn btn-ghost btn-sm" onClick={onOpenToken}>
-                  <Lock size={11} /> Add an HF token
+                  <Lock size={11} /> Add a Hugging Face token
                 </button>
               ) : null}
               {repoId ? (
@@ -71,14 +71,11 @@ export function ErrorPanel({
                   Open on Hugging Face <ExternalLink size={11} />
                 </a>
               ) : null}
-              {copy.kind === "api_down" ? (
-                <span className="font-mono text-[9px] text-[var(--faint)]">npm run dev</span>
-              ) : null}
             </div>
 
             {error.requestId ? (
               <p className="mt-3 font-mono text-[8.5px] text-[var(--faint)]">
-                request: {error.requestId}
+                Request ID: {error.requestId}
               </p>
             ) : null}
           </div>
@@ -94,7 +91,7 @@ export function ErrorPanel({
       </div>
 
       <div className="mt-3 border-t border-[color-mix(in_srgb,var(--no)_25%,var(--line))] pt-2 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)]">
-        Nothing was downloaded. The request failed before a result was produced.
+        No model files were downloaded.
       </div>
     </div>
   );

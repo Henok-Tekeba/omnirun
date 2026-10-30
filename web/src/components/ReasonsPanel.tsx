@@ -5,6 +5,22 @@ import { AlertTriangle, FileCode, Lock, ShieldCheck } from "./Icons";
 import { ReasonList } from "./ReasonList";
 import { ConfidenceMeter, EmptyLine, SectionHeading } from "./ui";
 
+function friendlyHardwareNote(note: string): string {
+  return note
+    .replace(
+      "Manual profile: curated device-table bandwidth, not a measurement on this machine.",
+      "Hardware profile is curated, not measured on this machine.",
+    )
+    .replace(
+      "Usable unified memory is 75% of total RAM; this is a documented assumption.",
+      "Usable memory is 75% of total RAM (documented assumption).",
+    )
+    .replace(
+      "Helper values are self-reported and unsigned; confidence means 'measured by the helper on this machine', not cryptographic attestation.",
+      "Helper values are self-reported and not signed.",
+    );
+}
+
 export function ReasonsPanel({ result }: { result: CheckResponse }) {
   const issues = sortIssues(
     dedupeIssues(
@@ -15,38 +31,35 @@ export function ReasonsPanel({ result }: { result: CheckResponse }) {
       result.warnings,
     ),
   );
+  const importantIssues = issues.filter((issue) => issue.severity !== "info");
+  const technicalIssues = issues.filter((issue) => issue.severity === "info");
   const counts = {
     risk: issues.filter((issue) => issue.severity === "risk").length,
     warning: issues.filter((issue) => issue.severity === "warning").length,
-    info: issues.filter((issue) => issue.severity === "info").length,
+    info: technicalIssues.length,
   };
 
   return (
     <section className="console" aria-labelledby="reasons-title">
       <div className="console-label">
         <span>
-          <strong>Diagnostics</strong> / reasons and warnings
+          <strong>Warnings and reasons</strong>
         </span>
         <span>
-          {counts.risk} risk / {counts.warning} warning / {counts.info} info
+          {counts.risk} risks / {counts.warning} warnings
         </span>
       </div>
       <div className="p-4 md:p-6">
-      <SectionHeading
-        id="reasons-title"
-        eyebrow="Evidence / confidence inputs"
-        title="Why this result"
-      />
+      <SectionHeading id="reasons-title" eyebrow="Evidence" title="Why this result" />
 
       {result.model.trust_remote_code_required ? (
         <div className="mb-4 flex items-start gap-2.5 border border-[color-mix(in_srgb,var(--optimize)_35%,var(--line))] bg-[var(--optimize-soft)] p-3">
           <FileCode size={15} className="mt-0.5 flex-none text-[var(--optimize)]" />
           <div>
-            <p className="text-[12px] font-medium">Custom code is required</p>
+            <p className="text-[12px] font-medium">This model needs custom code</p>
             <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
-              This repo requires <span className="font-mono text-[10px]">trust_remote_code</span>.
-              The support matrix covers the architecture/runtime pair, not the repo’s own
-              implementation.
+              The support matrix covers the architecture and runtime, not this model’s own
+              code.
             </p>
           </div>
         </div>
@@ -56,22 +69,32 @@ export function ReasonsPanel({ result }: { result: CheckResponse }) {
         <div className="mb-4 flex items-start gap-2.5 border border-[var(--line)] bg-[var(--bg-elevated)] p-3">
           <Lock size={14} className="mt-0.5 flex-none text-[var(--muted)]" />
           <p className="text-[11px] leading-relaxed text-[var(--muted)]">
-            {result.model.private ? "Private repo" : "Gated repo"} access was confirmed for
-            this request. The token is not echoed in the result or share link.
+            Access to this {result.model.private ? "private" : "gated"} model was confirmed.
+            The token is not included in the result or share link.
           </p>
         </div>
       ) : null}
 
-      {issues.length ? (
-        <ReasonList issues={issues} />
+      {importantIssues.length ? (
+        <ReasonList issues={importantIssues} />
       ) : (
-        <EmptyLine>No reasons or warnings were returned.</EmptyLine>
+        <EmptyLine>No warnings.</EmptyLine>
       )}
+
+      {technicalIssues.length ? (
+        <details className="mt-3 border-t border-[var(--line)] pt-2">
+          <summary className="cursor-pointer list-none py-1 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)] hover:text-[var(--text-2)] [&::-webkit-details-marker]:hidden">
+            Technical details ({technicalIssues.length})
+          </summary>
+          <div className="mt-2">
+            <ReasonList issues={technicalIssues} />
+          </div>
+        </details>
+      ) : null}
 
       <div className="mt-5 border-t border-[var(--line)] pt-4">
         <div className="flex items-center justify-between gap-2">
-          <p className="micro">Confidence inputs</p>
-          <span className="badge">not certainty</span>
+          <p className="micro">Confidence</p>
         </div>
         <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3">
           <div>
@@ -100,10 +123,11 @@ export function ReasonsPanel({ result }: { result: CheckResponse }) {
           </div>
         </dl>
         <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 border-t border-[var(--line)] pt-3 font-mono text-[9.5px] text-[var(--faint)]">
-          <span>bandwidth: {confidenceShort(result.hardware.bandwidth_confidence)}</span>
-          <span>memory: {confidenceShort(result.hardware.memory_confidence)}</span>
+          <span>Speed source: {confidenceShort(result.hardware.bandwidth_confidence)}</span>
+          <span>Memory: {confidenceShort(result.hardware.memory_confidence)}</span>
           <span className="col-span-2">
-            source: {result.hardware.source} / {bandwidthSourceLabel(result.hardware.bandwidth_source)}
+            Hardware: {result.hardware.source} / Speed source:{" "}
+            {bandwidthSourceLabel(result.hardware.bandwidth_source)}
           </span>
         </div>
 
@@ -115,7 +139,7 @@ export function ReasonsPanel({ result }: { result: CheckResponse }) {
                 className="flex items-start gap-2 text-[10.5px] leading-relaxed text-[var(--muted)]"
               >
                 <AlertTriangle size={11} className="mt-0.5 flex-none text-[var(--faint)]" />
-                {note}
+                {friendlyHardwareNote(note)}
               </li>
             ))}
           </ul>
@@ -126,8 +150,7 @@ export function ReasonsPanel({ result }: { result: CheckResponse }) {
         <span className="flex items-center gap-1.5">
           <ShieldCheck size={11} /> budget {formatGB(result.hardware.memory_budget_bytes)}
         </span>
-        <span>source {result.hardware.source}</span>
-        <span>schema {result.schema_version}</span>
+        <span>Hardware: {result.hardware.source}</span>
       </div>
       </div>
     </section>

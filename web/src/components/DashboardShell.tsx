@@ -4,7 +4,6 @@ import {
   ExternalLink,
   FileCode,
   Gauge,
-  HelpCircle,
   ShieldCheck,
   Spark,
 } from "./Icons";
@@ -34,12 +33,17 @@ export function DashboardShell({
         Skip to content
       </a>
       <aside className="dashboard-sidebar">
-        <button type="button" className="dashboard-brand" onClick={onLanding}>
+        <button
+          type="button"
+          className="dashboard-brand"
+          onClick={onLanding}
+          title="Back to the landing page"
+        >
           <Spark size={15} />
           <span>OmniRun</span>
         </button>
 
-        <div className="dashboard-menu-label">Menu</div>
+        <div className="dashboard-menu-label">Workspace</div>
         <nav className="dashboard-menu" aria-label="App">
           <button
             type="button"
@@ -51,21 +55,16 @@ export function DashboardShell({
           <button
             type="button"
             className={`dashboard-menu-item ${active === "result" ? "is-active" : ""}`}
-            onClick={() => document.getElementById("verdict-word")?.scrollIntoView({ behavior: "smooth" })}
+            onClick={() =>
+              document.getElementById("verdict-word")?.scrollIntoView({ behavior: "smooth" })
+            }
             disabled={active !== "result"}
           >
             <ShieldCheck size={13} /> Results
           </button>
           <a className="dashboard-menu-item" href="/api/docs" target="_blank" rel="noreferrer">
-            <Gauge size={13} /> API docs <ExternalLink size={9} className="ml-auto" />
+            <Gauge size={13} /> API reference <ExternalLink size={9} className="ml-auto" />
           </a>
-        </nav>
-
-        <div className="dashboard-menu-label">General</div>
-        <nav className="dashboard-menu" aria-label="General">
-          <button type="button" className="dashboard-menu-item" onClick={onLanding}>
-            <HelpCircle size={13} /> Landing page
-          </button>
         </nav>
 
         <div className="dashboard-note">
@@ -88,12 +87,9 @@ export function DashboardShell({
           </div>
           <div className="dashboard-topbar-actions">
             <span className="dashboard-local">
-              <span className="dashboard-dot" /> local console
+              <span className="dashboard-dot" /> Ready
             </span>
             {actions}
-            <button type="button" className="dashboard-btn dashboard-btn-secondary" onClick={onLanding}>
-              Landing
-            </button>
           </div>
         </header>
 
@@ -108,13 +104,12 @@ export function DashboardShell({
           <button
             type="button"
             className={active === "result" ? "is-active" : ""}
-            onClick={() => document.getElementById("verdict-word")?.scrollIntoView({ behavior: "smooth" })}
+            onClick={() =>
+              document.getElementById("verdict-word")?.scrollIntoView({ behavior: "smooth" })
+            }
             disabled={active !== "result"}
           >
             Results
-          </button>
-          <button type="button" onClick={onLanding}>
-            Landing
           </button>
         </nav>
 
@@ -123,9 +118,9 @@ export function DashboardShell({
         </main>
 
         <footer className="dashboard-footer">
-          <span>Estimates are not guarantees. GO does not mean VERIFIED.</span>
+          <span>Estimates are not guarantees. GO does not mean verified.</span>
           <a href="/api/docs" target="_blank" rel="noreferrer" className="dashboard-footer-link">
-            API schema 1.0 <ArrowRight size={10} />
+            API reference <ArrowRight size={10} />
           </a>
         </footer>
       </div>

@@ -32,10 +32,9 @@ export function ResultView({ result, shareUrl, onEdit }: ResultViewProps) {
       <div className="console">
         <div className="console-label">
           <span>
-            <strong>Report</strong> / preflight result
+            <strong>Preflight report</strong>
           </span>
           <span>{formatDateTime(result.checked_at)}</span>
-          <span>schema {result.schema_version}</span>
         </div>
         <div className="p-4 md:p-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
@@ -61,10 +60,10 @@ export function ResultView({ result, shareUrl, onEdit }: ResultViewProps) {
               </div>
               <h1 className="repo-title mt-2">{result.model.repo_id}</h1>
               <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[9px] text-[var(--faint)]">
-                <span>rev {shortRevision(result.model.revision, 10)}</span>
-                <span>checked {formatDateTime(result.checked_at)}</span>
+                <span>Revision {shortRevision(result.model.revision, 10)}</span>
+                <span>Checked {formatDateTime(result.checked_at)}</span>
                 {result.model.last_modified ? (
-                  <span>repo modified {formatDate(result.model.last_modified)}</span>
+                  <span>Updated {formatDate(result.model.last_modified)}</span>
                 ) : null}
                 <a
                   href={result.links.hf_model}
@@ -93,9 +92,8 @@ export function ResultView({ result, shareUrl, onEdit }: ResultViewProps) {
           <p className="mt-3 flex items-start gap-2 border-t border-[var(--line)] pt-2 text-[9.5px] leading-relaxed text-[var(--faint)]">
             <Clock size={11} className="mt-0.5 flex-none" />
             <span>
-              Share link includes the model, hardware choice, context, and batch. It never
-              includes your HF token. If you used the helper, the link includes the helper
-              code, which contains machine details.
+              The share link includes the model, hardware, context, and batch. It never
+              includes your Hugging Face token. Helper codes contain machine details.
             </span>
           </p>
         </div>

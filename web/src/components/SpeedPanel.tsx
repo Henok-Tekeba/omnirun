@@ -78,7 +78,7 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
     kind === "measured"
       ? "Measured by the helper on this machine. The strongest bandwidth source in v1."
       : kind === "table"
-        ? "Curated device-table value, not a measurement on this machine. Manual profiles are MEDIUM confidence."
+        ? "From the curated device list, not a measurement on this machine."
         : kind === "assumed"
           ? "Conservative default because no better number was available. LOW confidence."
           : "No bandwidth value was available, so speed cannot be estimated.";
@@ -87,7 +87,7 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
     <section className="console" aria-labelledby="speed-title">
       <div className="console-label">
         <span>
-          <strong>Speed</strong> / decode throughput
+          <strong>Speed</strong>
         </span>
         <span className="flex items-center gap-1.5">
           <span
@@ -95,7 +95,7 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
               kind === "measured" ? "led-go" : kind === "table" ? "led-optimize" : "led-unknown"
             }`}
           />
-          {kind === "measured" ? "measured" : kind === "table" ? "table" : "assumed"}
+          {kind === "measured" ? "measured" : kind === "table" ? "device list" : "assumed"}
         </span>
         <ConfidenceMeter value={speed.confidence} />
       </div>
@@ -103,8 +103,8 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
       <div className="p-4 md:p-6">
         <SectionHeading
           id="speed-title"
-          eyebrow="Decode only / tok/s range"
-          title="Throughput"
+          eyebrow="Tokens per second"
+          title="Speed"
           aside={<span className="badge">estimate</span>}
         />
 
@@ -112,7 +112,7 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
           <>
             <div className="border border-[var(--line)] bg-[var(--bg-elevated)]">
               <div className="border-b border-[var(--line)] p-3">
-                <p className="micro">Aggregate decode</p>
+                <p className="micro">Tokens per second</p>
                 <p className="mt-1 font-mono text-[28px] leading-none text-[var(--text)]">
                   {formatRangeFloat(speed.aggregate, "tok/s")}
                 </p>
@@ -125,7 +125,7 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
                   </p>
                 </div>
                 <div className="p-3">
-                  <p className="micro">Class</p>
+                  <p className="micro">Speed class</p>
                   <p className="mt-1 font-mono text-[12px] text-[var(--text-2)]">
                     {speedClassLabel(speed.speed_class)}
                   </p>
@@ -142,10 +142,10 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
 
             <div className="mt-4 border border-[var(--line)] bg-[var(--bg-elevated)] p-3">
               <div className="flex items-center justify-between gap-2">
-                <p className="micro">Bandwidth source</p>
+                <p className="micro">Speed source</p>
                 <span className="flex items-center gap-1.5 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--text-2)]">
                   <SourceIcon size={10} />
-                  {kind === "measured" ? "measured" : kind === "table" ? "table" : "assumed"}
+                  {kind === "measured" ? "measured" : kind === "table" ? "device list" : "assumed"}
                 </span>
               </div>
               <p className="mt-1 font-mono text-[16px] text-[var(--text-2)]">
@@ -162,10 +162,9 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
                 <dd className="mt-0.5 font-mono text-[10px] text-[var(--text-2)]">
                   {speed.efficiency.min.toFixed(2)}–{speed.efficiency.max.toFixed(2)}
                 </dd>
-                <dd className="text-[9px] text-[var(--faint)]">documented range</dd>
               </div>
               <div>
-                <dt className="micro">Active weights</dt>
+                <dt className="micro">Weights per token</dt>
                 <dd className="mt-0.5 font-mono text-[10px] text-[var(--text-2)]">
                   {formatGB(speed.active_weight_bytes)}
                 </dd>
@@ -177,7 +176,7 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
 
             <details className="mt-3 border-t border-[var(--line)] pt-2">
               <summary className="cursor-pointer list-none py-1 font-mono text-[8.5px] uppercase tracking-[0.08em] text-[var(--faint)] hover:text-[var(--text-2)] [&::-webkit-details-marker]:hidden">
-                Method notes ({speed.notes.length})
+                How this is estimated
               </summary>
               <ul className="mt-1 space-y-1.5">
                 {speed.notes.map((note) => (
@@ -222,16 +221,15 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
         <div className="mt-3 flex items-start gap-2 border-t border-[var(--line)] pt-2 text-[10px] leading-relaxed text-[var(--faint)]">
           <Gauge size={12} className="mt-0.5 flex-none text-[var(--accent)]" />
           <span>
-            Decode only. Prefill and time-to-first-token are not estimated. Efficiency is a
-            documented engineering range, not a measured constant.
+            Generation speed only. Prompt processing and first-token time are not estimated.
+            Efficiency is an engineering estimate, not a measured constant.
           </span>
         </div>
 
         {speed.available && speed.aggregate && speed.batch > 1 ? (
           <div className="mt-2">
             <EmptyLine>
-              Aggregate throughput assumes perfect continuous batching; small-batch real
-              runtimes can be lower.
+              Aggregate speed assumes ideal batching; real throughput can be lower.
             </EmptyLine>
           </div>
         ) : null}

@@ -40,7 +40,7 @@ export function VerdictHero({ result }: { result: CheckResponse }) {
     <section className={`verdict-hero verdict-${tone}`} aria-labelledby="verdict-word">
       <div className="console-label">
         <span>
-          <strong>Verdict</strong> / preflight
+          <strong>Verdict</strong>
         </span>
         <span className="flex items-center gap-2 text-[var(--verdict)]">
           <span className={`led led-${tone}`} />
@@ -56,7 +56,7 @@ export function VerdictHero({ result }: { result: CheckResponse }) {
               <Icon size={21} />
             </span>
             <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--muted)]">
-              Decision
+              Result
             </span>
           </div>
 
@@ -66,12 +66,18 @@ export function VerdictHero({ result }: { result: CheckResponse }) {
           <p className="mt-2 text-[11px] font-medium text-[var(--verdict)]">{note}</p>
 
           <p className="mt-3 max-w-2xl text-[13px] leading-relaxed text-[var(--text-2)]">
-            {verdict.summary}
+            {verdict.value === "GO"
+              ? "This model fits within your memory budget and has a runtime that can load it directly."
+              : verdict.value === "OPTIMIZE"
+                ? "This model may work with a smaller setup. See the options below."
+                : verdict.value === "NO"
+                  ? "This model does not fit as configured, or no usable runtime path exists."
+                  : "There isn’t enough information to make a GO or NO call."}
           </p>
 
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <span className="font-mono text-[8.5px] uppercase tracking-[0.1em] text-[var(--faint)]">
-              Basis
+              Why
             </span>
             {basis.length ? (
               basis.map((item) => {
@@ -89,20 +95,19 @@ export function VerdictHero({ result }: { result: CheckResponse }) {
               </span>
             )}
             <span className="badge badge-unknown">
-              <Minus size={10} /> VERIFIED not recorded
+              <Minus size={10} /> Not verified
             </span>
           </div>
 
           <p className="mt-3 max-w-xl text-[10px] leading-relaxed text-[var(--faint)]">
-            A GO means FITS + a directly usable SUPPORTED path. It never means a real run was
-            recorded. Claims stay separate below.
+            GO means it fits and has a usable runtime. It does not mean a real run was
+            recorded.
           </p>
         </div>
 
         <div className="border-t border-[var(--line)] pt-4 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
           <div className="mb-2 flex items-center justify-between gap-2 font-mono text-[8.5px] uppercase tracking-[0.1em] text-[var(--faint)]">
-            <span>Run sheet</span>
-            <span>schema {result.schema_version}</span>
+            <span>Summary</span>
           </div>
           <dl className="readout-grid grid-cols-2">
             <div className="readout-cell col-span-2">
@@ -110,7 +115,7 @@ export function VerdictHero({ result }: { result: CheckResponse }) {
               <dd>{result.model.repo_id}</dd>
             </div>
             <div className="readout-cell">
-              <dt>Class / arch</dt>
+              <dt>Class / architecture</dt>
               <dd>
                 {result.model.model_class.toUpperCase()}
                 {result.model.architecture ? ` / ${result.model.architecture}` : ""}

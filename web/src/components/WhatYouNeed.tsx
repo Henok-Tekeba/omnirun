@@ -1,13 +1,16 @@
 import type { CheckResponse, Recommendation } from "../api/types";
-import {
-  formatBytesRange,
-  formatDate,
-  formatFloat,
-  formatGB,
-} from "../lib/format";
+import { formatBytesRange, formatDate, formatGB } from "../lib/format";
 import { CopyButton } from "./CopyButton";
 import { Box, ExternalLink, Layers, Terminal } from "./Icons";
 import { ConfidenceMeter, EmptyLine, SectionHeading, StatusPill } from "./ui";
+
+function alternativeLabel(name: string): string {
+  const normalized = name.toLowerCase();
+  if (normalized === "fp16" || normalized === "bf16") return "16-bit";
+  if (normalized === "int8") return "8-bit";
+  if (normalized === "4bit") return "4-bit";
+  return name;
+}
 
 function recommendationKind(kind: Recommendation["kind"]): string {
   switch (kind) {
@@ -74,16 +77,16 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
     <section className="console" aria-labelledby="need-title">
       <div className="console-label">
         <span>
-          <strong>Options</strong> / what you’d need
+          <strong>What you’d need</strong>
         </span>
-        <span>only what the API returned</span>
+        <span>From the API</span>
       </div>
       <div className="p-4 md:p-6">
       <SectionHeading
         id="need-title"
-        eyebrow="Remediation / no promises"
-        title="Options"
-        aside={<span className="badge">API-supplied</span>}
+        eyebrow="Suggestions"
+        title="What you’d need"
+        aside={<span className="badge">From the API</span>}
       />
 
       {!hasAnything ? (
@@ -92,13 +95,11 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
             <Box size={16} className="mt-0.5 flex-none text-[var(--faint)]" />
             <div>
               <p className="text-[12px] font-medium text-[var(--text-2)]">
-                No additional options published
+                No extra options
               </p>
               <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
-                This build returned no quantization alternatives, recommendations, or
-                environment hint for this model. The verdict and memory breakdown above are
-                the full result. Use the inputs to try a different context, batch, or
-                machine.
+                The API returned no smaller-weight estimates or suggestions for this model.
+                The result above is complete. Try a different context, batch, or machine.
               </p>
             </div>
           </div>
@@ -110,13 +111,13 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <Layers size={14} className="text-[var(--accent)]" />
-              <h3 className="text-[13px] font-semibold">Hypothetical smaller weights</h3>
+              <h3 className="text-[13px] font-semibold">Smaller weights</h3>
             </div>
-            <span className="badge badge-accent">weights-only math</span>
+            <span className="badge badge-accent">Estimate only</span>
           </div>
           <p className="mt-1 text-[10.5px] leading-relaxed text-[var(--faint)]">
-            These are not claims that an artifact exists, is supported, or has a particular
-            quality. KV cache stays at checkpoint dtype.
+            These are estimates only. They do not mean a ready-to-use model exists. Context
+            memory is unchanged.
           </p>
           <div className="mt-2 grid gap-2 sm:grid-cols-2">
             {alternatives.map((alternative) => (
@@ -126,11 +127,11 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
               >
                 <div className="flex items-center justify-between gap-2">
                   <div>
-                    <p className="font-mono text-[12px] uppercase text-[var(--text-2)]">
-                      {alternative.name}
+                    <p className="font-mono text-[12px] text-[var(--text-2)]">
+                      {alternativeLabel(alternative.name)}
                     </p>
                     <p className="mt-0.5 text-[9.5px] text-[var(--faint)]">
-                      {formatFloat(alternative.bits_per_param, 1)} bits/param
+                      Weights-only estimate
                     </p>
                   </div>
                   <StatusPill status={alternative.fits} />
@@ -149,9 +150,6 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
                     </dd>
                   </div>
                 </dl>
-                <p className="mt-2 text-[10px] leading-relaxed text-[var(--muted)]">
-                  {alternative.note}
-                </p>
                 <div className="mt-1.5">
                   <ConfidenceMeter value={alternative.confidence} compact />
                 </div>
@@ -205,7 +203,7 @@ export function WhatYouNeed({ result }: { result: CheckResponse }) {
 
       {!alternatives.length && !recommendations.length && hasAnything ? (
         <div className="mt-3">
-          <EmptyLine>No quantization alternatives were returned for this model.</EmptyLine>
+          <EmptyLine>No smaller-weight estimates were returned.</EmptyLine>
         </div>
       ) : null}
       </div>

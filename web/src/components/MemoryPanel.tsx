@@ -6,7 +6,7 @@ import {
   formatInteger,
   formatPercent,
 } from "../lib/format";
-import { Box, Gauge, Layers } from "./Icons";
+import { Gauge } from "./Icons";
 import { ConfidenceMeter, EmptyLine, SectionHeading } from "./ui";
 
 function clampPercent(value: number, max: number): number {
@@ -132,34 +132,30 @@ export function MemoryPanel({ result }: { result: CheckResponse }) {
   const peakColor =
     fit.status === "yes" ? "var(--go)" : fit.status === "no" ? "var(--no)" : "var(--unknown)";
   const kvDetail = kv.available
-    ? `${kv.attention} attention / ${formatInteger(kv.layers_full)} full + ${formatInteger(
-        kv.layers_windowed,
-      )} windowed layers / ${kv.dtype_bytes ?? "?"} bytes per element / ${formatInteger(
-        kv.context_effective,
-      )} tokens / batch ${kv.batch}`
-    : "KV cache is not available for this model/config; the peak cannot be completed.";
+    ? `For ${formatInteger(kv.context_effective ?? kv.context_requested)} tokens.`
+    : "Not available for this model.";
   const weightsDetail =
     weights.kind === "exact"
-      ? `Exact safetensors header math${weights.params ? ` / ${formatInteger(weights.params)} params` : ""}.`
+      ? "From model headers."
       : weights.kind === "upper_bound"
-        ? `Upper bound from file sizes, not tensor shapes${weights.params ? ` / ${formatInteger(weights.params)} params` : ""}. The lower bound is unknown.`
-        : "Weight bytes are unknown; the peak cannot be completed.";
+        ? "Upper bound from file sizes."
+        : "Weight size is unknown.";
 
   return (
     <section className="console" aria-labelledby="memory-title">
       <div className="console-label">
         <span>
-          <strong>Memory</strong> / budget versus peak
+          <strong>Memory</strong>
         </span>
-        <span>bytes → GB</span>
+        <span>GB</span>
         <ConfidenceMeter value={memory.confidence} />
       </div>
 
       <div className="p-4 md:p-6">
       <SectionHeading
         id="memory-title"
-        eyebrow="Estimate / not a guarantee"
-        title="Budget vs peak"
+        eyebrow="Estimate"
+        title="Budget and peak"
         aside={<span className="badge">estimate</span>}
       />
 
@@ -200,12 +196,12 @@ export function MemoryPanel({ result }: { result: CheckResponse }) {
           delay={40}
         />
         <GaugeRow
-          label="KV cache"
+          label="Context cache"
           range={kv.bytes_range}
           budget={budget}
           scaleMax={scaleMax}
           color="var(--unknown)"
-          badge={kv.available ? "modeled" : "unknown"}
+          badge={kv.available ? "estimated" : "unknown"}
           detail={kvDetail}
           delay={110}
         />
@@ -216,7 +212,7 @@ export function MemoryPanel({ result }: { result: CheckResponse }) {
           scaleMax={scaleMax}
           color="var(--muted)"
           badge="assumption"
-          detail="0.25 GB base + 5% / 10% / 20% of weights for context, allocator, and decode workspace."
+          detail="Runtime and allocator."
           delay={180}
         />
         <GaugeRow
@@ -228,8 +224,8 @@ export function MemoryPanel({ result }: { result: CheckResponse }) {
           badge={fit.status === "yes" ? "fits" : fit.status === "no" ? "over budget" : "straddles"}
           detail={
             peak
-              ? `Worst case ${formatGB(peak.max)}; the budget line is the user's usable memory.`
-              : "Peak is unknown until weights and KV cache are both known."
+              ? `Worst case ${formatGB(peak.max)}.`
+              : "Peak is unknown until weights and context memory are both known."
           }
           delay={250}
           tall
@@ -247,9 +243,8 @@ export function MemoryPanel({ result }: { result: CheckResponse }) {
       <div className="mt-3 flex items-start gap-2 text-[10px] leading-relaxed text-[var(--faint)]">
         <Gauge size={12} className="mt-0.5 flex-none text-[var(--accent)]" />
         <span>
-          Min–max band / bright tick = likely value / vertical rule = budget. A 2px band means
-          exact math, not a fake range. API reason strings use decimal GB (10⁹ bytes); bars use
-          the app’s GB (2³⁰ bytes).
+          The band shows the estimated range. The bright tick is the likely value, and the
+          vertical line is your budget. The chart uses binary GB.
         </span>
       </div>
 
@@ -263,18 +258,6 @@ export function MemoryPanel({ result }: { result: CheckResponse }) {
           <EmptyLine>{kvDetail}</EmptyLine>
         </div>
       ) : null}
-      {kv.per_sequence_likely !== null ? (
-        <p className="mt-2 flex items-center gap-1.5 font-mono text-[9px] text-[var(--faint)]">
-          <Layers size={11} /> KV likely per sequence:{" "}
-          {formatGB(kv.per_sequence_likely)} / context{" "}
-          {formatInteger(kv.context_effective ?? kv.context_requested)}
-        </p>
-      ) : null}
-      <p className="mt-1 flex items-center gap-1.5 font-mono text-[9px] text-[var(--faint)]">
-        <Box size={11} /> weights:{" "}
-        {weights.actual_bytes !== null ? formatGB(weights.actual_bytes) : "unknown"} /{" "}
-        {weights.param_source ?? "param source unknown"}
-      </p>
       </div>
     </section>
   );

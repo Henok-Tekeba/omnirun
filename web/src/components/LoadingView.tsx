@@ -61,9 +61,9 @@ export function LoadingView({ model, hardware, onCancel }: LoadingViewProps) {
     <section className="console" aria-labelledby="loading-title">
       <div className="console-label">
         <span>
-          <strong>Preflight run</strong> / in progress
+          <strong>Preflight</strong> / in progress
         </span>
-        <span>POST /check</span>
+        <span>Live check</span>
         <span>{(elapsed / 1000).toFixed(0)}s elapsed</span>
       </div>
 
@@ -71,7 +71,7 @@ export function LoadingView({ model, hardware, onCancel }: LoadingViewProps) {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="font-mono text-[9px] uppercase tracking-[0.11em] text-[var(--accent)]">
-              Working
+              Running
             </p>
             <h1 id="loading-title" className="bench-title mt-2 text-[clamp(2.8rem,6vw,4.8rem)]">
               Reading the model.
@@ -126,12 +126,11 @@ export function LoadingView({ model, hardware, onCancel }: LoadingViewProps) {
 
         <div className="mt-4 flex flex-col gap-2 border-t border-[var(--line)] pt-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-xl text-[10px] leading-relaxed text-[var(--faint)]">
-            Stages are approximate: <span className="font-mono">POST /check</span> returns one
-            report when it finishes. No percentage is invented.
+            Stages are approximate. The API returns one report when it finishes.
           </p>
           {slow ? (
             <p className="flex items-center gap-1.5 font-mono text-[9px] text-[var(--optimize)]">
-              <Cpu size={11} /> still working — server deadline is 30s
+              <Cpu size={11} /> still working — this can take up to 30 seconds
             </p>
           ) : (
             <p className="font-mono text-[9px] text-[var(--faint)]">

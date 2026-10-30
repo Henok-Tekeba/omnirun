@@ -18,7 +18,7 @@ export function verdictTone(value: Verdict): VerdictTone {
 export function verdictNote(value: Verdict): string {
   switch (value) {
     case "GO":
-      return "Fits with a directly usable runtime path. This is not a recorded run.";
+      return "Fits with a runtime that can load it directly. This is not a recorded run.";
     case "OPTIMIZE":
       return "The requested setup is not the cleanest fit; a smaller configuration may work.";
     case "NO":

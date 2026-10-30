@@ -31,8 +31,8 @@ test.describe("OmniRun preflight", () => {
       page.getByRole("heading", { name: "VERIFIED", exact: true }),
     ).toBeVisible();
     await expect(page.getByText("No recorded runs yet")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Budget vs peak" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Throughput" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Budget and peak" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Speed" })).toBeVisible();
     await expect(page.getByText(/estimated|estimate/i).first()).toBeVisible();
 
     expect(page.url()).toContain("model=HuggingFaceTB%2FSmolLM2-135M-Instruct");

@@ -46,8 +46,8 @@ const SIDE_ASCII = String.raw`  ╭──────────────╮
     ╱ ╲  ╱ ╲  ╱ ╲
    ▔▔▔▔▔▔▔▔▔▔▔▔▔
    SIGNAL / 0.93
-   BANDWIDTH / 200
-   LATENCY / —`;
+   MEMORY / 200 GB/s
+   PROMPT / —`;
 
 export function MarketingLanding({ onStart }: MarketingLandingProps) {
   const [dialog, setDialog] = useState<DialogKind | null>(null);
@@ -80,7 +80,7 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
                 Preflight
               </button>
               <button type="button" onClick={() => setDialog("claims")}>
-                Claims
+                Checks
               </button>
               <button type="button" onClick={onStart}>
                 Hardware
@@ -157,7 +157,7 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
                   <FileCode size={12} /> Preflight
                 </div>
                 <div className="mock-menu-item">
-                  <ShieldCheck size={12} /> Claims
+                  <ShieldCheck size={12} /> Checks
                 </div>
                 <div className="mock-menu-item">
                   <Cpu size={12} /> Hardware
@@ -192,7 +192,7 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
                 <span>Preflight console / v1.0</span>
               </div>
 
-              <div className="mock-greeting">Good evening, operator.</div>
+              <div className="mock-greeting">Ready when you are.</div>
               <p className="mock-sub">
                 One model. One machine. One honest answer.
               </p>
@@ -236,7 +236,7 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
 
               <div className="mock-ascii">
                 <div className="mock-ascii-head">
-                  <span>ASCII neural field</span>
+                  <span>Preflight signal</span>
                   <span className="mock-live">
                     <span className="mock-dot" /> live
                   </span>
@@ -362,7 +362,7 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
 
             {dialog === "claims" ? (
               <>
-                <div className="marketing-dialog-kicker">Claims / kept separate</div>
+                <div className="marketing-dialog-kicker">Checks / kept separate</div>
                 <h2 id="marketing-dialog-title" className="marketing-dialog-title">
                   Three questions. No conflation.
                 </h2>
@@ -412,24 +412,21 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
                     It never downloads tensor payloads and never opens pickle files.
                   </p>
                   <p>
-                    <strong>One device.</strong> v1 is single-device: one GPU, one unified
-                    chip, or CPU. Multi-GPU, offload, and distributed serving are out of
-                    scope.
+                    <strong>One device at a time.</strong> Multi-GPU, offload, and distributed
+                    serving are out of scope.
                   </p>
                   <p>
-                    <strong>Ranges are real.</strong> Exact header math collapses to
-                    min = likely = max. Uncertainty lives in confidence, named assumptions,
-                    and the parts that genuinely vary.
+                    <strong>Ranges are real.</strong> Exact data stays exact. Uncertainty is
+                    shown separately instead of being invented.
                   </p>
                   <p>
-                    <strong>Unknown is valid.</strong> ASR/TTS models, unsupported
-                    architectures, missing RAM, and unrecognized MoE layouts stay UNKNOWN
+                    <strong>Unknown is valid.</strong> Speech models, unsupported
+                    architectures, missing RAM, and unusual model layouts stay UNKNOWN
                     instead of becoming guesses.
                   </p>
                   <p>
-                    <strong>Estimates are not guarantees.</strong> Decode speed is a range
-                    based on bandwidth, a documented efficiency range, and bytes read per
-                    token. Prefill and TTFT are not estimated.
+                    <strong>Estimates are not guarantees.</strong> Speed is a range, not a
+                    benchmark. Prompt processing and first-token time are not estimated.
                   </p>
                 </div>
               </>
