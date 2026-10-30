@@ -9,14 +9,11 @@ import { clearRunFlag, readQuery, writeQuery } from "./lib/query";
 import { loadHardware, saveHardware } from "./lib/storage";
 import { useCheck } from "./hooks/useCheck";
 import { useDevices } from "./hooks/useDevices";
-import { useTheme } from "./hooks/useTheme";
 import { CheckForm } from "./components/CheckForm";
-import { Footer } from "./components/Footer";
-import { Header } from "./components/Header";
+import { DashboardShell } from "./components/DashboardShell";
 import { LoadingView } from "./components/LoadingView";
 import { MarketingLanding } from "./components/MarketingLanding";
 import { ResultView } from "./components/ResultView";
-import { ArrowLeft } from "./components/Icons";
 
 type Phase = "landing" | "form" | "loading" | "result";
 
@@ -50,7 +47,6 @@ function focusFirstError(form: FormState, errors: FieldErrors) {
 }
 
 export default function App() {
-  const { theme, toggleTheme } = useTheme();
   const initialQuery = useMemo(() => readQuery(), []);
   const storedHardware = useMemo(() => loadHardware(), []);
   const [form, setForm] = useState<FormState>(() =>
@@ -198,62 +194,54 @@ export default function App() {
     return <MarketingLanding onStart={handleStart} />;
   }
 
+  const shellTitle = showResult ? "Results" : "Preflight";
+  const shellSubtitle = showResult
+    ? "FITS, SUPPORTED, and VERIFIED are separate claims."
+    : "One model. One machine. One honest answer.";
+
   return (
-    <div className="site-shell" id="top">
-      <a className="skip-link" href="#main">
-        Skip to content
-      </a>
-      <Header theme={theme} onToggleTheme={toggleTheme} isResult={showResult} />
-
-      <main id="main" className="flex-1">
-        {phase === "loading" ? (
-          <div className="container-wide py-6 md:py-10">
-            <LoadingView
-              model={form.model}
-              hardware={hardwareDescription(form, devicesState.devices)}
-              onCancel={handleCancel}
-            />
-          </div>
-        ) : showResult ? (
-          <div className="container-wide py-6 md:py-10">
-            <ResultView result={result} shareUrl={shareUrl} onEdit={handleEdit} />
-          </div>
-        ) : (
-          <div className="container-wide py-6 md:py-9">
-            <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <p className="micro micro-accent">Preflight console</p>
-                <h1 className="bench-title mt-1 text-[clamp(2.6rem,5vw,4.2rem)]">
-                  Run a model.
-                </h1>
-              </div>
-              <button
-                type="button"
-                className="btn btn-ghost btn-sm"
-                onClick={handleBackToLanding}
-              >
-                <ArrowLeft size={12} /> Landing
-              </button>
-            </div>
-            <CheckForm
-              form={form}
-              onChange={handleChange}
-              devices={devicesState.devices}
-              devicesStatus={devicesState.status}
-              devicesError={devicesState.error}
-              onReloadDevices={() => void devicesState.reload()}
-              errors={fieldErrors}
-              error={error}
-              onSubmit={handleSubmit}
-              onRetry={handleSubmit}
-              onDismissError={clearError}
-              onExample={handleExample}
-            />
-          </div>
-        )}
-      </main>
-
-      <Footer />
-    </div>
+    <DashboardShell
+      active={showResult ? "result" : "preflight"}
+      title={shellTitle}
+      subtitle={shellSubtitle}
+      onLanding={handleBackToLanding}
+      onNewCheck={handleEdit}
+      actions={
+        showResult ? (
+          <button
+            type="button"
+            className="dashboard-btn dashboard-btn-primary"
+            onClick={handleEdit}
+          >
+            New check
+          </button>
+        ) : null
+      }
+    >
+      {phase === "loading" ? (
+        <LoadingView
+          model={form.model}
+          hardware={hardwareDescription(form, devicesState.devices)}
+          onCancel={handleCancel}
+        />
+      ) : showResult ? (
+        <ResultView result={result} shareUrl={shareUrl} onEdit={handleEdit} />
+      ) : (
+        <CheckForm
+          form={form}
+          onChange={handleChange}
+          devices={devicesState.devices}
+          devicesStatus={devicesState.status}
+          devicesError={devicesState.error}
+          onReloadDevices={() => void devicesState.reload()}
+          errors={fieldErrors}
+          error={error}
+          onSubmit={handleSubmit}
+          onRetry={handleSubmit}
+          onDismissError={clearError}
+          onExample={handleExample}
+        />
+      )}
+    </DashboardShell>
   );
 }

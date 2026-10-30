@@ -3,9 +3,9 @@
 Vite + React + TypeScript + Tailwind frontend for the OmniRun API.
 
 The root page is a fixed light marketing composition (hero + pastel console
-preview). “Run a preflight” opens the theme-aware bench console; the result view
-keeps the same three-claim structure. The landing page itself has no footer or
-long-form sections; method/claims explanations are dialogs.
+preview). “Run a preflight” opens the app dashboard: a light sidebar shell with
+white cards, the same visual language as the preview. The landing page itself
+has no footer or long-form sections; method/claims explanations are dialogs.
 
 ## Run everything from the repo root
 

@@ -419,7 +419,7 @@ export function HardwarePanel({
             </div>
           </div>
         ) : (
-          <div className="grid gap-5 md:grid-cols-[1.05fr_1fr]">
+          <div className="grid items-start gap-5 md:grid-cols-[1.05fr_1fr]">
             <DeviceList
               devices={devices}
               deviceId={deviceId}
