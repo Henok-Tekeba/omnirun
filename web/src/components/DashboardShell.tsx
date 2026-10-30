@@ -1,15 +1,6 @@
 import type { ReactNode } from "react";
-import { API_DOCS_URL, IS_STATIC_PREVIEW, REPO_URL } from "../lib/env";
 import { openCookieSettings } from "../lib/consent";
-import {
-  ArrowRight,
-  ExternalLink,
-  FileCode,
-  Gauge,
-  Search,
-  ShieldCheck,
-  Spark,
-} from "./Icons";
+import { FileCode, Search, ShieldCheck, Spark } from "./Icons";
 
 interface DashboardShellProps {
   children: ReactNode;
@@ -21,8 +12,6 @@ interface DashboardShellProps {
   onNewCheck: () => void;
   onFind: () => void;
 }
-
-const apiHref = IS_STATIC_PREVIEW ? `${REPO_URL}#api-contract` : API_DOCS_URL;
 
 export function DashboardShell({
   children,
@@ -76,20 +65,8 @@ export function DashboardShell({
           >
             <ShieldCheck size={13} /> Results
           </button>
-          <a className="dashboard-menu-item" href={apiHref} target="_blank" rel="noreferrer">
-            <Gauge size={13} /> API reference <ExternalLink size={9} className="ml-auto" />
-          </a>
         </nav>
 
-        <div className="dashboard-note">
-          <div className="dashboard-note-title">
-            <span className="dashboard-dot" /> Weights stay remote
-          </div>
-          <p>Metadata and headers only. Unknown stays unknown.</p>
-          <div className="dashboard-note-bar">
-            <span />
-          </div>
-        </div>
       </aside>
 
       <div className="dashboard-main">
@@ -99,13 +76,7 @@ export function DashboardShell({
             <h1 className="dashboard-title">{title}</h1>
             <p className="dashboard-subtitle">{subtitle}</p>
           </div>
-          <div className="dashboard-topbar-actions">
-            <span className="dashboard-local">
-              <span className={`dashboard-dot ${IS_STATIC_PREVIEW ? "is-preview" : ""}`} />{" "}
-              {IS_STATIC_PREVIEW ? "Static preview" : "Ready"}
-            </span>
-            {actions}
-          </div>
+          <div className="dashboard-topbar-actions">{actions}</div>
         </header>
 
         <nav className="dashboard-mobile-nav" aria-label="App">
@@ -147,9 +118,6 @@ export function DashboardShell({
             <button type="button" onClick={openCookieSettings}>
               Cookies
             </button>
-            <a href={apiHref} target="_blank" rel="noreferrer" className="dashboard-footer-link">
-              API reference <ArrowRight size={10} />
-            </a>
           </div>
         </footer>
       </div>

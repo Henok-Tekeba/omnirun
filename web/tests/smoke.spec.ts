@@ -21,9 +21,10 @@ test.describe("OmniRun preflight", () => {
 
     await page.getByRole("button", { name: /Run a preflight/i }).first().click();
     await page.locator("#model").fill("HuggingFaceTB/SmolLM2-135M-Instruct");
-    await page.getByRole("tab", { name: /Pick my hardware/i }).click();
-    await page.getByLabel("Search GPU or chip").fill("M2 Pro");
-    await page.getByRole("button", { name: /Apple M2 Pro/i }).click();
+    await page.getByRole("tab", { name: "Hardware" }).click();
+    await page.getByRole("button", { name: "Select hardware" }).click();
+    await page.getByRole("searchbox", { name: "Search hardware" }).fill("M2 Pro");
+    await page.getByRole("option", { name: /Apple M2 Pro/i }).click();
     await page.locator("#ram-manual").fill("32");
 
     await expect(page.getByText("Apple M2 Pro · 32 GB RAM")).toBeVisible();
@@ -58,7 +59,7 @@ test.describe("OmniRun preflight", () => {
     await page.goto("/");
     await page.getByRole("button", { name: /Run a preflight/i }).first().click();
     await page.locator("#model").fill("openai/whisper-tiny");
-    await page.getByRole("tab", { name: /CPU only/i }).click();
+    await page.getByRole("tab", { name: "CPU" }).click();
     await page.getByLabel("Total RAM", { exact: false }).last().fill("32");
     await page.getByRole("button", { name: /^Run preflight$/ }).first().click();
 
@@ -110,7 +111,7 @@ test.describe("OmniRun preflight", () => {
 
     await page.goto("/");
     await page.getByRole("button", { name: /Run a preflight/i }).first().click();
-    await page.getByRole("tab", { name: /CPU only/i }).click();
+    await page.getByRole("tab", { name: "CPU" }).click();
     await page.getByLabel("Total RAM", { exact: false }).last().fill("32");
     await page
       .locator(".dashboard-sidebar")
@@ -127,7 +128,7 @@ test.describe("OmniRun preflight", () => {
     await page.goto("/");
     await page.getByRole("button", { name: /Run a preflight/i }).first().click();
     await page.locator("#model").fill("https://huggingface.co/datasets/foo/bar");
-    await page.getByRole("tab", { name: /CPU only/i }).click();
+    await page.getByRole("tab", { name: "CPU" }).click();
     await page.getByLabel("Total RAM", { exact: false }).last().fill("32");
     await page.getByRole("button", { name: /^Run preflight$/ }).first().click();
 

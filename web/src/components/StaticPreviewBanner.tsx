@@ -8,9 +8,7 @@ export function StaticPreviewBanner({ onSample }: { onSample: () => void }) {
         <span className="preview-banner-label">
           <Info size={12} /> Static preview
         </span>
-        <p>
-          This is a static product preview. Live preflights require the OmniRun API.
-        </p>
+        <p>Live checks require the OmniRun API.</p>
       </div>
       <div className="preview-banner-actions">
         <a href={README_URL} target="_blank" rel="noreferrer">

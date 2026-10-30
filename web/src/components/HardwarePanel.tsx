@@ -1,4 +1,10 @@
-import { useMemo, useRef, useState, type KeyboardEvent } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from "react";
 import type { ApiError } from "../api/client";
 import type { DeviceEntry } from "../api/types";
 import type { CpuMode, FieldErrors, HardwareMode } from "../lib/form";
@@ -7,12 +13,12 @@ import { CopyButton } from "./CopyButton";
 import {
   AlertTriangle,
   Check,
+  ChevronDown,
   Cpu,
   Gpu,
   HelpCircle,
   RotateCcw,
   Search,
-  Terminal,
 } from "./Icons";
 
 interface HardwarePanelProps {
@@ -33,10 +39,10 @@ interface HardwarePanelProps {
   errors: FieldErrors;
 }
 
-const TABS: { id: HardwareMode; label: string; short: string }[] = [
-  { id: "helper", label: "Helper code", short: "Helper" },
-  { id: "manual", label: "Pick my hardware", short: "Pick" },
-  { id: "cpu", label: "CPU only / not sure", short: "CPU" },
+const TABS: { id: HardwareMode; label: string }[] = [
+  { id: "helper", label: "Helper" },
+  { id: "manual", label: "Hardware" },
+  { id: "cpu", label: "CPU" },
 ];
 
 const HELPER_COMMAND = "uv run --with numpy python helper/omnirun_helper.py";
@@ -45,7 +51,7 @@ function DeviceIcon({ kind }: { kind: DeviceEntry["kind"] }) {
   return kind === "cpu" ? <Cpu size={13} /> : <Gpu size={13} />;
 }
 
-function DeviceList({
+function DevicePicker({
   devices,
   deviceId,
   onDeviceChange,
@@ -54,8 +60,12 @@ function DeviceList({
   deviceId: string;
   onDeviceChange: (device: DeviceEntry) => void;
 }) {
+  const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const selected = devices.find((device) => device.id === deviceId);
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -74,104 +84,146 @@ function DeviceList({
     });
   }, [devices, query]);
 
-  return (
-    <div>
-      <div className="flex items-end justify-between gap-2">
-        <label htmlFor="device-search" className="micro">
-          Search GPU or chip
-        </label>
-        <span className="font-mono text-xs text-[var(--faint)]">
-          {filtered.length}/{devices.length}
-        </span>
-      </div>
-      <div className="relative mt-2">
-        <Search
-          size={14}
-          className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--faint)]"
-        />
-        <input
-          ref={inputRef}
-          id="device-search"
-          name="device-search"
-          className="field pl-8"
-          type="search"
-          placeholder="M2 Pro, RTX 4090, CPU…"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          autoComplete="off"
-        />
-      </div>
-      <div className="mt-2 flex items-center justify-between">
-        <p className="font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)]">
-          Curated device list
-        </p>
-        {query ? (
-          <button
-            type="button"
-            className="font-mono text-xs uppercase tracking-[0.08em] text-[var(--muted)] underline underline-offset-2 hover:text-[var(--text)]"
-            onClick={() => {
-              setQuery("");
-              inputRef.current?.focus();
-            }}
-          >
-            clear
-          </button>
-        ) : null}
-      </div>
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    const frame = requestAnimationFrame(() => inputRef.current?.focus());
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+      cancelAnimationFrame(frame);
+    };
+  }, [open]);
 
-      <div className="device-list mt-2" aria-label="Device profiles">
-        {filtered.length === 0 ? (
-          <p className="px-3 py-6 text-center text-sm text-[var(--muted)]">
-            {devices.length === 0
-              ? "The device list requires the live API. Use CPU only or run locally."
-              : "No matching profiles. Try “M2”, “4090”, or “CPU”."}
-          </p>
-        ) : (
-          <ul>
-            {filtered.map((device) => {
-              const selected = device.id === deviceId;
-              return (
-                <li key={device.id}>
-                  <button
-                    type="button"
-                    className="device-option"
-                    aria-pressed={selected}
-                    onClick={() => onDeviceChange(device)}
-                  >
-                    <span className="flex min-w-0 items-center gap-2.5">
-                      <span
-                        className={`flex h-6 w-6 flex-none items-center justify-center border ${
-                          selected
-                            ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
-                            : "border-[var(--line)] text-[var(--faint)]"
-                        }`}
-                      >
-                        <DeviceIcon kind={device.kind} />
-                      </span>
-                      <span className="min-w-0">
-                        <span className="block truncate text-sm font-medium">
-                          {device.name}
-                        </span>
-                        <span className="block font-mono text-xs uppercase tracking-[0.06em] text-[var(--faint)]">
-                          {device.vendor} / {hardwareKindLabel(device.kind)}
-                        </span>
-                      </span>
-                    </span>
-                    <span className="flex flex-none items-center gap-2">
-                      <span className="hidden text-right font-mono text-xs text-[var(--muted)] sm:block">
-                        {device.kind === "discrete" && device.vram_gib
-                          ? `${formatInteger(device.vram_gib)} GB VRAM`
-                          : `${formatInteger(device.bandwidth_gbps)} GB/s`}
-                      </span>
-                      {selected ? <Check size={12} className="text-[var(--accent)]" /> : null}
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+  useEffect(() => {
+    if (!open) setQuery("");
+  }, [open]);
+
+  if (devices.length === 0) {
+    return (
+      <div className="border border-[var(--line)] bg-[var(--bg-elevated)] p-3 text-sm text-[var(--muted)]">
+        Hardware list requires the live API. Use CPU or run locally.
       </div>
+    );
+  }
+
+  return (
+    <div ref={rootRef} className="relative">
+      <label id="hardware-picker-label" className="micro">
+        GPU or chip
+      </label>
+      <button
+        ref={triggerRef}
+        type="button"
+        className="field mt-2 flex items-center justify-between gap-3 text-left"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label={selected ? `Hardware: ${selected.name}` : "Select hardware"}
+        onClick={() => setOpen((value) => !value)}
+      >
+        <span className="flex min-w-0 items-center gap-2">
+          {selected ? (
+            <>
+              <DeviceIcon kind={selected.kind} />
+              <span className="truncate text-sm">{selected.name}</span>
+            </>
+          ) : (
+            <span className="text-sm text-[var(--muted)]">Select hardware</span>
+          )}
+        </span>
+        <ChevronDown
+          size={14}
+          className={`flex-none text-[var(--faint)] transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {open ? (
+        <div className="device-popover">
+          <div className="relative border-b border-[var(--line)] p-2">
+            <Search
+              size={14}
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[var(--faint)]"
+            />
+            <input
+              ref={inputRef}
+              type="search"
+              name="device-search"
+              className="field h-10 pl-8"
+              placeholder="Search hardware…"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              autoComplete="off"
+              aria-label="Search hardware"
+            />
+          </div>
+          <div className="device-list" role="listbox" aria-label="Hardware options">
+            {filtered.length === 0 ? (
+              <p className="px-3 py-5 text-center text-sm text-[var(--muted)]">
+                No hardware found.
+              </p>
+            ) : (
+              <ul>
+                {filtered.map((device) => {
+                  const isSelected = device.id === deviceId;
+                  return (
+                    <li key={device.id}>
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={isSelected}
+                        className="device-option"
+                        onClick={() => {
+                          onDeviceChange(device);
+                          setOpen(false);
+                          requestAnimationFrame(() => triggerRef.current?.focus());
+                        }}
+                      >
+                        <span className="flex min-w-0 items-center gap-2.5">
+                          <span
+                            className={`flex h-6 w-6 flex-none items-center justify-center border ${
+                              isSelected
+                                ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
+                                : "border-[var(--line)] text-[var(--faint)]"
+                            }`}
+                          >
+                            <DeviceIcon kind={device.kind} />
+                          </span>
+                          <span className="min-w-0">
+                            <span className="block truncate text-sm font-medium">
+                              {device.name}
+                            </span>
+                            <span className="block text-xs text-[var(--faint)]">
+                              {device.vendor} / {hardwareKindLabel(device.kind)}
+                            </span>
+                          </span>
+                        </span>
+                        <span className="flex flex-none items-center gap-2 font-mono text-xs text-[var(--muted)]">
+                          {device.kind === "discrete" && device.vram_gib
+                            ? `${formatInteger(device.vram_gib)} GB VRAM`
+                            : `${formatInteger(device.bandwidth_gbps)} GB/s`}
+                          {isSelected ? <Check size={12} className="text-[var(--accent)]" /> : null}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -238,10 +290,10 @@ function RamField({
       </div>
       <p id={`${id}-help`} className="mt-1.5 text-xs leading-relaxed text-[var(--muted)]">
         {optional
-          ? "Without RAM, memory fit stays UNKNOWN rather than guessing your machine."
+          ? "Blank = unknown."
           : device?.kind === "unified"
-            ? "Usable unified memory will be 75% of this value (documented assumption)."
-            : "The CPU budget will be 80% of this value; bandwidth is assumed at 25 GB/s."}
+            ? "75% of RAM is usable."
+            : "80% of RAM usable; 25 GB/s assumed."}
       </p>
       {error ? (
         <p id={`${id}-error`} className="mt-1 text-xs text-[var(--no)]">
@@ -272,7 +324,7 @@ export function HardwarePanel({
   const selectedDevice = devices.find((device) => device.id === deviceId);
   const tabOrder = TABS.map((tab) => tab.id);
 
-  function onTabKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
+  function onTabKeyDown(event: ReactKeyboardEvent<HTMLButtonElement>) {
     const index = tabOrder.indexOf(mode);
     let next: HardwareMode | null = null;
     if (event.key === "ArrowRight" || event.key === "ArrowDown") {
@@ -294,7 +346,6 @@ export function HardwarePanel({
     <div>
       <div className="section-heading">
         <h2 className="module-title">Hardware</h2>
-        <span className="rule-tag">Measured, curated, or conservative</span>
       </div>
 
       <div className="tab-list mt-4" role="tablist" aria-label="Hardware input mode">
@@ -311,8 +362,7 @@ export function HardwarePanel({
             onClick={() => onModeChange(tab.id)}
             onKeyDown={onTabKeyDown}
           >
-            <span className="hidden sm:inline">{tab.label}</span>
-            <span className="sm:hidden">{tab.short}</span>
+            {tab.label}
           </button>
         ))}
       </div>
@@ -326,23 +376,17 @@ export function HardwarePanel({
       >
         <div className="grid gap-5 md:grid-cols-[1.05fr_1fr]">
           <div>
-            <h3 className="text-sm font-semibold">Run the helper on this machine</h3>
+            <h3 className="text-sm font-semibold">Run the helper</h3>
             <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
-              It detects your processor, memory, and GPU, then runs a quick memory speed
-              test. It does not download model weights. Paste the code it prints below.
+              Detects CPU, memory, and GPU. No model weights.
             </p>
             <div className="code-block mt-3">
               <code>$ {HELPER_COMMAND}</code>
               <CopyButton value={HELPER_COMMAND} label="Copy" />
             </div>
-            <p className="mt-2 font-mono text-xs leading-relaxed text-[var(--faint)]">
-              Run this from the repository root.
+            <p className="mt-2 text-xs leading-relaxed text-[var(--faint)]">
+              Self-reported. Use on trusted machines.
             </p>
-            <div className="note-box mt-4">
-              <strong className="text-[var(--text-2)]">Self-reported, not signed.</strong>{" "}
-              The code reports what the helper measured. It is not proof of hardware; use it
-              on machines you trust.
-            </div>
           </div>
 
           <div>
@@ -362,8 +406,7 @@ export function HardwarePanel({
               aria-describedby={errors.helperCode ? "helper-code-error" : "helper-code-help"}
             />
             <p id="helper-code-help" className="mt-1.5 text-xs leading-relaxed text-[var(--muted)]">
-              Saved on this device as your last hardware choice. Share links include it
-              because it contains machine details.
+              Saved locally. Share links include machine details.
             </p>
             {errors.helperCode ? (
               <p id="helper-code-error" className="mt-1 text-xs text-[var(--no)]">
@@ -382,38 +425,22 @@ export function HardwarePanel({
         className="pt-5"
       >
         {devicesStatus === "loading" ? (
-          <div className="grid gap-4 md:grid-cols-[1.05fr_1fr]">
-            <div>
-              <div className="skeleton h-[44px] border border-[var(--line)] bg-[var(--panel-2)]" />
-              <div className="mt-3 space-y-1">
-                {[0, 1, 2, 3, 4].map((item) => (
-                  <div
-                    key={item}
-                    className="h-[38px] border border-[var(--line)] bg-[var(--panel-2)] opacity-60"
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="border border-[var(--line)] bg-[var(--bg-elevated)] p-4">
-              <p className="micro">Loading device table</p>
-              <p className="mt-2 text-sm text-[var(--muted)]">
-                Reading curated profiles from the API…
-              </p>
-            </div>
+          <div className="flex items-center gap-2 border border-[var(--line)] bg-[var(--bg-elevated)] p-3 text-sm text-[var(--muted)]">
+            <span className="skeleton h-4 w-4 border border-[var(--line)] bg-[var(--panel-2)]" />
+            Loading hardware…
           </div>
         ) : devicesStatus === "error" ? (
-          <div className="border border-[color-mix(in_srgb,var(--optimize)_45%,var(--line))] bg-[var(--optimize-soft)] p-4">
+          <div className="border border-[color-mix(in_srgb,var(--optimize)_45%,var(--line))] bg-[var(--optimize-soft)] p-3">
             <div className="flex items-start gap-2.5">
               <AlertTriangle size={15} className="mt-0.5 flex-none text-[var(--optimize)]" />
               <div>
-                <p className="text-sm font-semibold">Couldn’t load the device list</p>
+                <p className="text-sm font-semibold">Hardware list unavailable</p>
                 <p className="mt-1 text-sm leading-relaxed text-[var(--muted)]">
-                  {devicesError?.message ?? "The API did not return the hardware profiles."}{" "}
-                  Helper code and CPU-only modes still work.
+                  {devicesError?.message ?? "Use CPU or retry."}
                 </p>
                 <button
                   type="button"
-                  className="btn btn-secondary btn-sm mt-3"
+                  className="btn btn-secondary btn-sm mt-2"
                   onClick={onReloadDevices}
                 >
                   <RotateCcw size={11} /> Retry
@@ -422,93 +449,52 @@ export function HardwarePanel({
             </div>
           </div>
         ) : (
-          <div className="grid items-start gap-5 md:grid-cols-[1.05fr_1fr]">
-            <DeviceList
+          <>
+            <DevicePicker
               devices={devices}
               deviceId={deviceId}
               onDeviceChange={onDeviceChange}
             />
-
-            <div className="border border-[var(--line)] bg-[var(--bg-elevated)] p-4">
-              {selectedDevice ? (
-                <>
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-semibold leading-snug">
-                        {selectedDevice.name}
-                      </p>
-                      <p className="mt-1 font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)]">
-                        {selectedDevice.vendor} / {hardwareKindLabel(selectedDevice.kind)}
-                      </p>
-                    </div>
-                    <span className="badge">{selectedDevice.id}</span>
+            {selectedDevice ? (
+              <div className="mt-3 border border-[var(--line)] bg-[var(--bg-elevated)] p-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <DeviceIcon kind={selectedDevice.kind} />
+                    <span className="truncate text-sm font-medium">{selectedDevice.name}</span>
                   </div>
-
-                  <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-[var(--line)] pt-3">
-                    <div>
-                      <dt className="micro">Bandwidth</dt>
-                      <dd className="mt-0.5 font-mono text-sm text-[var(--text-2)]">
-                        {formatInteger(selectedDevice.bandwidth_gbps)} GB/s
-                      </dd>
-                      <dd className="mt-0.5 text-xs text-[var(--faint)]">device table</dd>
-                    </div>
-                    <div>
-                      <dt className="micro">
-                        {selectedDevice.kind === "discrete" ? "VRAM" : "Memory"}
-                      </dt>
-                      <dd className="mt-0.5 font-mono text-sm text-[var(--text-2)]">
-                        {selectedDevice.kind === "discrete" && selectedDevice.vram_gib
-                          ? `${formatGBValue(selectedDevice.vram_gib * 1024 ** 3, 0)} GB`
-                          : ramGib
-                            ? `${ramGib} GB`
-                            : "set below"}
-                      </dd>
-                      <dd className="mt-0.5 text-xs text-[var(--faint)]">
-                        {selectedDevice.kind === "discrete" ? "device table" : "user input"}
-                      </dd>
-                    </div>
-                  </dl>
-
-                  {selectedDevice.kind === "discrete" ? (
-                    <div className="note-box mt-4">
-                      The budget is VRAM minus a small runtime reserve. System RAM is not
-                      added in v1.
-                    </div>
-                  ) : (
-                    <div className="mt-4">
-                      <RamField
-                        id="ram-manual"
-                        device={selectedDevice}
-                        value={ramGib}
-                        onChange={onRamChange}
-                        error={errors.ramGib}
-                      />
-                    </div>
-                  )}
-
-                  {selectedDevice.notes ? (
-                    <p className="mt-3 border-t border-[var(--line)] pt-3 text-xs leading-relaxed text-[var(--faint)]">
-                      {selectedDevice.notes}
-                    </p>
-                  ) : null}
-                  <p className="mt-3 border-t border-[var(--line)] pt-3 font-mono text-xs leading-relaxed text-[var(--faint)]">
-                    Source: {selectedDevice.source}
-                  </p>
-                </>
-              ) : (
-                <div className="flex min-h-[120px] flex-col items-start justify-center md:min-h-[190px]">
-                  <Gpu size={20} className="text-[var(--faint)]" />
-                  <p className="mt-3 text-sm font-medium">No device selected</p>
-                  <p className="mt-1 max-w-xs text-sm leading-relaxed text-[var(--muted)]">
-                    Choose a device to see its memory budget.
-                  </p>
+                  <span className="font-mono text-xs text-[var(--muted)]">
+                    {formatInteger(selectedDevice.bandwidth_gbps)} GB/s
+                  </span>
                 </div>
-              )}
-              {errors.hardware ? (
-                <p className="mt-2 text-xs text-[var(--no)]">{errors.hardware}</p>
-              ) : null}
-            </div>
-          </div>
+                <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-[var(--muted)]">
+                  <span>
+                    {selectedDevice.kind === "discrete" && selectedDevice.vram_gib
+                      ? `${formatGBValue(selectedDevice.vram_gib * 1024 ** 3, 0)} GB VRAM`
+                      : selectedDevice.kind === "unified"
+                        ? ramGib
+                          ? `${ramGib} GB RAM`
+                          : "RAM not set"
+                        : "CPU profile"}
+                  </span>
+                  <span>{hardwareKindLabel(selectedDevice.kind)}</span>
+                </div>
+                {selectedDevice.kind !== "discrete" ? (
+                  <div className="mt-3 border-t border-[var(--line)] pt-3">
+                    <RamField
+                      id="ram-manual"
+                      device={selectedDevice}
+                      value={ramGib}
+                      onChange={onRamChange}
+                      error={errors.ramGib}
+                    />
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+            {errors.hardware ? (
+              <p className="mt-2 text-xs text-[var(--no)]">{errors.hardware}</p>
+            ) : null}
+          </>
         )}
       </div>
 
@@ -537,8 +523,7 @@ export function HardwarePanel({
                 <span>
                   <span className="block text-sm font-semibold">CPU only</span>
                   <span className="mt-0.5 block text-xs leading-relaxed text-[var(--muted)]">
-                    Use the generic CPU profile. Enter this machine’s RAM; the budget is 80%
-                    of it and bandwidth is assumed at 25 GB/s.
+                    Generic CPU profile.
                   </span>
                 </span>
               </label>
@@ -558,15 +543,11 @@ export function HardwarePanel({
                 <span>
                   <span className="block text-sm font-semibold">I’m not sure</span>
                   <span className="mt-0.5 block text-xs leading-relaxed text-[var(--muted)]">
-                    Use conservative defaults. RAM is optional; without it, FITS is UNKNOWN
-                    rather than a guess.
+                    Conservative defaults.
                   </span>
                 </span>
               </label>
             </div>
-            <p className="mt-3 font-mono text-xs leading-relaxed text-[var(--faint)]">
-              These are conservative estimates. Use the helper for a measured profile.
-            </p>
           </div>
 
           <div className="border border-[var(--line)] bg-[var(--bg-elevated)] p-4">
@@ -577,18 +558,6 @@ export function HardwarePanel({
               error={errors.ramGib}
               optional={cpuMode === "unsure"}
             />
-            <div className="mt-4 border-t border-[var(--line)] pt-3">
-              <p className="micro">What we'll use</p>
-              <p className="mt-1.5 text-xs leading-relaxed text-[var(--muted)]">
-                {cpuMode === "cpu"
-                  ? "The generic CPU profile with your RAM."
-                  : "Conservative defaults, with your RAM if provided."}
-              </p>
-              <div className="mt-3 flex items-center gap-2 text-xs text-[var(--faint)]">
-                <Terminal size={12} />
-                <span>No helper code needed.</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>

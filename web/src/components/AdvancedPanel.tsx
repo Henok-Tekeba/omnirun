@@ -30,14 +30,9 @@ export function AdvancedPanel({
           <span className="font-mono text-xs uppercase tracking-[0.1em] text-[var(--muted)]">
             Advanced settings
           </span>
-          <span className="font-mono text-xs text-[var(--faint)]">
-            Context, batch, and token
-          </span>
+
         </span>
         <span className="flex items-center gap-2">
-          <span className="hidden items-center gap-1.5 font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)] sm:flex">
-            <Lock size={10} /> token not stored
-          </span>
           <ChevronDown
             size={14}
             className="text-[var(--faint)] transition-transform duration-150 group-open:rotate-180"

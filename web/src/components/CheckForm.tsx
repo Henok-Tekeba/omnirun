@@ -5,24 +5,12 @@ import { hardwareDescription } from "../lib/form";
 import { AdvancedPanel } from "./AdvancedPanel";
 import { ErrorPanel } from "./ErrorPanel";
 import { HardwarePanel } from "./HardwarePanel";
-import { ArrowRight, Lock } from "./Icons";
+import { ArrowRight } from "./Icons";
 
 const EXAMPLES = [
-  {
-    label: "SmolLM2 135M",
-    model: "HuggingFaceTB/SmolLM2-135M-Instruct",
-    note: "small model",
-  },
-  {
-    label: "Mistral 7B",
-    model: "mistralai/Mistral-7B-v0.1",
-    note: "7B model",
-  },
-  {
-    label: "Whisper Tiny",
-    model: "openai/whisper-tiny",
-    note: "speech model",
-  },
+  { label: "SmolLM2-135M", model: "HuggingFaceTB/SmolLM2-135M-Instruct" },
+  { label: "Mistral-7B", model: "mistralai/Mistral-7B-v0.1" },
+  { label: "Whisper-tiny", model: "openai/whisper-tiny" },
 ];
 
 interface CheckFormProps {
@@ -68,8 +56,6 @@ export function CheckForm({
         <span>
           <strong>Model and hardware</strong>
         </span>
-        <span>Estimate only</span>
-        <span className="hidden sm:inline">Live check</span>
       </div>
 
       <div className="p-4 md:p-7">
@@ -95,7 +81,6 @@ export function CheckForm({
             <h2 id="check-title" className="module-title">
               Model
             </h2>
-            <span className="rule-tag">Hugging Face model</span>
           </div>
 
           <label htmlFor="model" className="micro mt-4 block">
@@ -127,12 +112,8 @@ export function CheckForm({
 
           <div className="mt-2 flex flex-wrap items-start justify-between gap-2">
             <p id="model-help" className="text-sm leading-relaxed text-[var(--muted)]">
-              Paste a model page URL or a repo ID like{" "}
-              <span className="font-mono text-xs">org/model</span>.
+              Repo ID or model URL.
             </p>
-            <span className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.08em] text-[var(--faint)]">
-              <Lock size={10} /> no weight downloads
-            </span>
           </div>
           {errors.model ? (
             <p id="model-error" className="mt-1 text-sm text-[var(--no)]">
@@ -146,15 +127,12 @@ export function CheckForm({
               <button
                 key={example.model}
                 type="button"
-                className="group inline-flex items-baseline gap-1.5 text-left"
+                className="group inline-flex items-baseline text-left"
                 onClick={() => onExample(example.model)}
                 title={example.model}
               >
                 <span className="font-mono text-xs text-[var(--text-2)] underline decoration-[var(--line-strong)] underline-offset-3 group-hover:text-[var(--accent)] group-hover:decoration-[var(--accent)]">
                   {example.label}
-                </span>
-                <span className="font-mono text-xs uppercase tracking-[0.06em] text-[var(--faint)]">
-                  {example.note}
                 </span>
               </button>
             ))}
