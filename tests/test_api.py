@@ -7,8 +7,9 @@ from unittest.mock import AsyncMock
 
 import httpx
 import pytest
+from starlette.requests import Request
 
-from api.main import create_app
+from api.main import _client_host, create_app
 from api.settings import Settings
 from core.hardware import GIB, encode_hardware_code
 from tests.hf_fixtures import fixture_client
@@ -178,6 +179,43 @@ async def test_optimize_verdict_for_small_gpu(tmp_path: Path) -> None:
             }
             assert alternatives["int8"]["fits"] == "yes"
             assert alternatives["4bit"]["fits"] == "yes"
+
+
+async def test_cors_allows_configured_frontend_origin(tmp_path: Path) -> None:
+    app = create_app(
+        make_settings(
+            tmp_path,
+            cors_origins="https://henok-tekeba.github.io",
+        )
+    )
+    async with await api_client(app) as client:
+        response = await client.options(
+            "/check",
+            headers={
+                "Origin": "https://henok-tekeba.github.io",
+                "Access-Control-Request-Method": "POST",
+                "Access-Control-Request-Headers": "content-type",
+            },
+        )
+        assert response.status_code == 200
+        assert (
+            response.headers["access-control-allow-origin"]
+            == "https://henok-tekeba.github.io"
+        )
+
+
+def test_forwarded_for_is_only_trusted_when_configured() -> None:
+    request = Request(
+        {
+            "type": "http",
+            "method": "GET",
+            "path": "/",
+            "headers": [(b"x-forwarded-for", b"203.0.113.5, 10.0.0.1")],
+            "client": ("127.0.0.1", 1234),
+        }
+    )
+    assert _client_host(request, Settings(trust_proxy_headers=True)) == "203.0.113.5"
+    assert _client_host(request, Settings(trust_proxy_headers=False)) == "127.0.0.1"
 
 
 async def test_health(tmp_path: Path) -> None:

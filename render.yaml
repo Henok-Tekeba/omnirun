@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: omnirun-api
+    runtime: docker
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /health
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: OMNIRUN_CORS_ORIGINS
+        value: https://henok-tekeba.github.io
+      - key: OMNIRUN_CACHE_DIR
+        value: /tmp/omnirun-cache
+      - key: OMNIRUN_TRUST_PROXY_HEADERS
+        value: "true"

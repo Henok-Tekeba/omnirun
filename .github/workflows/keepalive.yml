@@ -1,0 +1,24 @@
+name: Keep the hosted API warm
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping health endpoint
+        env:
+          API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+        run: |
+          if [ -z "$API_BASE_URL" ]; then
+            echo "VITE_API_BASE_URL is not configured; skipping."
+            exit 0
+          fi
+          curl -fsS --max-time 30 "${API_BASE_URL%/}/health" >/dev/null
+          echo "API is warm."

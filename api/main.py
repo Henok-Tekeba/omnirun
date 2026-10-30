@@ -49,6 +49,17 @@ def _request_id(request: Request) -> str:
     return getattr(request.state, "request_id", uuid.uuid4().hex)
 
 
+def _client_host(request: Request, settings: Settings) -> str:
+    """Return the client IP, optionally using a trusted proxy's X-Forwarded-For."""
+    if settings.trust_proxy_headers:
+        forwarded = request.headers.get("x-forwarded-for")
+        if forwarded:
+            first = forwarded.split(",", 1)[0].strip()
+            if first:
+                return first
+    return request.client.host if request.client else "unknown"
+
+
 def _token_scope(token: str | None) -> str:
     if not token:
         return "anon"
@@ -247,7 +258,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         },
     )
     async def find(payload: FindRequest, request: Request) -> FindResponse:
-        client_host = request.client.host if request.client else "unknown"
+        client_host = _client_host(request, settings)
         retry_after = request.app.state.rate_limiter.check(client_host)
         if retry_after is not None:
             raise OmniRunError(
@@ -303,7 +314,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         },
     )
     async def check(payload: CheckRequest, request: Request) -> CheckResponse:
-        client_host = request.client.host if request.client else "unknown"
+        client_host = _client_host(request, settings)
         retry_after = request.app.state.rate_limiter.check(client_host)
         if retry_after is not None:
             raise OmniRunError(

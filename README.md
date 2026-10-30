@@ -58,6 +58,8 @@ npm run build
 ```text
 web/        React + Vite + TypeScript frontend
 api/        FastAPI service, request validation, response assembly
+Dockerfile  Production API image
+render.yaml Render blueprint for the API
 core/       model inspection, memory/speed estimation, support and artifact logic
 helper/     local hardware measurement helper
 data/       curated device profiles and support matrix
@@ -111,9 +113,13 @@ The full set of assumptions and limitations is in [docs/methodology.md](docs/met
 
 The frontend is deployed to GitHub Pages by [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml). GitHub Pages hosts the static Vite build, not the FastAPI process.
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Henok-Tekeba/omnirun)
+
+The repository includes a production `Dockerfile`, a `render.yaml` blueprint, CORS configuration, and a full [deployment guide](docs/deployment.md).
+
 - Static preview: [henok-tekeba.github.io/omnirun](https://henok-tekeba.github.io/omnirun/)
 - Recorded sample report: [henok-tekeba.github.io/omnirun/?sample=1](https://henok-tekeba.github.io/omnirun/?sample=1)
-- Live preflights: run `npm run dev` locally, or host the API and set the repository variable `VITE_API_BASE_URL` to the API root.
+- Live preflights: run `npm run dev` locally, or deploy the API with [docs/deployment.md](docs/deployment.md) and set the repository variable `VITE_API_BASE_URL` to the API root.
 
 Environment overrides are documented in [`web/.env.example`](web/.env.example).
 

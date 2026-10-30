@@ -34,6 +34,7 @@ class Settings(BaseSettings):
     result_cache_ttl_seconds: int = Field(default=600, ge=0, le=86_400)
     enable_result_cache: bool = True
     cors_origins: str = ""
+    trust_proxy_headers: bool = False
 
     def cors_origin_list(self) -> list[str]:
         return [item.strip() for item in self.cors_origins.split(",") if item.strip()]
