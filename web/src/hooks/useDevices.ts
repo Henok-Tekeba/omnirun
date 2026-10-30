@@ -2,11 +2,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, getDevices } from "../api/client";
 import type { DeviceEntry } from "../api/types";
 import { IS_STATIC_PREVIEW } from "../lib/env";
+import { STATIC_DEVICES } from "../demo/devices";
 
 type DevicesStatus = "loading" | "ready" | "error";
 
 export function useDevices() {
-  const [devices, setDevices] = useState<DeviceEntry[]>([]);
+  const [devices, setDevices] = useState<DeviceEntry[]>(
+    IS_STATIC_PREVIEW ? STATIC_DEVICES : [],
+  );
   const [status, setStatus] = useState<DevicesStatus>(
     IS_STATIC_PREVIEW ? "ready" : "loading",
   );
@@ -15,7 +18,7 @@ export function useDevices() {
 
   const load = useCallback(async () => {
     if (IS_STATIC_PREVIEW) {
-      setDevices([]);
+      setDevices(STATIC_DEVICES);
       setStatus("ready");
       setError(null);
       return;

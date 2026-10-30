@@ -99,7 +99,12 @@ function DevicePicker({
     };
     document.addEventListener("pointerdown", onPointerDown);
     document.addEventListener("keydown", onKeyDown);
-    const frame = requestAnimationFrame(() => inputRef.current?.focus());
+    const frame = requestAnimationFrame(() => {
+      inputRef.current?.focus({ preventScroll: true });
+      if (window.matchMedia("(max-width: 640px)").matches) {
+        triggerRef.current?.scrollIntoView({ block: "center", behavior: "auto" });
+      }
+    });
     return () => {
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);

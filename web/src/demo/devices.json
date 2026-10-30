@@ -1,0 +1,469 @@
+[
+  {
+    "id": "apple-m1",
+    "name": "Apple M1",
+    "vendor": "apple",
+    "kind": "unified",
+    "bandwidth_gbps": 68.25,
+    "vram_gib": null,
+    "ram_options_gib": [
+      8.0,
+      16.0
+    ],
+    "default_ram_gib": 16.0,
+    "source": "Apple published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "apple-m1-pro",
+    "name": "Apple M1 Pro",
+    "vendor": "apple",
+    "kind": "unified",
+    "bandwidth_gbps": 200.0,
+    "vram_gib": null,
+    "ram_options_gib": [
+      16.0,
+      32.0
+    ],
+    "default_ram_gib": 32.0,
+    "source": "Apple published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "apple-m1-max",
+    "name": "Apple M1 Max",
+    "vendor": "apple",
+    "kind": "unified",
+    "bandwidth_gbps": 400.0,
+    "vram_gib": null,
+    "ram_options_gib": [
+      32.0,
+      64.0
+    ],
+    "default_ram_gib": 64.0,
+    "source": "Apple published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "apple-m1-ultra",
+    "name": "Apple M1 Ultra",
+    "vendor": "apple",
+    "kind": "unified",
+    "bandwidth_gbps": 800.0,
+    "vram_gib": null,
+    "ram_options_gib": [
+      64.0,
+      128.0
+    ],
+    "default_ram_gib": 128.0,
+    "source": "Apple published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "apple-m2",
+    "name": "Apple M2",
+    "vendor": "apple",
+    "kind": "unified",
+    "bandwidth_gbps": 100.0,
+    "vram_gib": null,
+    "ram_options_gib": [
+      8.0,
+      16.0,
+      24.0
+    ],
+    "default_ram_gib": 16.0,
+    "source": "Apple published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "apple-m2-pro",
+    "name": "Apple M2 Pro",
+    "vendor": "apple",
+    "kind": "unified",
+    "bandwidth_gbps": 200.0,
+    "vram_gib": null,
+    "ram_options_gib": [
+      16.0,
+      32.0
+    ],
+    "default_ram_gib": 32.0,
+    "source": "Apple published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "apple-m2-max",
+    "name": "Apple M2 Max",
+    "vendor": "apple",
+    "kind": "unified",
+    "bandwidth_gbps": 400.0,
+    "vram_gib": null,
+    "ram_options_gib": [
+      32.0,
+      64.0,
+      96.0
+    ],
+    "default_ram_gib": 64.0,
+    "source": "Apple published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "apple-m2-ultra",
+    "name": "Apple M2 Ultra",
+    "vendor": "apple",
+    "kind": "unified",
+    "bandwidth_gbps": 800.0,
+    "vram_gib": null,
+    "ram_options_gib": [
+      64.0,
+      128.0,
+      192.0
+    ],
+    "default_ram_gib": 128.0,
+    "source": "Apple published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "apple-m3",
+    "name": "Apple M3",
+    "vendor": "apple",
+    "kind": "unified",
+    "bandwidth_gbps": 100.0,
+    "vram_gib": null,
+    "ram_options_gib": [
+      8.0,
+      16.0,
+      24.0
+    ],
+    "default_ram_gib": 16.0,
+    "source": "Apple published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "apple-m3-pro",
+    "name": "Apple M3 Pro",
+    "vendor": "apple",
+    "kind": "unified",
+    "bandwidth_gbps": 150.0,
+    "vram_gib": null,
+    "ram_options_gib": [
+      18.0,
+      36.0
+    ],
+    "default_ram_gib": 36.0,
+    "source": "Apple published peak memory bandwidth (M3 Pro)",
+    "notes": null
+  },
+  {
+    "id": "apple-m3-max",
+    "name": "Apple M3 Max",
+    "vendor": "apple",
+    "kind": "unified",
+    "bandwidth_gbps": 400.0,
+    "vram_gib": null,
+    "ram_options_gib": [
+      36.0,
+      48.0,
+      64.0,
+      96.0,
+      128.0
+    ],
+    "default_ram_gib": 64.0,
+    "source": "Apple published peak memory bandwidth; 14-core M3 Max is 300 GB/s",
+    "notes": "This entry uses the 16-core M3 Max bandwidth (400 GB/s). A 14-core M3 Max is ~300 GB/s."
+  },
+  {
+    "id": "apple-m3-ultra",
+    "name": "Apple M3 Ultra",
+    "vendor": "apple",
+    "kind": "unified",
+    "bandwidth_gbps": 800.0,
+    "vram_gib": null,
+    "ram_options_gib": [
+      96.0,
+      128.0,
+      192.0,
+      256.0,
+      512.0
+    ],
+    "default_ram_gib": 128.0,
+    "source": "Apple published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "apple-m4",
+    "name": "Apple M4",
+    "vendor": "apple",
+    "kind": "unified",
+    "bandwidth_gbps": 120.0,
+    "vram_gib": null,
+    "ram_options_gib": [
+      16.0,
+      24.0,
+      32.0
+    ],
+    "default_ram_gib": 16.0,
+    "source": "Apple published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "apple-m4-pro",
+    "name": "Apple M4 Pro",
+    "vendor": "apple",
+    "kind": "unified",
+    "bandwidth_gbps": 273.0,
+    "vram_gib": null,
+    "ram_options_gib": [
+      24.0,
+      48.0,
+      64.0
+    ],
+    "default_ram_gib": 48.0,
+    "source": "Apple published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "apple-m4-max",
+    "name": "Apple M4 Max",
+    "vendor": "apple",
+    "kind": "unified",
+    "bandwidth_gbps": 546.0,
+    "vram_gib": null,
+    "ram_options_gib": [
+      36.0,
+      48.0,
+      64.0,
+      128.0
+    ],
+    "default_ram_gib": 64.0,
+    "source": "Apple published peak memory bandwidth; 14-core M4 Max is 410 GB/s",
+    "notes": "This entry uses the 16-core M4 Max bandwidth (546 GB/s). A 14-core M4 Max is ~410 GB/s."
+  },
+  {
+    "id": "nvidia-rtx-3060-12gb",
+    "name": "NVIDIA GeForce RTX 3060 12GB",
+    "vendor": "nvidia",
+    "kind": "discrete",
+    "bandwidth_gbps": 360.0,
+    "vram_gib": 12.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "NVIDIA published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "nvidia-rtx-3060-ti",
+    "name": "NVIDIA GeForce RTX 3060 Ti",
+    "vendor": "nvidia",
+    "kind": "discrete",
+    "bandwidth_gbps": 448.0,
+    "vram_gib": 8.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "NVIDIA published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "nvidia-rtx-3070",
+    "name": "NVIDIA GeForce RTX 3070",
+    "vendor": "nvidia",
+    "kind": "discrete",
+    "bandwidth_gbps": 448.0,
+    "vram_gib": 8.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "NVIDIA published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "nvidia-rtx-3080",
+    "name": "NVIDIA GeForce RTX 3080",
+    "vendor": "nvidia",
+    "kind": "discrete",
+    "bandwidth_gbps": 760.0,
+    "vram_gib": 10.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "NVIDIA published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "nvidia-rtx-3090",
+    "name": "NVIDIA GeForce RTX 3090",
+    "vendor": "nvidia",
+    "kind": "discrete",
+    "bandwidth_gbps": 936.0,
+    "vram_gib": 24.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "NVIDIA published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "nvidia-rtx-4060-ti-16gb",
+    "name": "NVIDIA GeForce RTX 4060 Ti 16GB",
+    "vendor": "nvidia",
+    "kind": "discrete",
+    "bandwidth_gbps": 288.0,
+    "vram_gib": 16.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "NVIDIA published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "nvidia-rtx-4070",
+    "name": "NVIDIA GeForce RTX 4070",
+    "vendor": "nvidia",
+    "kind": "discrete",
+    "bandwidth_gbps": 504.0,
+    "vram_gib": 12.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "NVIDIA published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "nvidia-rtx-4070-ti-super",
+    "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "vendor": "nvidia",
+    "kind": "discrete",
+    "bandwidth_gbps": 672.0,
+    "vram_gib": 16.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "NVIDIA published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "nvidia-rtx-4080-super",
+    "name": "NVIDIA GeForce RTX 4080 SUPER",
+    "vendor": "nvidia",
+    "kind": "discrete",
+    "bandwidth_gbps": 736.0,
+    "vram_gib": 16.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "NVIDIA published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "nvidia-rtx-4090",
+    "name": "NVIDIA GeForce RTX 4090",
+    "vendor": "nvidia",
+    "kind": "discrete",
+    "bandwidth_gbps": 1008.0,
+    "vram_gib": 24.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "NVIDIA published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "nvidia-a10g",
+    "name": "NVIDIA A10G",
+    "vendor": "nvidia",
+    "kind": "discrete",
+    "bandwidth_gbps": 600.0,
+    "vram_gib": 24.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "NVIDIA published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "nvidia-a100-40gb",
+    "name": "NVIDIA A100 40GB",
+    "vendor": "nvidia",
+    "kind": "discrete",
+    "bandwidth_gbps": 1555.0,
+    "vram_gib": 40.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "NVIDIA published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "nvidia-a100-80gb",
+    "name": "NVIDIA A100 80GB",
+    "vendor": "nvidia",
+    "kind": "discrete",
+    "bandwidth_gbps": 2039.0,
+    "vram_gib": 80.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "NVIDIA published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "nvidia-h100-sxm",
+    "name": "NVIDIA H100 SXM",
+    "vendor": "nvidia",
+    "kind": "discrete",
+    "bandwidth_gbps": 3350.0,
+    "vram_gib": 80.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "NVIDIA published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "nvidia-l40s",
+    "name": "NVIDIA L40S",
+    "vendor": "nvidia",
+    "kind": "discrete",
+    "bandwidth_gbps": 864.0,
+    "vram_gib": 48.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "NVIDIA published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "nvidia-l4",
+    "name": "NVIDIA L4",
+    "vendor": "nvidia",
+    "kind": "discrete",
+    "bandwidth_gbps": 300.0,
+    "vram_gib": 24.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "NVIDIA published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "amd-rx-7900-xtx",
+    "name": "AMD Radeon RX 7900 XTX",
+    "vendor": "amd",
+    "kind": "discrete",
+    "bandwidth_gbps": 960.0,
+    "vram_gib": 24.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "AMD published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "amd-rx-7800-xt",
+    "name": "AMD Radeon RX 7800 XT",
+    "vendor": "amd",
+    "kind": "discrete",
+    "bandwidth_gbps": 624.0,
+    "vram_gib": 16.0,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "AMD published peak memory bandwidth",
+    "notes": null
+  },
+  {
+    "id": "cpu-generic",
+    "name": "Generic CPU-only system",
+    "vendor": "generic",
+    "kind": "cpu",
+    "bandwidth_gbps": 25.0,
+    "vram_gib": null,
+    "ram_options_gib": [],
+    "default_ram_gib": null,
+    "source": "Conservative default, not a measurement",
+    "notes": "CPU-only/unknown profiles use the lowest confidence. Prefer the helper for a measured bandwidth."
+  }
+]
