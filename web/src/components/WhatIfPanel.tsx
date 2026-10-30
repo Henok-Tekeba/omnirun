@@ -170,14 +170,14 @@ export function WhatIfPanel({ result }: { result: CheckResponse }) {
           <strong>What-if</strong>
         </span>
         <span>context / batch / memory</span>
-        <span>live estimates</span>
+        <span>modeled</span>
       </div>
       <div className="p-4 md:p-6">
         <SectionHeading
           id="what-if-title"
-          eyebrow="Planning scenarios"
-          title="What if?"
-          aside={<span className="badge">same model</span>}
+          eyebrow="What-if analysis"
+          title="Capacity planning"
+          aside={<span className="badge">current setup</span>}
         />
 
         <div className="grid grid-cols-2 border border-[var(--line)] bg-[var(--bg-elevated)] sm:grid-cols-3">
@@ -196,9 +196,9 @@ export function WhatIfPanel({ result }: { result: CheckResponse }) {
             <p className="mt-1 text-[10px] text-[var(--faint)]">sequences</p>
           </div>
           <div className="col-span-2 p-3 sm:col-span-1">
-            <p className="micro">Best smaller weights</p>
+            <p className="micro">Best fitting quantization</p>
             <p className="mt-1 text-[13px] font-medium text-[var(--text)]">
-              {best ? quantLabel(best.name) : "None fit"}
+              {best ? quantLabel(best.name) : "No fit"}
             </p>
             <p className="mt-1 text-[10px] text-[var(--faint)]">
               {best ? formatBytesRange(best.peak) : "No alternative fits this budget."}
@@ -208,7 +208,7 @@ export function WhatIfPanel({ result }: { result: CheckResponse }) {
 
         <div className="mt-4 border border-[var(--line)] p-3">
           <div className="mb-1 flex items-center justify-between gap-2">
-            <p className="micro">Context vs peak memory</p>
+            <p className="micro">Memory frontier</p>
             <span className="font-mono text-[8.5px] text-[var(--faint)]">
               {sweep.model_max_context ? `model max ${formatInteger(sweep.model_max_context)}` : "max unknown"}
             </span>

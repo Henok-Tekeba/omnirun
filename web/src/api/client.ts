@@ -140,7 +140,7 @@ async function requestJson<T>(
     }
     throw new ApiError({
       code: "api_unreachable",
-      message: "Can't reach the OmniRun API.",
+      message: "Cannot reach the OmniRun API.",
       hint: "Make sure the API is running on port 8000. `npm run dev` starts both the API and the web app.",
       retryable: true,
     });

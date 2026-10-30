@@ -143,8 +143,7 @@ function VerifiedBody({ result }: { result: CheckResponse }) {
           <div>
             <p className="text-[11px] font-medium text-[var(--text-2)]">No recorded runs yet</p>
             <p className="mt-0.5 text-[10px] leading-relaxed text-[var(--muted)]">
-              OmniRun has no recorded run for this model yet. It can inspect the model, but
-              it cannot claim anyone ran it on this hardware.
+              The model can be inspected, but no run has been recorded on this hardware.
             </p>
           </div>
         </div>

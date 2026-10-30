@@ -1,5 +1,5 @@
 import {
-  ASSUMPTIONS_URL,
+  METHODOLOGY_URL,
   ISSUES_URL,
   REPO_URL,
   SECURITY_URL,
@@ -32,10 +32,10 @@ export function SiteFooter({ onStart }: { onStart?: () => void }) {
           ) : (
             <a href={SITE_BASE}>Preflight</a>
           )}
-          <a href="?sample=1">Sample result</a>
-          <a href={REPO_URL} target="_blank" rel="noreferrer">What OmniRun does</a>
-          <a href={ASSUMPTIONS_URL} target="_blank" rel="noreferrer">
-            Method &amp; assumptions
+          <a href="?sample=1">Sample report</a>
+          <a href={REPO_URL} target="_blank" rel="noreferrer">Product overview</a>
+          <a href={METHODOLOGY_URL} target="_blank" rel="noreferrer">
+            Methodology
           </a>
         </nav>
 

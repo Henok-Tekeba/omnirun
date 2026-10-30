@@ -33,7 +33,7 @@ export function VerdictHero({ result }: { result: CheckResponse }) {
   const note =
     verdict.value === "UNKNOWN" &&
     (result.model.model_class === "asr" || result.model.model_class === "tts")
-      ? "We can inspect this model, but this build can’t judge ASR/TTS yet."
+      ? "OmniRun can inspect this model, but v1 does not estimate ASR/TTS speed."
       : verdictNote(verdict.value);
 
   return (
@@ -72,7 +72,7 @@ export function VerdictHero({ result }: { result: CheckResponse }) {
                 ? "This model may work with a smaller setup. See the options below."
                 : verdict.value === "NO"
                   ? "This model does not fit as configured, or no usable runtime path exists."
-                  : "There isn’t enough information to make a GO or NO call."}
+                  : "Insufficient information for a GO/NO call."}
           </p>
 
           <div className="mt-4 flex flex-wrap items-center gap-2">

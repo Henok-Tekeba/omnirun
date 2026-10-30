@@ -9,8 +9,7 @@ export function StaticPreviewBanner({ onSample }: { onSample: () => void }) {
           <Info size={12} /> Static preview
         </span>
         <p>
-          GitHub Pages hosts the interface only. The Python API is not running here, so
-          live preflights need the local API.
+          This is a static product preview. Live preflights require the OmniRun API.
         </p>
       </div>
       <div className="preview-banner-actions">

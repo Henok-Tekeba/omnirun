@@ -252,8 +252,8 @@ export default function App() {
   const shellSubtitle = showResult
     ? "Three checks: memory, runtime, and recorded runs."
     : phase === "finder"
-      ? "Start with your hardware, not a leaderboard."
-      : "One model. One machine. One honest answer.";
+      ? "Find models that fit the hardware you have."
+      : "Memory, runtime, and speed before you download.";
 
   return (
     <DashboardShell
@@ -270,7 +270,7 @@ export default function App() {
             className="dashboard-btn dashboard-btn-primary"
             onClick={handleEdit}
           >
-            New check
+            New preflight
           </button>
         ) : null
       }

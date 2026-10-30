@@ -99,7 +99,7 @@ function CandidateCard({
           </p>
         </div>
         <div>
-          <p className="micro">Best file</p>
+          <p className="micro">Best artifact</p>
           <p className="mt-0.5 font-mono text-[11px] text-[var(--text-2)]">
             {formatGB(candidate.best_artifact_size_bytes)}
           </p>
@@ -201,12 +201,12 @@ export function FinderView({
           <span>
             <strong>Find models</strong>
           </span>
-          <span>hardware first</span>
-          <span>not a quality leaderboard</span>
+          <span>hardware-first</span>
+          <span>fit-ranked</span>
         </div>
         <div className="p-4 md:p-6">
           <SectionHeading
-            eyebrow="Start with your machine"
+            eyebrow="Hardware-first search"
             title="Find models"
             aside={<span className="badge">ranked by fit</span>}
           />
@@ -223,7 +223,7 @@ export function FinderView({
             </div>
             <p className="mt-1 text-[10px] text-[var(--faint)]">
               Candidates are ranked by fit, runtime support, artifact availability, and size.
-              Model quality is not ranked.
+              Model quality is not scored.
             </p>
           </div>
 
@@ -311,7 +311,7 @@ export function FinderView({
             <span>
               {response.candidates.length} shown / {response.searched} inspected
             </span>
-            <span>fit first</span>
+            <span>ranked by fit</span>
           </div>
           <div className="p-4 md:p-6">
             {response.candidates.length === 0 ? (

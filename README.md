@@ -1,27 +1,43 @@
 # OmniRun
 
-Preflight a Hugging Face model against your hardware **without downloading weights**.
+**Preflight local AI models before you download them.**
 
-Paste a model URL or repo id. OmniRun reads only repository metadata, `config.json`,
-safetensors headers, and GGUF headers over HTTP range requests. It returns a
-versioned JSON report with memory math, decode-speed ranges, and three separate
-claims: **FITS**, **SUPPORTED**, and **VERIFIED**.
+OmniRun is the preflight layer for local inference. Given a Hugging Face model and a hardware profile, it returns a versioned report with memory fit, runtime support, decode-speed range, real artifacts, and capacity scenarios — without downloading tensor weights.
 
-> Status: v1 backend, core library, hardware helper, and web frontend.
->
-> Static preview: https://henok-tekeba.github.io/omnirun/ (GitHub Pages hosts
-> the interface; live preflights need the local API).
-> Recorded sample result: https://henok-tekeba.github.io/omnirun/?sample=1
+[Live preview](https://henok-tekeba.github.io/omnirun/) · [Sample report](https://henok-tekeba.github.io/omnirun/?sample=1) · [Methodology](docs/methodology.md) · [Security](SECURITY.md)
+
+> The GitHub Pages deployment is a static product preview. Live preflights and model discovery require the API; see [Deployment](#deployment).
+
+## What it answers
+
+| Question | Output |
+| --- | --- |
+| Will this model fit? | `FITS` with a worst-case memory range and a confidence level |
+| Can I run it? | `SUPPORTED` with the artifact format, runtime, and minimum version |
+| Has anyone verified it? | `VERIFIED`, kept separate from fit and support |
+| How fast will it decode? | A documented decode-speed range, not a benchmark |
+| What will I actually download? | Real GGUF, safetensors, ONNX, and CTranslate2 artifacts from the repository |
+| What changes if I reduce context, batch, or memory pressure? | A what-if frontier and fitting configuration |
+
+OmniRun does not treat "fits" as "supported", and does not treat "supported" as "verified".
+
+## Product surface
+
+- **Preflight** — inspect a model against a manual device profile, a measured helper code, or a CPU-only/unknown profile.
+- **Artifact shelf** — list the real files in the repository, their size, quantization, runtime path, and fit status.
+- **Capacity planning** — calculate the maximum fitting context and batch, the memory frontier, the best fitting quantization, and free-memory or smaller-context scenarios.
+- **Hardware-first model finder** — inspect a bounded candidate pool and rank by fit, runtime support, artifact availability, and size. Model quality is not scored.
+- **API-first contract** — every result is a versioned JSON report with explicit claims, assumptions, and request metadata.
 
 ## Quick start
 
-Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/), plus Node.js 20+.
+Requirements: Python 3.11+, [uv](https://docs.astral.sh/uv/), and Node.js 20+.
 
 ```bash
 npm run dev
 ```
 
-That one command starts both servers and prints:
+The development runner starts both services:
 
 ```text
 Web   http://localhost:5173
@@ -29,74 +45,40 @@ API   http://127.0.0.1:8000
 Docs  http://127.0.0.1:8000/docs
 ```
 
-The dev runner installs `web/node_modules` on the first run. `Ctrl+C` stops both.
+`Ctrl+C` stops both. The first run installs `web/node_modules`.
 
-For a production-style web build:
+Production build:
 
 ```bash
 npm run build
 ```
 
-## Static site / GitHub Pages
+## Architecture
 
-The frontend is deployed to GitHub Pages by
-`.github/workflows/deploy-pages.yml`. GitHub Pages can host the static Vite
-build, not the FastAPI process. The deployed build therefore shows a clearly
-labelled **Static preview** banner and a recorded sample result.
-
-To connect a hosted API, set the repository variable `VITE_API_BASE_URL` to the
-API root (for example `https://api.example.com`) and re-run the workflow. The
-frontend will call `/check`, `/find`, and `/devices` on that host.
-
-Local production build with the GitHub Pages base path:
-
-```bash
-cd web
-VITE_BASE_PATH=/omnirun/ npm run build
+```text
+web/        React + Vite + TypeScript frontend
+api/        FastAPI service, request validation, response assembly
+core/       model inspection, memory/speed estimation, support and artifact logic
+helper/     local hardware measurement helper
+data/       curated device profiles and support matrix
+tests/      offline fixtures and API/core test suite
+docs/       methodology and operating notes
 ```
 
-## Development
+The frontend calls the API through the local `/api` proxy. The API resolves a model revision, reads only metadata and header ranges from Hugging Face, and returns a report. It never fetches tensor payloads and never unpickles model files.
 
-Backend:
+## API
 
-```bash
-uv sync
-uv run pytest
-uv run ruff check .
-uv run uvicorn api.main:app --reload
-```
+The contract is served at `GET /schema` and in OpenAPI at `/docs`.
 
-Web:
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `POST` | `/check` | Full preflight report |
+| `POST` | `/find` | Hardware-first candidate discovery |
+| `GET` | `/devices` | Curated manual hardware profiles |
+| `GET` | `/schema` | Versioned request/response schemas |
+| `GET` | `/health` | Service health |
 
-```bash
-npm --prefix web install
-npm --prefix web run dev
-```
-
-The Vite dev server proxies `/api` to FastAPI. The frontend calls `/api/check`
-and `/api/devices`; the API remains the source of truth for the contract.
-
-Generate TypeScript types from the live OpenAPI schema:
-
-```bash
-npm run gen:types
-```
-
-The generated file is `web/src/api/schema.gen.ts`.
-
-Playwright smoke test (real public model + manual hardware picker):
-
-```bash
-npm run setup
-npm run test:e2e
-```
-
-See [web/README.md](web/README.md) for frontend assumptions and known
-limitations.
-
-## API contract
-
-The contract is served at `GET /schema` and in the OpenAPI docs at `/docs`.
 Example:
 
 ```bash
@@ -112,34 +94,71 @@ curl -s http://127.0.0.1:8000/check \
   }" | python -m json.tool
 ```
 
-`GET /devices` returns the curated manual profiles from `data/devices.yaml`
-for the web picker. It is a lookup table, not a measurement.
+`POST /check` reports `FITS`, `SUPPORTED`, and `VERIFIED` independently. A `GO` requires fit plus a directly usable runtime path; it never implies verification. `artifacts` contains real repository files, and `sweep` contains the capacity-planning analysis.
 
-The response always reports FITS, SUPPORTED, and VERIFIED as separate claims.
-GO means FITS + a directly usable SUPPORTED runtime; it does not mean VERIFIED.
-VERIFIED is empty in v1. `artifacts` lists actual files found in the repo
-(GGUF/safetensors/ONNX/etc.) with sizes and fit estimates; the UI uses it for
-the real artifact shelf instead of inventing quantization alternatives.
-`sweep` reports the max fitting context/batch, the context-vs-memory frontier,
-best fitting smaller weights, and free-memory/smaller-context scenarios.
+## Modeling principles
 
-`POST /find` is a hardware-first candidate search. It inspects a bounded pool
-of Hugging Face models and ranks them by fit, runtime support, artifact
-availability, and size — not by downloads, likes, or model quality.
+- **No tensor payload downloads.** Only repository metadata, configuration, safetensors headers, and GGUF metadata are read over HTTP range requests.
+- **Numbers are traceable.** Every estimate maps to an input, a named constant, or an assumption repeated in the response.
+- **Exact math stays exact.** Ranges are reserved for genuine uncertainty, not added for presentation.
+- **Unknown is a first-class result.** Missing configuration, unsupported architectures, and insufficient hardware data produce `UNKNOWN`, not a guess.
+- **Claims stay separate.** `FITS`, `SUPPORTED`, and `VERIFIED` are never collapsed into a single "works" claim.
+- **Units are explicit.** API memory values are bytes; bandwidth is decimal GB/s; UI memory labels use 1 GB = 2³⁰ bytes (GiB).
 
-The web app also includes privacy and terms pages at `?page=privacy` and
-`?page=terms`, a cookie/storage notice, a site footer, and a mobile navigation
-menu. The cookie notice is informational: OmniRun uses no analytics or
-advertising cookies, only essential browser storage.
+The full set of assumptions and limitations is in [docs/methodology.md](docs/methodology.md).
 
-## Honesty rules
+## Deployment
 
-- No weight downloads, ever. Only metadata/header byte ranges.
-- Every number traces to an input or a named assumption in the response.
-- Exact math is not padded with fake ranges.
-- `VERIFIED` is empty in v1. A GO never implies a recorded real run.
-- Unknown is a valid answer.
-- The web UI labels memory as GB and defines 1 GB = 2³⁰ bytes (GiB) in its
-  units note; the API itself returns bytes.
+The frontend is deployed to GitHub Pages by [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml). GitHub Pages hosts the static Vite build, not the FastAPI process.
 
-See [ASSUMPTIONS.md](ASSUMPTIONS.md) for the decisions and open questions.
+- Static preview: [henok-tekeba.github.io/omnirun](https://henok-tekeba.github.io/omnirun/)
+- Recorded sample report: [henok-tekeba.github.io/omnirun/?sample=1](https://henok-tekeba.github.io/omnirun/?sample=1)
+- Live preflights: run `npm run dev` locally, or host the API and set the repository variable `VITE_API_BASE_URL` to the API root.
+
+Environment overrides are documented in [`web/.env.example`](web/.env.example).
+
+Local production build with the Pages base path:
+
+```bash
+cd web
+VITE_BASE_PATH=/omnirun/ npm run build
+```
+
+## Testing
+
+Backend:
+
+```bash
+uv run pytest
+uv run ruff check .
+```
+
+Frontend build:
+
+```bash
+cd web
+npx tsc --noEmit
+npm run build
+```
+
+End-to-end:
+
+```bash
+npm run setup
+npm run test:e2e
+```
+
+The Playwright suite covers the preflight happy path, ASR handling, the model finder, invalid input, cookie consent, mobile navigation, and legal pages.
+
+## Security
+
+Report vulnerabilities through [GitHub private vulnerability reporting](https://github.com/Henok-Tekeba/omnirun/security/advisories/new). See [SECURITY.md](SECURITY.md) for scope and reporting guidance.
+
+## Limitations
+
+- Single-device estimates only. Multi-GPU, offload, and distributed serving are out of scope.
+- No prefill or time-to-first-token estimate.
+- No measured runtime benchmarks; speed is a documented range.
+- No server-side result persistence or accounts.
+- The public Pages build is a static preview without a live API.
+- Model search is fit-ranked, not a quality ranking.

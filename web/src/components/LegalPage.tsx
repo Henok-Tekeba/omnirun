@@ -290,7 +290,7 @@ function Terms() {
         <p>
           If any provision is unenforceable, the remaining provisions remain in effect.
           These terms do not create a partnership, employment, or agency relationship.
-          The service is a project, not a law firm, and these terms are not legal advice.
+          OmniRun is a software project, not a law firm; these terms are not legal advice.
         </p>
       </section>
 

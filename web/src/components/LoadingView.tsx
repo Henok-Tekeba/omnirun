@@ -63,7 +63,7 @@ export function LoadingView({ model, hardware, onCancel }: LoadingViewProps) {
         <span>
           <strong>Preflight</strong> / in progress
         </span>
-        <span>Live check</span>
+        <span>In progress</span>
         <span>{(elapsed / 1000).toFixed(0)}s elapsed</span>
       </div>
 
@@ -74,7 +74,7 @@ export function LoadingView({ model, hardware, onCancel }: LoadingViewProps) {
               Running
             </p>
             <h1 id="loading-title" className="bench-title mt-2 text-[clamp(2.8rem,6vw,4.8rem)]">
-              Reading the model.
+              Inspecting model metadata.
             </h1>
             <p className="mt-3 max-w-xl text-[12px] leading-relaxed text-[var(--muted)]">
               <span className="font-mono text-[11px] text-[var(--text-2)]">{model}</span>

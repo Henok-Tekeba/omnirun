@@ -2,7 +2,7 @@
   "name": "omnirun-dev",
   "private": true,
   "version": "0.1.0",
-  "description": "One-command development runner for the OmniRun API and web app",
+  "description": "OmniRun — the preflight layer for local AI",
   "scripts": {
     "setup": "npm --prefix web install && npm --prefix web run install:browsers",
     "dev": "node scripts/dev.mjs",

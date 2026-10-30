@@ -83,9 +83,9 @@ export function DashboardShell({
 
         <div className="dashboard-note">
           <div className="dashboard-note-title">
-            <span className="dashboard-dot" /> No weight downloads
+            <span className="dashboard-dot" /> Weights stay remote
           </div>
-          <p>Metadata and headers only. Unknown is a valid answer.</p>
+          <p>Metadata and headers only. Unknown stays unknown.</p>
           <div className="dashboard-note-bar">
             <span />
           </div>

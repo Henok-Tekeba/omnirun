@@ -196,7 +196,7 @@ export function SpeedPanel({ result }: { result: CheckResponse }) {
                   <p className="text-[12px] font-medium">Speed estimate not available</p>
                   <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
                     {result.model.model_class === "asr" || result.model.model_class === "tts"
-                      ? "OmniRun can inspect this model but cannot judge its speed yet. v1’s decode-speed formula covers causal LLMs only; no RTF is invented."
+                      ? "OmniRun can inspect this model, but the v1 decode-speed model covers causal LLMs only. No real-time factor is estimated."
                       : "OmniRun will not turn an unknown bandwidth or KV layout into a speed number."}
                   </p>
                 </div>

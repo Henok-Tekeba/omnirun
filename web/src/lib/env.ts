@@ -10,7 +10,7 @@ export const SITE_URL = "https://henok-tekeba.github.io/omnirun/";
 
 export const REPO_URL = "https://github.com/Henok-Tekeba/omnirun";
 export const ISSUES_URL = `${REPO_URL}/issues`;
-export const ASSUMPTIONS_URL = `${REPO_URL}/blob/main/ASSUMPTIONS.md`;
+export const METHODOLOGY_URL = `${REPO_URL}/blob/main/docs/methodology.md`;
 export const README_URL = `${REPO_URL}#quick-start`;
 export const SECURITY_URL = `${REPO_URL}/blob/main/SECURITY.md`;
 

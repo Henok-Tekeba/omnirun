@@ -52,7 +52,7 @@ export function errorCopy(error: ApiError): ErrorCopy {
       title:
         error.code === "repo_access_denied"
           ? "Hugging Face rejected that token."
-          : "This model is gated, private, or doesn’t exist.",
+          : "This model is gated, private, or does not exist.",
       body:
         error.code === "repo_access_denied"
           ? "The token was sent, but Hugging Face did not grant access. Check that it is valid and that the account has accepted the model license."
@@ -107,9 +107,9 @@ export function errorCopy(error: ApiError): ErrorCopy {
     return {
       kind: "invalid_input",
       title: helperCodeError
-        ? "That helper code isn’t valid."
+        ? "That helper code is not valid."
         : unsupportedResource
-          ? "That isn’t a model repo."
+          ? "That is not a model repo."
           : "Check your input.",
       body: error.message,
       hint,
@@ -121,7 +121,7 @@ export function errorCopy(error: ApiError): ErrorCopy {
   if (DOWN_CODES.has(error.code)) {
     return {
       kind: "api_down",
-      title: "The OmniRun API isn’t reachable.",
+      title: "The OmniRun API is not reachable.",
       body:
         "The web page loaded, but the API on port 8000 did not answer. If you started both with `npm run dev`, check the API terminal for an error.",
       hint,
@@ -135,7 +135,7 @@ export function errorCopy(error: ApiError): ErrorCopy {
       kind: "upstream",
       title:
         error.code === "hf_unreachable"
-          ? "The API can’t reach Hugging Face."
+          ? "The API cannot reach Hugging Face."
           : "Hugging Face returned an error.",
       body: error.message,
       hint,

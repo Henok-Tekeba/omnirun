@@ -45,7 +45,7 @@ test.describe("OmniRun preflight", () => {
     await expect(page.locator(".artifact-row").first()).toBeVisible();
     await expect(page.getByRole("heading", { name: "Budget and peak" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Speed" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "What if?" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Capacity planning" })).toBeVisible();
     await expect(page.getByText("Max context that fits")).toBeVisible();
     await expect(page.getByText(/estimated|estimate/i).first()).toBeVisible();
 
@@ -54,7 +54,7 @@ test.describe("OmniRun preflight", () => {
     expect(page.url()).not.toContain("hf_");
   });
 
-  test("ASR returns UNKNOWN with an honest message", async ({ page }) => {
+  test("ASR returns UNKNOWN with an explicit limitation", async ({ page }) => {
     await page.goto("/");
     await page.getByRole("button", { name: /Run a preflight/i }).first().click();
     await page.locator("#model").fill("openai/whisper-tiny");
@@ -63,7 +63,7 @@ test.describe("OmniRun preflight", () => {
     await page.getByRole("button", { name: /^Run preflight$/ }).first().click();
 
     await expect(page.locator("#verdict-word")).toHaveText("UNKNOWN", { timeout: 120_000 });
-    await expect(page.getByText(/can’t judge ASR\/TTS yet/i)).toBeVisible();
+    await expect(page.getByText(/v1 does not estimate ASR\/TTS speed/i)).toBeVisible();
     await expect(page.getByText("Speed estimate not available")).toBeVisible();
     await expect(page.getByText(/covers causal LLMs only/i).first()).toBeVisible();
   });
@@ -132,7 +132,7 @@ test.describe("OmniRun preflight", () => {
     await page.getByRole("button", { name: /^Run preflight$/ }).first().click();
 
     await expect(page.locator("#check-error")).toBeVisible();
-    await expect(page.getByText("That isn’t a model repo.")).toBeVisible();
+    await expect(page.getByText("That is not a model repo.")).toBeVisible();
     await expect(page.getByText(/only supports model repositories/i)).toBeVisible();
     await expect(page.locator("#verdict-word")).toHaveCount(0);
   });

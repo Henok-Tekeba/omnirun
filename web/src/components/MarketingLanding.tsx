@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { API_DOCS_URL, IS_STATIC_PREVIEW, REPO_URL, SITE_BASE } from "../lib/env";
+import {
+  API_DOCS_URL,
+  IS_STATIC_PREVIEW,
+  METHODOLOGY_URL,
+  REPO_URL,
+  SITE_BASE,
+} from "../lib/env";
 import {
   ArrowRight,
   CheckCircle,
@@ -129,7 +135,7 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
               {mobileOpen ? <X size={17} /> : <Menu size={17} />}
             </button>
             <button type="button" className="marketing-login" onClick={start}>
-              Console
+              Open app
             </button>
             {mobileOpen ? (
               <div
@@ -243,9 +249,9 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
               </div>
               <div className="mock-note">
                 <div className="mock-note-title">
-                  <span className="mock-dot" /> No weight downloads
+                  <span className="mock-dot" /> Weights stay remote
                 </div>
-                <p>Metadata and headers only. Unknown is a valid answer.</p>
+                <p>Metadata and headers only. Unknown stays unknown.</p>
                 <div className="mock-note-bar">
                   <span />
                 </div>
@@ -258,9 +264,9 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
                 <span>Preflight console / v1.0</span>
               </div>
 
-              <div className="mock-greeting">Ready when you are.</div>
+              <div className="mock-greeting">Preflight console</div>
               <p className="mock-sub">
-                One model. One machine. One honest answer.
+                Memory, runtime, and speed estimates.
               </p>
 
               <div className="mock-stats">
@@ -395,7 +401,7 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
               </div>
 
               <div className="mock-notes">
-                <div className="mock-subhead">Assumptions</div>
+                <div className="mock-subhead">Methodology</div>
                 <p>Single device / metadata only / estimates are not guarantees.</p>
               </div>
             </div>
@@ -488,7 +494,7 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
                     shown separately instead of being invented.
                   </p>
                   <p>
-                    <strong>Unknown is valid.</strong> Speech models, unsupported
+                    <strong>Unknown is reported.</strong> Speech models, unsupported
                     architectures, missing RAM, and unusual model layouts stay UNKNOWN
                     instead of becoming guesses.
                   </p>
@@ -501,9 +507,15 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
             )}
 
             <div className="marketing-dialog-footer">
-              <span>Source: ASSUMPTIONS.md in the repository.</span>
+              <span>
+                Methodology:{" "}
+                <a href={METHODOLOGY_URL} target="_blank" rel="noreferrer">
+                  docs/methodology.md
+                </a>
+                .
+              </span>
               <button type="button" className="marketing-primary" onClick={start}>
-                Open console
+                Open preflight
                 <ArrowRight size={13} />
               </button>
             </div>
