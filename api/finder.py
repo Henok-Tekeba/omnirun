@@ -39,6 +39,9 @@ from core.sweep import fit_status
 from core.verdict import decide_verdict
 from core.verified import build_verified_claim, load_verified_runs
 
+CANDIDATE_TIMEOUT_SECONDS = 8.0
+TOTAL_INSPECTION_SECONDS = 22.0
+
 
 def resolve_hardware(request: FindRequest, table: DeviceTable) -> HardwareProfile:
     hardware = request.hardware
@@ -212,14 +215,23 @@ async def run_finder(
     async def inspect_one(repo_id: str) -> FindCandidate | None:
         async with semaphore:
             try:
-                return await _inspect_candidate(
-                    client,
-                    repo_id,
-                    request=request,
-                    hardware=hardware,
-                    support_matrix=support_matrix,
-                    verified_runs=verified,
-                    token=token,
+                async with asyncio.timeout(CANDIDATE_TIMEOUT_SECONDS):
+                    return await _inspect_candidate(
+                        client,
+                        repo_id,
+                        request=request,
+                        hardware=hardware,
+                        support_matrix=support_matrix,
+                        verified_runs=verified,
+                        token=token,
+                    )
+            except TimeoutError:
+                errors.append(
+                    FindError(
+                        repo_id=repo_id,
+                        code="candidate_timeout",
+                        message="Inspection took too long; skipped.",
+                    )
                 )
             except OmniRunError as exc:
                 errors.append(FindError(repo_id=repo_id, code=exc.code, message=exc.message))
@@ -233,8 +245,30 @@ async def run_finder(
                 )
             return None
 
-    results = await asyncio.gather(*(inspect_one(repo_id) for repo_id in repo_ids))
-    candidates = _rank([candidate for candidate in results if candidate is not None])
+    tasks = {
+        asyncio.create_task(inspect_one(repo_id)): repo_id for repo_id in repo_ids
+    }
+    done, pending = await asyncio.wait(tasks, timeout=TOTAL_INSPECTION_SECONDS)
+    for task in pending:
+        task.cancel()
+        errors.append(
+            FindError(
+                repo_id=tasks[task],
+                code="candidate_timeout",
+                message="Inspection took too long; skipped.",
+            )
+        )
+    results: list[FindCandidate] = []
+    for task in done:
+        try:
+            candidate = task.result()
+        except Exception:
+            continue
+        if candidate is not None:
+            results.append(candidate)
+    if pending:
+        await asyncio.gather(*pending, return_exceptions=True)
+    candidates = _rank(results)
     return FindResponse(
         schema_version=SCHEMA_VERSION,
         request_id=request_id,

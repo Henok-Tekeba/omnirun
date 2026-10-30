@@ -280,7 +280,8 @@ export function FinderView({
           </div>
           <p className="mt-2 text-[10px] text-[var(--faint)]">
             An empty search uses a broad candidate pool, not a recommendation. Up to{" "}
-            {limit} candidates are returned after inspection.
+            {limit} candidates are returned after inspection. Usually 5–20 seconds; slow
+            candidates are skipped so one model cannot block the search.
           </p>
 
           {status === "loading" ? (

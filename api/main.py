@@ -229,6 +229,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             ],
         )
 
+    @app.get("/health")
+    async def health() -> dict[str, str]:
+        return {"status": "ok"}
+
     @app.post(
         "/find",
         response_model=FindResponse,

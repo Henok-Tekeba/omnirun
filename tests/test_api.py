@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import asyncio
 from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import AsyncMock
 
 import httpx
+import pytest
 
 from api.main import create_app
 from api.settings import Settings
@@ -176,6 +178,52 @@ async def test_optimize_verdict_for_small_gpu(tmp_path: Path) -> None:
             }
             assert alternatives["int8"]["fits"] == "yes"
             assert alternatives["4bit"]["fits"] == "yes"
+
+
+async def test_health(tmp_path: Path) -> None:
+    app = create_app(make_settings(tmp_path))
+    async with await api_client(app) as client:
+        response = await client.get("/health")
+        assert response.status_code == 200
+        assert response.json() == {"status": "ok"}
+
+
+async def test_find_returns_partial_results_instead_of_timing_out(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    app = create_app(make_settings(tmp_path))
+    async with fixture_client("smollm2_135m", tmp_path) as hf:
+        hf.search_models = AsyncMock(  # type: ignore[method-assign]
+            return_value=("HuggingFaceTB/SmolLM2-135M-Instruct",)
+        )
+        app.state.hf_client = hf
+
+        async def slow_inspection(*args: object, **kwargs: object) -> object:
+            await asyncio.sleep(1)
+            raise AssertionError("should have timed out")
+
+        monkeypatch.setattr("api.finder._inspect_candidate", slow_inspection)
+        monkeypatch.setattr("api.finder.CANDIDATE_TIMEOUT_SECONDS", 0.01)
+        monkeypatch.setattr("api.finder.TOTAL_INSPECTION_SECONDS", 0.02)
+
+        async with await api_client(app) as client:
+            response = await client.post(
+                "/find",
+                json={
+                    "query": "smol",
+                    "task": "text-generation",
+                    "hardware": {
+                        "source": "manual",
+                        "device_id": "apple-m2-pro",
+                        "ram_gib": 32,
+                    },
+                    "limit": 3,
+                },
+            )
+            assert response.status_code == 200, response.text
+            data = response.json()
+            assert data["candidates"] == []
+            assert data["errors"][0]["code"] == "candidate_timeout"
 
 
 async def test_find_returns_a_ranked_candidate(tmp_path: Path) -> None:

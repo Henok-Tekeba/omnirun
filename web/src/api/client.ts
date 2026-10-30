@@ -8,7 +8,7 @@ import type {
 } from "./types";
 
 const CHECK_TIMEOUT_MS = 60_000;
-const FIND_TIMEOUT_MS = 90_000;
+const FIND_TIMEOUT_MS = 35_000;
 const DEVICES_TIMEOUT_MS = 10_000;
 
 export class ApiError extends Error {
