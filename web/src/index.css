@@ -1379,13 +1379,13 @@
 
 .marketing-shell {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
-  gap: 60px;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: 56px;
   width: 100%;
-  max-width: 1200px;
+  max-width: none;
   min-height: 100svh;
   margin-inline: auto;
-  padding: 28px 40px 42px;
+  padding: 28px 24px 42px 40px;
 }
 
 .marketing-left {
@@ -1418,9 +1418,9 @@
 .marketing-links {
   display: flex;
   align-items: center;
-  gap: 19px;
+  gap: 14px;
   margin-left: 4px;
-  font-size: 13px;
+  font-size: 12px;
   color: #5e5e5e;
 }
 
@@ -1447,7 +1447,7 @@
   background: transparent;
   padding: 0;
   color: #0b0b0b;
-  font-size: 13px;
+  font-size: 12px;
   text-decoration: none;
   transition: opacity 140ms var(--ease-out);
 }
@@ -1479,7 +1479,7 @@
 .marketing-title {
   margin-top: 24px;
   font-family: var(--font-display);
-  font-size: clamp(42px, 4.6vw, 56px);
+  font-size: clamp(40px, 4vw, 56px);
   font-stretch: 94%;
   font-weight: 600;
   letter-spacing: -0.045em;
@@ -2133,14 +2133,14 @@
 
 @media (max-width: 1050px) {
   .marketing-shell {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 32px;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 28px;
     padding-inline: 24px;
   }
 
   .marketing-links {
     gap: 12px;
-    font-size: 12px;
+    font-size: 11.5px;
   }
 
   .mock-dashboard {
@@ -3122,5 +3122,193 @@
     width: 100%;
     margin: 0;
     min-height: 40px;
+  }
+}
+
+.mock-ascii-body {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.mock-ascii-side {
+  flex: none;
+  color: #7d9b85;
+  opacity: 0.82;
+  text-align: right;
+}
+
+.mock-bottom {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+  border-top: 1px solid #f0f0ed;
+  padding-top: 8px;
+}
+
+.mock-bottom > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+  color: #999;
+  font-size: 7px;
+}
+
+.mock-bottom span {
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mock-bottom strong {
+  color: #777;
+  font-size: 8px;
+  font-weight: 600;
+}
+
+.mock-bottom strong.is-go {
+  color: #2c8a55;
+}
+
+@media (max-width: 1300px) {
+  .mock-ascii-side {
+    display: none;
+  }
+}
+
+@media (min-width: 1500px) {
+  .mock-main {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    grid-template-areas:
+      "top top"
+      "greet greet"
+      "sub sub"
+      "stats stats"
+      "chart ascii"
+      "table ascii"
+      "bottom bottom";
+    align-content: start;
+    column-gap: 12px;
+  }
+
+  .mock-topline {
+    grid-area: top;
+  }
+
+  .mock-greeting {
+    grid-area: greet;
+  }
+
+  .mock-sub {
+    grid-area: sub;
+  }
+
+  .mock-stats {
+    grid-area: stats;
+  }
+
+  .mock-chart {
+    grid-area: chart;
+    margin-top: 0;
+  }
+
+  .mock-ascii {
+    display: flex;
+    grid-area: ascii;
+    flex-direction: column;
+    margin-top: 0;
+  }
+
+  .mock-ascii-body {
+    flex: 1;
+  }
+
+  .mock-table {
+    grid-area: table;
+    margin-top: 10px;
+  }
+
+  .mock-bottom {
+    grid-area: bottom;
+  }
+}
+
+.mock-runtime,
+.mock-notes {
+  display: none;
+  margin-top: 10px;
+  border-top: 1px solid #f0f0ed;
+  padding-top: 8px;
+}
+
+.mock-subhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #444;
+  font-size: 8.5px;
+  font-weight: 500;
+}
+
+.mock-subhead span {
+  color: #aaa;
+  font-size: 7px;
+  font-weight: 400;
+}
+
+.mock-runtime-row {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr 0.6fr;
+  gap: 8px;
+  border-top: 1px solid #f5f5f3;
+  padding: 5px 0;
+  color: #7e7e7e;
+  font-size: 7.5px;
+}
+
+.mock-runtime-row:first-of-type {
+  margin-top: 5px;
+}
+
+.mock-notes p {
+  margin-top: 5px;
+  color: #999;
+  font-size: 7.5px;
+  line-height: 1.45;
+}
+
+@media (min-width: 1500px) {
+  .mock-dashboard {
+    height: auto;
+  }
+
+  .mock-runtime,
+  .mock-notes {
+    display: block;
+  }
+
+  .mock-main {
+    grid-template-areas:
+      "top top"
+      "greet greet"
+      "sub sub"
+      "stats stats"
+      "chart ascii"
+      "table ascii"
+      "bottom bottom"
+      "runtime runtime"
+      "notes notes";
+  }
+
+  .mock-runtime {
+    grid-area: runtime;
+  }
+
+  .mock-notes {
+    grid-area: notes;
   }
 }

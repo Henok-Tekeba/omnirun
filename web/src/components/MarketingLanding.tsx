@@ -36,6 +36,19 @@ const ASCII = String.raw`  ╭────────────────�
   > verdict  GO
   > _`;
 
+const SIDE_ASCII = String.raw`  ╭──────────────╮
+  │ 01 10 11 00  │
+  │ 10 01 00 11  │
+  │ 11 00 01 10  │
+  │ 00 11 10 01  │
+  ╰──────────────╯
+     ▲    ▲    ▲
+    ╱ ╲  ╱ ╲  ╱ ╲
+   ▔▔▔▔▔▔▔▔▔▔▔▔▔
+   SIGNAL / 0.93
+   BANDWIDTH / 200
+   LATENCY / —`;
+
 export function MarketingLanding({ onStart }: MarketingLandingProps) {
   const [dialog, setDialog] = useState<DialogKind | null>(null);
 
@@ -228,7 +241,10 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
                     <span className="mock-dot" /> live
                   </span>
                 </div>
-                <pre>{ASCII}</pre>
+                <div className="mock-ascii-body">
+                  <pre>{ASCII}</pre>
+                  <pre className="mock-ascii-side">{SIDE_ASCII}</pre>
+                </div>
               </div>
 
               <div className="mock-table">
@@ -262,6 +278,59 @@ export function MarketingLanding({ onStart }: MarketingLandingProps) {
                   <span>0.42 GB</span>
                   <span>—</span>
                 </div>
+                <div className="mock-row">
+                  <span>Qwen2.5-0.5B</span>
+                  <span className="mock-verdict">GO</span>
+                  <span>0.71 GB</span>
+                  <span>180–290</span>
+                </div>
+                <div className="mock-row">
+                  <span>Llama-3.2-1B</span>
+                  <span className="mock-verdict is-unknown">GATED</span>
+                  <span>—</span>
+                  <span>—</span>
+                </div>
+              </div>
+
+              <div className="mock-bottom">
+                <div>
+                  <span>FITS</span>
+                  <strong className="is-go">YES</strong>
+                </div>
+                <div>
+                  <span>SUPPORTED</span>
+                  <strong className="is-go">YES</strong>
+                </div>
+                <div>
+                  <span>VERIFIED</span>
+                  <strong>NONE</strong>
+                </div>
+              </div>
+
+              <div className="mock-runtime">
+                <div className="mock-subhead">
+                  Runtime paths <span>v1</span>
+                </div>
+                <div className="mock-runtime-row">
+                  <span>transformers</span>
+                  <span className="mock-verdict">available</span>
+                  <span>≥ 4.28</span>
+                </div>
+                <div className="mock-runtime-row">
+                  <span>llama.cpp</span>
+                  <span className="mock-verdict is-opt">conversion</span>
+                  <span>≥ b1500</span>
+                </div>
+                <div className="mock-runtime-row">
+                  <span>whisper.cpp</span>
+                  <span className="mock-verdict is-unknown">missing</span>
+                  <span>≥ 1.5</span>
+                </div>
+              </div>
+
+              <div className="mock-notes">
+                <div className="mock-subhead">Assumptions</div>
+                <p>Single device / metadata only / estimates are not guarantees.</p>
               </div>
             </div>
           </div>
